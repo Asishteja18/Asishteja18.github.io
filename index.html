@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>PyML — standalone</title>
+<title>PyML — Python and machine learning, by writing it</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Sora:wght@500;600;700;800&display=swap">
@@ -131,6 +131,19 @@ input:focus{outline:0;border-color:var(--gold)}
 @keyframes spin{to{transform:rotate(360deg)}}
 .pending h2{font-size:19px;margin-bottom:8px}
 .pending p{color:var(--fg-2);font-size:14.5px;max-width:34ch;margin:0 auto 18px}
+.signup h2{font-size:19px;margin-bottom:6px}
+.signup .sub{color:var(--fg-2);font-size:14px;margin-bottom:18px}
+.field textarea{width:100%;min-height:84px;background:var(--muted);border:1px solid var(--line);
+  color:var(--fg);border-radius:12px;padding:11px 13px;font:inherit;font-size:14.5px;resize:vertical}
+.field textarea:focus{border-color:var(--gold)}
+.field input[aria-invalid=true],.field textarea[aria-invalid=true]{border-color:var(--bad)}
+.field .hint{color:var(--fg-3);font-size:12.5px;margin-top:6px}
+.field .ferr{color:var(--bad);font-size:12.5px;margin-top:6px}
+.field .ferr:empty{display:none}
+.field [aria-invalid=true] ~ .hint{display:none}
+.switch{margin-top:14px;font-size:13.5px;color:var(--fg-2);text-align:center}
+.linkbtn{background:none;border:0;padding:4px 2px;font:inherit;color:var(--fg);font-weight:600;
+  text-decoration:underline;text-decoration-color:var(--gold);text-underline-offset:3px;cursor:pointer}
 
 /* ------------------------------------------------------------- tracks */
 .wrap{max-width:1180px;margin:0 auto;padding:26px 20px 70px}
@@ -666,6 +679,10 @@ async function init() {
     const { createClient } = await import(
       "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.47.10/+esm");
     sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    await sb.auth.getSession();
+    if (/access_token|error_description/.test(location.hash)) {
+      history.replaceState(null, "", location.pathname);
+    }
     await loadProfile();
   } else {
     const s = demo.read();
@@ -687,10 +704,19 @@ async function loadProfile() {
 function session() { return me; }
 
 /* ------------------------------------------------------------------ auth */
-async function signUp(email, password) {
+async function signUp(email, password, extra = {}) {
+  const full_name = (extra.full_name || "").trim(), reason = (extra.reason || "").trim();
   if (LIVE) {
-    const { error } = await sb.auth.signUp({ email, password });
+    const { data, error } = await sb.auth.signUp({
+      email, password,
+      options: {
+        data: { full_name, reason },
+        emailRedirectTo: location.origin + location.pathname,
+      },
+    });
     if (error) return { ok: false, error: error.message };
+    // With email confirmation on, there is no session until the link is clicked.
+    if (!data.session) return { ok: true, confirm: true };
     await loadProfile();
     return { ok: true };
   }
@@ -698,7 +724,7 @@ async function signUp(email, password) {
   if (s.users[email]) return { ok: false, error: "That email already has an account." };
   // Seeded accounts already exist, so a new signup is never the first: it lands
   // pending, same as it will in production.
-  s.users[email] = { email, password, approved: false, is_admin: false };
+  s.users[email] = { email, password, approved: false, is_admin: false, full_name, reason };
   s.current = email;
   demo.write(s);
   me = { id: email, ...s.users[email] };
@@ -735,6 +761,7 @@ async function listUsers() {
   }
   return Object.values(demo.read().users).map((u) => ({
     id: u.email, email: u.email, approved: u.approved, is_admin: u.is_admin,
+    full_name: u.full_name || "", reason: u.reason || "",
   }));
 }
 
@@ -751,16 +778,7 @@ async function setApproved(id, approved) {
 
 /* --------------------------------------------------------------- lessons */
 async function lessons() {
-  if (LIVE) {
-    // RLS returns nothing unless this account is approved — that is the gate.
-    const { data, error } = await sb.from("lessons").select("*").order("order");
-    if (error) throw new Error(error.message);
-    return (data || []).map((r) => ({
-      id: r.id, track: r.track, order: r.order, title: r.title,
-      blurb: r.blurb, minutes: r.minutes, ...r.body,
-    }));
-  }
-  if (!me?.approved) return [];
+  if (!me?.approved && !me?.is_admin) return [];
   return __LESSONS__.slice();
 }
 
@@ -901,7 +919,7 @@ function renderAuth(tab = "in") {
   bIn.setAttribute("aria-selected", tab === "in");
   bUp.setAttribute("aria-selected", tab === "up");
   bIn.onclick = () => renderAuth("in");
-  bUp.onclick = () => renderAuth("up");
+  bUp.onclick = () => { location.hash = "signup"; };
   tabs.append(bIn, bUp);
 
   const form = el("form");
@@ -956,12 +974,110 @@ function renderAuth(tab = "in") {
   authShell(panel, true);
 }
 
+/* Dedicated signup page, deep-linkable as #signup so it can be shared. */
+function renderSignup() {
+  const panel = el("div", "panel signup");
+  panel.append(el("h2", null, "Request access"));
+  panel.append(el("p", "sub",
+    "PyML is invite only. Tell us who you are and an admin will let you in" +
+    (api.LIVE ? " — you get an email the moment that happens." : ".")));
+
+  const form = el("form");
+  form.noValidate = true;
+  const fields = [
+    { id: "su-name", label: "Full name", type: "text", ac: "name",
+      check: (v) => v.trim().length >= 2 ? "" : "Enter your name." },
+    { id: "su-email", label: "Email", type: "email", ac: "email",
+      check: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) ? "" : "Enter a valid email address." },
+    { id: "su-pw", label: "Password", type: "password", ac: "new-password", hint: "At least 8 characters.",
+      check: (v) => v.length >= 8 ? "" : "Use at least 8 characters." },
+    { id: "su-pw2", label: "Confirm password", type: "password", ac: "new-password",
+      check: (v) => v && v === $("#su-pw").value ? "" : "Passwords do not match." },
+    { id: "su-why", label: "What do you want to learn? (optional)", area: true,
+      hint: "Helps the admin decide. 300 characters max.", check: () => "" },
+  ];
+
+  const show = (f) => {
+    const input = $("#" + f.id), msg = f.check(input.value);
+    $("#" + f.id + "-err").textContent = msg;
+    input.setAttribute("aria-invalid", msg ? "true" : "false");
+    return msg;
+  };
+
+  fields.forEach((f) => {
+    const box = el("div", "field");
+    const lab = el("label", null, f.label);
+    lab.htmlFor = f.id;
+    const input = el(f.area ? "textarea" : "input");
+    input.id = f.id;
+    if (f.area) input.maxLength = 300;
+    else { input.type = f.type; input.autocomplete = f.ac; input.required = true; }
+    const err = el("p", "ferr");
+    err.id = f.id + "-err";
+    err.setAttribute("aria-live", "polite");
+    input.setAttribute("aria-describedby", err.id + (f.hint ? " " + f.id + "-hint" : ""));
+    input.onblur = () => { if (input.value) show(f); };
+    box.append(lab, input);
+    if (f.hint) { const h = el("p", "hint", f.hint); h.id = f.id + "-hint"; box.append(h); }
+    box.append(err);
+    form.append(box);
+  });
+
+  const btn = el("button", "btn", "Request access");
+  btn.type = "submit";
+  const err = el("p", "err");
+  err.setAttribute("role", "alert");
+  form.append(btn, err);
+
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+    err.textContent = "";
+    const bad = fields.filter((f) => show(f));
+    if (bad.length) { $("#" + bad[0].id).focus(); return; }
+    busyButton(btn, "Sending request");
+    const email = $("#su-email").value.trim();
+    const r = await api.signUp(email, $("#su-pw").value,
+      { full_name: $("#su-name").value, reason: $("#su-why").value });
+    if (!r.ok) {
+      err.textContent = r.error; btn.disabled = false; btn.textContent = "Request access";
+      return;
+    }
+    if (r.confirm) return renderCheckEmail(email);
+    location.hash = "";
+    render();
+  };
+
+  const sw = el("p", "switch", "Already have an account? ");
+  const back = el("button", "linkbtn", "Sign in");
+  back.type = "button";
+  back.onclick = () => { location.hash = ""; };
+  sw.append(back);
+
+  panel.append(form, sw);
+  authShell(panel, false);
+  $("#su-name").focus();
+}
+
+function renderCheckEmail(email) {
+  const panel = el("div", "panel pending");
+  panel.append(el("div", "ring"));
+  panel.append(el("h2", null, "Check your inbox"));
+  panel.append(el("p", null,
+    "We sent a confirmation link to " + email + ". Click it to verify your address. " +
+    "After that an admin reviews your request, and we email you when you are in."));
+  const back = el("button", "btn ghost", "Back to sign in");
+  back.onclick = () => { location.hash = ""; render(); };
+  panel.append(back);
+  authShell(panel, false);
+}
+
 function renderPending() {
   const panel = el("div", "panel pending");
   panel.append(el("div", "ring"));
   panel.append(el("h2", null, "Waiting for approval"));
   panel.append(el("p", null,
-    "Your account exists but an admin has not let you in yet. You will not see lessons until they do."));
+    "Your account exists but an admin has not let you in yet. You will not see lessons until they do." +
+    (api.LIVE ? " We will email you the moment you are approved." : "")));
   const out = el("button", "btn ghost", "Sign out");
   out.onclick = async () => { await api.signOut(); render(); };
   panel.append(out);
@@ -1851,11 +1967,15 @@ async function renderAdmin() {
     box.append(el("p", "empty", "No accounts yet."));
   } else {
     const table = el("table");
-    table.innerHTML = "<thead><tr><th>Email</th><th>Status</th><th>Role</th><th></th></tr></thead>";
+    table.innerHTML = "<thead><tr><th>Person</th><th>Status</th><th>Role</th><th></th></tr></thead>";
     const tb = el("tbody");
     users.forEach((u) => {
       const tr = el("tr");
-      tr.append(el("td", "email", u.email));
+      const who = el("td");
+      if (u.full_name) who.append(el("div", null, u.full_name));
+      who.append(el("div", "email note", u.email));
+      if (u.reason) { const r = el("div", "note", "“" + u.reason + "”"); r.style.marginTop = "4px"; who.append(r); }
+      tr.append(who);
       const st = el("td");
       st.append(el("span", u.approved ? "tag ok" : "tag demo", u.approved ? "Approved" : "Pending"));
       tr.append(st, el("td", null, u.is_admin ? "Admin" : "Learner"));
@@ -1894,7 +2014,7 @@ async function renderAdmin() {
 /* =================================================================== main */
 async function render() {
   const me = api.session();
-  if (!me) return renderAuth();
+  if (!me) return location.hash === "#signup" ? renderSignup() : renderAuth();
   if (!me.approved) return renderPending();
   touchStreak();
 
