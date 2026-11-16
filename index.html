@@ -659,11 +659,11 @@ let me = null; // {id, email, approved, is_admin}
 // Delete it once config.js is filled in.
 const DEMO_ACCOUNTS = [
   { email: "admin@pyml.dev", password: "demo1234", approved: true, is_admin: true,
-    note: "admin — approves everyone else" },
+    note: "admin — can block accounts" },
   { email: "learner@pyml.dev", password: "demo1234", approved: true, is_admin: false,
-    note: "approved learner — straight into the lessons" },
+    note: "learner — straight into the lessons" },
   { email: "pending@pyml.dev", password: "demo1234", approved: false, is_admin: false,
-    note: "locked out — approve it as admin to let it in" },
+    note: "blocked — restore it as admin to let it back in" },
 ];
 
 const demo = {
@@ -704,8 +704,8 @@ async function loadProfile() {
   const { data } = await sb.from("profiles").select("*").eq("id", user.id).single();
   me = data
     ? { id: user.id, email: data.email, approved: data.approved, is_admin: data.is_admin }
-    // the signup trigger may not have committed yet; treat as unapproved
-    : { id: user.id, email: user.email, approved: false, is_admin: false };
+    // the signup trigger may not have committed yet; everyone gets in by default
+    : { id: user.id, email: user.email, approved: true, is_admin: false };
 }
 
 function session() { return me; }
@@ -747,7 +747,7 @@ async function verifyCode(email, code) {
   }
   // The account only exists once the code checks out.
   const s = demo.read();
-  s.users[email] = { email, password: pendingDemo.password, approved: false, is_admin: false };
+  s.users[email] = { email, password: pendingDemo.password, approved: true, is_admin: false };
   s.current = email;
   demo.write(s);
   me = { id: email, ...s.users[email] };
@@ -951,7 +951,7 @@ function pitchColumn(hero = true) {
 }
 
 /* Landing: pitch on the left, one card on the right with Sign in | Sign up.
-   #signup (the invite link) opens straight on the Sign up tab. */
+   #signup (the share link) opens straight on the Sign up tab. */
 function renderAuth(tab) {
   tab = tab || (location.hash === "#signup" ? "up" : "in");
   const panel = el("div", "panel authcard");
@@ -1150,10 +1150,9 @@ function renderCodeStep(email, demoCodeShown) {
 function renderPending() {
   const panel = el("div", "panel pending");
   panel.append(el("div", "ring"));
-  panel.append(el("h2", null, "Waiting for approval"));
+  panel.append(el("h2", null, "Access paused"));
   panel.append(el("p", null,
-    "Your account exists but an admin has not let you in yet. You will not see lessons until they do." +
-    (api.LIVE ? " We will email you the moment you are approved." : "")));
+    "An admin has blocked this account, so the lessons are locked. Get in touch with them if you think this is a mistake."));
   const out = el("button", "btn ghost", "Sign out");
   out.onclick = async () => { await api.signOut(); render(); };
   panel.append(out);
@@ -2034,7 +2033,7 @@ async function renderAdmin() {
   const head = el("div", "head");
   head.append(el("h1", null, "Who gets in"));
   head.append(el("p", null,
-    "New accounts arrive unapproved and see nothing. Approve one and the lessons unlock for them immediately."));
+    "Everyone who verifies their email gets in. Block an account to lock it out of the lessons; restore it to let it back in."));
   wrap.append(head);
 
   const users = await api.listUsers();
@@ -2053,13 +2052,13 @@ async function renderAdmin() {
       if (u.reason) { const r = el("div", "note", "“" + u.reason + "”"); r.style.marginTop = "4px"; who.append(r); }
       tr.append(who);
       const st = el("td");
-      st.append(el("span", u.approved ? "tag ok" : "tag demo", u.approved ? "Approved" : "Pending"));
+      st.append(el("span", u.approved ? "tag ok" : "tag demo", u.approved ? "Active" : "Blocked"));
       tr.append(st, el("td", null, u.is_admin ? "Admin" : "Learner"));
       const act = el("td");
       act.style.textAlign = "right";
       if (u.id !== me.id) {
         const btn = el("button", u.approved ? "btn danger sm" : "btn sm",
-          u.approved ? "Revoke" : "Approve");
+          u.approved ? "Block" : "Restore");
         btn.onclick = async () => {
           btn.disabled = true;
           const r = await api.setApproved(u.id, !u.approved);
@@ -2081,7 +2080,7 @@ async function renderAdmin() {
   if (!api.LIVE) {
     const n = el("p", "note");
     n.style.marginTop = "16px";
-    n.textContent = "Demo mode. This list lives in your browser only. With Supabase connected, approval is enforced by a database policy, so an unapproved account gets zero lessons back no matter what its browser asks for.";
+    n.textContent = "Demo mode. This list lives in your browser only. With Supabase connected, blocking is stored in the database.";
     wrap.append(n);
   }
   root.append(wrap);

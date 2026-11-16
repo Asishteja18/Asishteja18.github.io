@@ -8,8 +8,8 @@ session can pick the project up without being told any of it again.
 ## What it is
 
 A Python and machine-learning teaching site. Lessons run a real Python runtime
-in the browser and grade the learner's code against tests. Invite only: new
-accounts land pending and see nothing until an admin approves them.
+in the browser and grade the learner's code against tests. Anyone can sign up
+(email + password + 6-digit emailed code) and goes straight in; admins can block accounts.
 
 Three stages. Only the first is open.
 
@@ -26,7 +26,7 @@ purpose — learners build a perceptron and backprop by hand, and it avoids a
 ## Where it lives now (Nov 2026)
 
 - Repo **Asishteja18/Asishteja18.github.io**, served by GitHub Pages at
-  https://asishteja18.github.io. Invite link: `/#signup`.
+  https://asishteja18.github.io. Sign-up link: `/#signup`.
 - **`index.html` is the single source of truth**: the standalone bundle with
   CSS, app code and all lessons inlined (`const __LESSONS__ = [...]`). The
   multi-file tree (`app/`, `content/`, `scripts/`, `docs/` tests) is NOT in the
@@ -48,14 +48,11 @@ purpose — learners build a perceptron and backprop by hand, and it avoids a
   Name and reason go in user metadata and are copied into `profiles`.
 - Admin table shows name, email and reason.
 - Lessons are served from the page itself in both modes; Supabase only decides
-  who is approved. `shortcut:` noted in code: move lessons back into the DB with
+  who is blocked. `shortcut:` noted in code: move lessons back into the DB with
   RLS if the content ever needs to be private (the repo is public anyway).
 - Email is free: **Brevo** (300/day, sends from a verified Gmail, no domain).
-  Supabase custom SMTP → Brevo for confirmation mails. `supabase-schema.sql`
-  adds `send_email()` (pg_net → Brevo API, key in Supabase Vault as
-  `brevo_api_key` + `sender_email`) and triggers: admins emailed when a new
-  user *confirms* (not on raw signup), user emailed when `approved` flips true.
-  Missing secrets = emails silently skipped, never a failed signup.
+  Supabase custom SMTP → Brevo sends the sign-up code. (Approval/notification
+  emails existed briefly and were removed with the approval step.)
 - Full steps: `SETUP-EMAIL.md`.
 
 ## Live backend (16 Nov 2026)
@@ -68,9 +65,13 @@ purpose — learners build a perceptron and backprop by hand, and it avoids a
   the SMTP key was pasted by Asish. Confirm-signup template sends `{{ .Token }}`,
   subject "Your PyML code". **Email OTP length was 8 by default; set to 6** to
   match the site's 6-digit input.
-- Not yet done: `brevo_api_key` / `sender_email` vault secrets, so the admin
-  "new request" and learner "you're in" emails are skipped for now. The code
-  email does not need them.
+- [stated] 16 Nov: admin approval REMOVED. New profiles default `approved = true`;
+  `approved = false` now means "blocked" (admin page: Block / Restore,
+  blocked users see "Access paused"). The approval-email triggers, `send_email`
+  and `esc` were dropped from the DB and schema; no Brevo API key is needed.
+- Asish (asishtejavinnakota@gmail.com) is admin on the live project.
+- Codes from a Gmail sender get rewritten to `…@…brevosend.com` and tend to land
+  in spam; a verified domain in Brevo is the fix.
 
 ## How to run it
 

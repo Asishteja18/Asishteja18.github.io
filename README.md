@@ -3,17 +3,17 @@
 Python and machine learning taught by making you write the code. Lessons run a
 real Python runtime in the browser and grade your work against tests.
 
-Live at **https://asishteja18.github.io** · invite link: **https://asishteja18.github.io/#signup**
+Live at **https://asishteja18.github.io** · sign-up link: **https://asishteja18.github.io/#signup**
 
-Invite only: people sign up with email + password, verify a 6-digit emailed
-code, and see nothing until an admin approves them.
+People sign up with email + password, verify a 6-digit emailed code, and go
+straight into the lessons. Admins can block an account from the admin page.
 
 ## What's in this repo
 
 | File | What it is |
 |---|---|
 | `index.html` | **The whole site in one file**: styles, app code and all 22 lessons inlined. This is what GitHub Pages serves and what you edit. |
-| `supabase-schema.sql` | Database tables, the approval rules and the email triggers. Run once in Supabase. |
+| `supabase-schema.sql` | Database tables and access rules. Run once in Supabase. |
 | `SETUP-EMAIL.md` | Step-by-step for going live with real accounts and free email (Supabase + Brevo). |
 | `admin.html` | Redirects to `index.html#admin`. |
 | `glimpse-lesson.html` | Standalone preview of one lesson. |
@@ -28,8 +28,8 @@ python3 -m http.server 8000
 ```
 
 With no Supabase keys it runs in **demo mode**. Three seeded accounts, password
-`demo1234`: `admin@pyml.dev` (admin), `learner@pyml.dev` (approved),
-`pending@pyml.dev` (locked out). They're listed on the sign-in screen. Demo
+`demo1234`: `admin@pyml.dev` (admin), `learner@pyml.dev` (learner),
+`pending@pyml.dev` (blocked). They're listed on the sign-in screen. Demo
 accounts live in your browser only and nothing is secured.
 
 ## Go live
@@ -45,13 +45,9 @@ const SUPABASE_ANON_KEY = "";
 
 The anon key is public by design. The service_role key never goes in this repo.
 
-## Emails (free, via Brevo, 300/day)
+## Email (free, via Brevo, 300/day)
 
-| When | Who gets it |
-|---|---|
-| Someone signs up | them: 6-digit code |
-| They confirm | every admin: "new access request" + link to approve |
-| An admin approves them | them: "you're in" |
+The only email is the 6-digit sign-up code, sent by Supabase through Brevo SMTP.
 
 ## Add a lesson
 
@@ -62,7 +58,6 @@ object, change `id`, `order`, text and tests, then commit.
 ## Known limits
 
 - Pyodide is a ~10 MB first load. Lesson text is readable while it loads.
-- The repo is public, so lesson text is readable on GitHub. Approval controls
-  who gets the app, not who can read the source.
+- The repo is public, so lesson text is readable on GitHub.
 - Emails sent from a Gmail address can land in spam. A verified domain in
   Brevo fixes it.
