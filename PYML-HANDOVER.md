@@ -23,6 +23,37 @@ Three stages. Only the first is open.
 purpose — learners build a perceptron and backprop by hand, and it avoids a
 30 MB numpy download.
 
+## Where it lives now (Nov 2026)
+
+- Repo **Asishteja18/Asishteja18.github.io**, served by GitHub Pages at
+  https://asishteja18.github.io. Invite link: `/#signup`.
+- **`index.html` is the single source of truth**: the standalone bundle with
+  CSS, app code and all lessons inlined (`const __LESSONS__ = [...]`). The
+  multi-file tree (`app/`, `content/`, `scripts/`, `docs/` tests) is NOT in the
+  repo; `pyml-source.md` is an archive of it. Edit `index.html` directly.
+- Claude cannot push to this repo yet (GitHub App not installed); changes reach
+  it by Asish uploading files through the GitHub web UI.
+
+## Signup + email (added 16 Nov 2026)
+
+- Dedicated signup page at `#signup`: full name, email, password + confirm,
+  optional "what do you want to learn" (300 chars). On-blur validation, errors
+  under each field, focus jumps to the first bad field. "Request access" on the
+  sign-in card links to it.
+- Live mode: Supabase email confirmation, then a "Check your inbox" screen.
+  Name and reason go in user metadata and are copied into `profiles`.
+- Admin table shows name, email and reason.
+- Lessons are served from the page itself in both modes; Supabase only decides
+  who is approved. `shortcut:` noted in code: move lessons back into the DB with
+  RLS if the content ever needs to be private (the repo is public anyway).
+- Email is free: **Brevo** (300/day, sends from a verified Gmail, no domain).
+  Supabase custom SMTP → Brevo for confirmation mails. `supabase-schema.sql`
+  adds `send_email()` (pg_net → Brevo API, key in Supabase Vault as
+  `brevo_api_key` + `sender_email`) and triggers: admins emailed when a new
+  user *confirms* (not on raw signup), user emailed when `approved` flips true.
+  Missing secrets = emails silently skipped, never a failed signup.
+- Full steps: `SETUP-EMAIL.md`.
+
 ## How to run it
 
 ```bash
@@ -56,7 +87,8 @@ Static site, no backend of its own.
 
 ### Blocked on Asish
 
-Supabase signup, then project URL + anon key into `app/config.js`. Until then
+Supabase + Brevo signup (see `SETUP-EMAIL.md`), then project URL + anon key
+into the `SUPABASE_URL` / `SUPABASE_ANON_KEY` constants in `index.html`. Until then
 everything runs in demo mode. The anon key is public by design; the **service
 key** is secret and only ever lives in a shell for `scripts/sync-content.mjs`.
 
@@ -180,6 +212,10 @@ Chromium for all of it lives at
 
 1. **The syllabus** — Asish flagged this as the next conversation: agree the
    full topic list so every task is covered before more content is written.
-2. Supabase URL + anon key into `app/config.js`.
+2. Supabase + Brevo accounts, then URL + anon key into `index.html`.
+   The email triggers are untested until then.
+5. Lessons are hand-edited inside `index.html`. If daily additions get
+   painful, rebuild the multi-file source from the bundle.
+6. Install the Claude GitHub App on the repo so updates can be pushed directly.
 3. Pyodide unverified from the sandbox (CDN blocked).
 4. Streak counts visits, not cleared work, and lives in one browser only.
