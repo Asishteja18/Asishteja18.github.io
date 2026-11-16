@@ -91,6 +91,8 @@ input[type=email],input[type=password],input[type=text]{width:100%;background:va
   border:1px solid var(--line);color:var(--fg);border-radius:12px;padding:11px 13px;
   font:inherit;font-size:14.5px;min-height:44px}
 input:focus{outline:0;border-color:var(--gold)}
+input:-webkit-autofill,textarea:-webkit-autofill{-webkit-box-shadow:0 0 0 1000px var(--muted) inset;
+  -webkit-text-fill-color:var(--fg);caret-color:var(--fg)}
 .err{color:var(--bad);font-size:13.5px;margin-top:10px;min-height:19px}
 .note{color:var(--fg-3);font-size:13px}
 
