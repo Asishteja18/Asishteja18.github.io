@@ -58,6 +58,20 @@ purpose — learners build a perceptron and backprop by hand, and it avoids a
   Missing secrets = emails silently skipped, never a failed signup.
 - Full steps: `SETUP-EMAIL.md`.
 
+## Live backend (16 Nov 2026)
+
+- Supabase project `olwcsvxplvgsavwpajkc` (Asishteja18's Org, free, eu-central-1),
+  signed in via GitHub. URL + anon key are in `index.html`, so the site runs LIVE.
+- Schema from `supabase-schema.sql` has been run (also saved as a SQL snippet).
+- Auth: confirm email ON; custom SMTP = Brevo (`smtp-relay.brevo.com:587`,
+  login `c3a954001@smtp-brevo.com`, sender = Asish's verified Gmail, name PyML);
+  the SMTP key was pasted by Asish. Confirm-signup template sends `{{ .Token }}`,
+  subject "Your PyML code". **Email OTP length was 8 by default; set to 6** to
+  match the site's 6-digit input.
+- Not yet done: `brevo_api_key` / `sender_email` vault secrets, so the admin
+  "new request" and learner "you're in" emails are skipped for now. The code
+  email does not need them.
+
 ## How to run it
 
 ```bash
