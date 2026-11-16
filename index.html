@@ -133,8 +133,6 @@ input:-webkit-autofill,textarea:-webkit-autofill{-webkit-box-shadow:0 0 0 1000px
 @keyframes spin{to{transform:rotate(360deg)}}
 .pending h2{font-size:19px;margin-bottom:8px}
 .pending p{color:var(--fg-2);font-size:14.5px;max-width:34ch;margin:0 auto 18px}
-.signup h2{font-size:19px;margin-bottom:6px}
-.signup .sub{color:var(--fg-2);font-size:14px;margin-bottom:18px}
 .field textarea{width:100%;min-height:84px;background:var(--muted);border:1px solid var(--line);
   color:var(--fg);border-radius:12px;padding:11px 13px;font:inherit;font-size:14.5px;resize:vertical}
 .field textarea:focus{border-color:var(--gold)}
@@ -144,6 +142,13 @@ input:-webkit-autofill,textarea:-webkit-autofill{-webkit-box-shadow:0 0 0 1000px
 .field .ferr:empty{display:none}
 .field [aria-invalid=true] ~ .hint{display:none}
 .switch{margin-top:14px;font-size:13.5px;color:var(--fg-2);text-align:center}
+.authcard h2{font-size:19px;margin-bottom:6px}
+.authcard .sub{color:var(--fg-2);font-size:14px;margin-bottom:18px;overflow-wrap:anywhere}
+.otp{font-family:var(--mono)!important;font-size:24px!important;letter-spacing:.45em;text-align:center;
+  padding-left:calc(13px + .45em)!important}
+.democode{margin-top:12px;padding:10px 12px;border:1px dashed var(--gold);border-radius:12px;
+  font-size:13px;color:var(--fg-2)}
+.democode b{font-family:var(--mono);color:var(--fg);letter-spacing:.15em}
 .linkbtn{background:none;border:0;padding:4px 2px;font:inherit;color:var(--fg);font-weight:600;
   text-decoration:underline;text-decoration-color:var(--gold);text-underline-offset:3px;cursor:pointer}
 
@@ -284,20 +289,6 @@ td.email{font-family:var(--mono);font-size:13px;overflow-wrap:anywhere}
 .step p{color:var(--fg-2);font-size:14.5px;max-width:50ch}
 .closer{font-family:var(--mono);font-size:13px;color:var(--fg-3);max-width:48ch}
 .landing .auth{position:sticky;top:28px;max-width:420px;justify-self:end;width:100%}
-.gate{max-width:1120px;margin:0 auto;padding:40px 20px 72px}
-.gate .top{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:700;
-  font-size:18px;margin-bottom:28px}
-.gate .top .dot{width:10px;height:10px;border-radius:50%;background:var(--gold);
-  box-shadow:0 0 12px var(--gold)}
-.gate .hero h1{font-size:clamp(28px,3.6vw,40px);letter-spacing:-.025em;margin-bottom:12px;max-width:22ch}
-.gate .hero .big{color:var(--fg-2);font-size:17px;max-width:60ch;margin-bottom:28px}
-.duo{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;margin-bottom:22px}
-.duo .panel h2{font-size:19px;margin-bottom:6px}
-.duo .panel .sub{color:var(--fg-2);font-size:14px;margin-bottom:18px}
-.duo .btn{width:100%;margin-top:4px}
-.gate .demo-note{margin-bottom:44px}
-.gate .more{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
-.gate .more .why{margin-bottom:0}
 
 /* ------------------------------------------------------------- groups */
 .group{margin-bottom:38px}
@@ -312,10 +303,7 @@ td.email{font-family:var(--mono);font-size:13px;overflow-wrap:anywhere}
 
 @media (max-width:980px){
   .landing{grid-template-columns:1fr;gap:38px;padding:30px 18px 56px}
-  .landing .auth{position:static;justify-self:stretch;max-width:none}
-  .duo,.gate .more{grid-template-columns:1fr;gap:20px}
-  .duo .signin{order:-1}
-  .gate{padding:28px 18px 56px}
+  .landing .auth{position:static;justify-self:stretch;max-width:none;order:-1}
 }
 
 /* ------------------------------------------------- collapsing sections */
@@ -723,32 +711,60 @@ async function loadProfile() {
 function session() { return me; }
 
 /* ------------------------------------------------------------------ auth */
-async function signUp(email, password, extra = {}) {
-  const full_name = (extra.full_name || "").trim(), reason = (extra.reason || "").trim();
+// Sign up is two steps: signUp() emails a 6-digit code, verifyCode() checks it
+// and only then is the account usable. Supabase's "Confirm signup" email
+// template must contain {{ .Token }} (see SETUP-EMAIL.md).
+let pendingDemo = null; // demo: { email, password, code } until verified
+
+function demoCode() { return String(Math.floor(100000 + Math.random() * 900000)); }
+
+async function signUp(email, password) {
   if (LIVE) {
-    const { data, error } = await sb.auth.signUp({
-      email, password,
-      options: {
-        data: { full_name, reason },
-        emailRedirectTo: location.origin + location.pathname,
-      },
-    });
+    const { data, error } = await sb.auth.signUp({ email, password });
     if (error) return { ok: false, error: error.message };
-    // With email confirmation on, there is no session until the link is clicked.
-    if (!data.session) return { ok: true, confirm: true };
+    // Supabase hides "already registered" by returning a user with no identities.
+    if (data.user && data.user.identities && data.user.identities.length === 0) {
+      return { ok: false, error: "That email already has an account. Sign in instead." };
+    }
+    if (data.session) { await loadProfile(); return { ok: true, done: true }; }
+    return { ok: true };
+  }
+  if (demo.read().users[email]) return { ok: false, error: "That email already has an account. Sign in instead." };
+  pendingDemo = { email, password, code: demoCode() };
+  return { ok: true, demoCode: pendingDemo.code };
+}
+
+async function verifyCode(email, code) {
+  if (LIVE) {
+    const { error } = await sb.auth.verifyOtp({ email, token: code, type: "signup" });
+    if (error) return { ok: false, error: /expired|invalid/i.test(error.message)
+      ? "That code is wrong or has expired. Check the latest email, or send a new code." : error.message };
     await loadProfile();
     return { ok: true };
   }
+  if (!pendingDemo || pendingDemo.email !== email || pendingDemo.code !== code) {
+    return { ok: false, error: "That code is wrong or has expired. Check the latest email, or send a new code." };
+  }
+  // The account only exists once the code checks out.
   const s = demo.read();
-  if (s.users[email]) return { ok: false, error: "That email already has an account." };
-  // Seeded accounts already exist, so a new signup is never the first: it lands
-  // pending, same as it will in production.
-  s.users[email] = { email, password, approved: false, is_admin: false, full_name, reason };
+  s.users[email] = { email, password: pendingDemo.password, approved: false, is_admin: false };
   s.current = email;
   demo.write(s);
   me = { id: email, ...s.users[email] };
+  pendingDemo = null;
   return { ok: true };
 }
+
+async function resendCode(email) {
+  if (LIVE) {
+    const { error } = await sb.auth.resend({ type: "signup", email });
+    return error ? { ok: false, error: error.message } : { ok: true };
+  }
+  if (!pendingDemo) return { ok: false, error: "Start sign up again." };
+  pendingDemo.code = demoCode();
+  return { ok: true, demoCode: pendingDemo.code };
+}
+
 
 async function signIn(email, password) {
   if (LIVE) {
@@ -826,7 +842,7 @@ async function setDone(lessonId, completed) {
 }
 
 
-const api = { LIVE, DEMO_ACCOUNTS, init, session, signUp, signIn, signOut,
+const api = { LIVE, DEMO_ACCOUNTS, init, session, signUp, verifyCode, resendCode, signIn, signOut,
               listUsers, setApproved, lessons, getProgress, setDone };
 
 
@@ -934,49 +950,54 @@ function pitchColumn(hero = true) {
   return col;
 }
 
-/* Landing: request access on one side, sign in on the other. #signup
-   deep-links straight to the request form (it is the invite link). */
-function renderAuth() {
-  root.innerHTML = "";
-  const page = el("div", "gate");
-
-  const top = el("div", "top");
-  top.append(el("span", "dot"), document.createTextNode("PyML"));
-  const hero = el("div", "hero");
-  hero.append(el("h1", null, HERO_H1), el("p", "big", HERO_P));
-
-  const duo = el("div", "duo");
-  duo.append(signupPanel(), signinPanel());
-  page.append(top, hero, duo);
-
-  if (!api.LIVE) {
-    page.append(el("p", "note demo-note",
-      "Demo mode. Accounts live in this browser only and nothing is secured. Add Supabase keys to go live."));
-  }
-
-  // the rest of the pitch: why on one side, the path on the other
-  const rest = pitchColumn(false);
-  const more = el("div", "more");
-  more.append(...rest.children);
-  page.append(more);
-  root.append(page);
-
-  if (location.hash === "#signup") {
-    const f = $("#su-name");
-    f.scrollIntoView({ block: "center" });
-    f.focus({ preventScroll: true });
-  }
+/* Landing: pitch on the left, one card on the right with Sign in | Sign up.
+   #signup (the invite link) opens straight on the Sign up tab. */
+function renderAuth(tab) {
+  tab = tab || (location.hash === "#signup" ? "up" : "in");
+  const panel = el("div", "panel authcard");
+  const tabs = el("div", "tabs");
+  tabs.setAttribute("role", "tablist");
+  const bIn = el("button", null, "Sign in"), bUp = el("button", null, "Sign up");
+  [[bIn, "in"], [bUp, "up"]].forEach(([b, t]) => {
+    b.type = "button";
+    b.setAttribute("role", "tab");
+    b.setAttribute("aria-selected", tab === t);
+    b.onclick = () => renderAuth(t);
+  });
+  tabs.append(bIn, bUp);
+  panel.append(tabs, tab === "in" ? signinForm() : signupForm());
+  authShell(panel, true);
 }
 
-function signinPanel() {
-  const panel = el("div", "panel signin");
-  panel.append(el("h2", null, "Sign in"));
-  panel.append(el("p", "sub", "Already approved? Pick up where you left off."));
+function field(id, label, type, ac, hint) {
+  const box = el("div", "field");
+  const lab = el("label", null, label);
+  lab.htmlFor = id;
+  const input = el("input");
+  input.id = id; input.type = type; input.autocomplete = ac; input.required = true;
+  const ferr = el("p", "ferr");
+  ferr.id = id + "-err";
+  ferr.setAttribute("aria-live", "polite");
+  input.setAttribute("aria-describedby", ferr.id + (hint ? " " + id + "-hint" : ""));
+  box.append(lab, input);
+  if (hint) { const h = el("p", "hint", hint); h.id = id + "-hint"; box.append(h); }
+  box.append(ferr);
+  return box;
+}
 
+function fieldError(id, msg) {
+  $("#" + id + "-err").textContent = msg;
+  $("#" + id).setAttribute("aria-invalid", msg ? "true" : "false");
+  return msg;
+}
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function signinForm() {
   const form = el("form");
-  form.innerHTML =
-    '<div class="field"><label for="em">Email</label><input id="em" type="email" required autocomplete="email"></div>' +
-    '<div class="field"><label for="pw">Password</label><input id="pw" type="password" required minlength="8" autocomplete="current-password"></div>';
+  form.noValidate = true;
+  form.append(field("em", "Email", "email", "email"),
+              field("pw", "Password", "password", "current-password"));
   const btn = el("button", "btn", "Sign in");
   btn.type = "submit";
   const err = el("p", "err");
@@ -990,11 +1011,7 @@ function signinPanel() {
       const row = el("div", "demo-row");
       const b = el("button", "btn ghost sm", a.email);
       b.type = "button";
-      b.onclick = () => {
-        $("#em").value = a.email;
-        $("#pw").value = a.password;
-        err.textContent = "";
-      };
+      b.onclick = () => { $("#em").value = a.email; $("#pw").value = a.password; err.textContent = ""; };
       row.append(b, el("span", "note", a.note));
       box.append(row);
     });
@@ -1004,104 +1021,130 @@ function signinPanel() {
   form.onsubmit = async (e) => {
     e.preventDefault();
     err.textContent = "";
+    const email = $("#em").value.trim(), pw = $("#pw").value;
+    const bad = [fieldError("em", EMAIL_RE.test(email) ? "" : "Enter a valid email address.") && "em",
+                 fieldError("pw", pw ? "" : "Enter your password.") && "pw"].filter(Boolean);
+    if (bad.length) { $("#" + bad[0]).focus(); return; }
     busyButton(btn, "Signing in");
-    const r = await api.signIn($("#em").value.trim(), $("#pw").value);
+    const r = await api.signIn(email, pw);
     if (!r.ok) { err.textContent = r.error; btn.disabled = false; btn.textContent = "Sign in"; return; }
     location.hash = "";
     render();
   };
-
-  panel.append(form);
-  return panel;
+  return form;
 }
 
-function signupPanel() {
-  const panel = el("div", "panel signup");
-  panel.append(el("h2", null, "Request access"));
-  panel.append(el("p", "sub",
-    "New here? PyML is invite only. Tell us who you are and an admin will let you in" +
-    (api.LIVE ? " — you get an email the moment that happens." : ".")));
-
+function signupForm() {
   const form = el("form");
   form.noValidate = true;
-  const fields = [
-    { id: "su-name", label: "Full name", type: "text", ac: "name",
-      check: (v) => v.trim().length >= 2 ? "" : "Enter your name." },
-    { id: "su-email", label: "Email", type: "email", ac: "email",
-      check: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) ? "" : "Enter a valid email address." },
-    { id: "su-pw", label: "Password", type: "password", ac: "new-password", hint: "At least 8 characters.",
-      check: (v) => v.length >= 8 ? "" : "Use at least 8 characters." },
-    { id: "su-pw2", label: "Confirm password", type: "password", ac: "new-password",
-      check: (v) => v && v === $("#su-pw").value ? "" : "Passwords do not match." },
-    { id: "su-why", label: "What do you want to learn? (optional)", area: true,
-      hint: "Helps the admin decide. 300 characters max.", check: () => "" },
-  ];
-
-  const show = (f) => {
-    const input = $("#" + f.id), msg = f.check(input.value);
-    $("#" + f.id + "-err").textContent = msg;
-    input.setAttribute("aria-invalid", msg ? "true" : "false");
-    return msg;
-  };
-
-  fields.forEach((f) => {
-    const box = el("div", "field");
-    const lab = el("label", null, f.label);
-    lab.htmlFor = f.id;
-    const input = el(f.area ? "textarea" : "input");
-    input.id = f.id;
-    if (f.area) input.maxLength = 300;
-    else { input.type = f.type; input.autocomplete = f.ac; input.required = true; }
-    const ferr = el("p", "ferr");
-    ferr.id = f.id + "-err";
-    ferr.setAttribute("aria-live", "polite");
-    input.setAttribute("aria-describedby", ferr.id + (f.hint ? " " + f.id + "-hint" : ""));
-    input.onblur = () => { if (input.value) show(f); };
-    box.append(lab, input);
-    if (f.hint) { const h = el("p", "hint", f.hint); h.id = f.id + "-hint"; box.append(h); }
-    box.append(ferr);
-    form.append(box);
-  });
-
-  const btn = el("button", "btn", "Request access");
+  form.append(el("p", "sub", "Email and a password. We send a 6-digit code to check the address is yours."));
+  form.append(field("su-email", "Email", "email", "email"),
+              field("su-pw", "Password", "password", "new-password", "At least 8 characters."));
+  const btn = el("button", "btn", "Send code");
   btn.type = "submit";
   const err = el("p", "err");
   err.setAttribute("role", "alert");
   form.append(btn, err);
 
+  form.querySelector("#su-email").onblur = (e) => { if (e.target.value) fieldError("su-email", EMAIL_RE.test(e.target.value.trim()) ? "" : "Enter a valid email address."); };
+
   form.onsubmit = async (e) => {
     e.preventDefault();
     err.textContent = "";
-    const bad = fields.filter((f) => show(f));
-    if (bad.length) { $("#" + bad[0].id).focus(); return; }
-    busyButton(btn, "Sending request");
-    const email = $("#su-email").value.trim();
-    const r = await api.signUp(email, $("#su-pw").value,
-      { full_name: $("#su-name").value, reason: $("#su-why").value });
+    const email = $("#su-email").value.trim(), pw = $("#su-pw").value;
+    const bad = [fieldError("su-email", EMAIL_RE.test(email) ? "" : "Enter a valid email address.") && "su-email",
+                 fieldError("su-pw", pw.length >= 8 ? "" : "Use at least 8 characters.") && "su-pw"].filter(Boolean);
+    if (bad.length) { $("#" + bad[0]).focus(); return; }
+    busyButton(btn, "Sending code");
+    const r = await api.signUp(email, pw);
+    if (!r.ok) { err.textContent = r.error; btn.disabled = false; btn.textContent = "Send code"; return; }
+    if (r.done) { location.hash = ""; return render(); }
+    renderCodeStep(email, r.demoCode);
+  };
+  return form;
+}
+
+function renderCodeStep(email, demoCodeShown) {
+  const panel = el("div", "panel authcard");
+  panel.append(el("h2", null, "Check your email"));
+  panel.append(el("p", "sub", "Enter the 6-digit code we sent to " + email + "."));
+
+  const form = el("form");
+  form.noValidate = true;
+  const f = field("otp", "Verification code", "text", "one-time-code");
+  const input = f.querySelector("input");
+  input.classList.add("otp");
+  input.inputMode = "numeric";
+  input.maxLength = 6;
+  input.pattern = "[0-9]{6}";
+  form.append(f);
+
+  const btn = el("button", "btn", "Verify and create account");
+  btn.type = "submit";
+  const err = el("p", "err");
+  err.setAttribute("role", "alert");
+  form.append(btn, err);
+
+  const showDemo = (code) => {
+    const old = form.querySelector(".democode");
+    if (old) old.remove();
+    if (!code) return;
+    const d = el("p", "democode");
+    d.append(document.createTextNode("Demo mode, no email is sent. Your code is "), el("b", null, code));
+    form.append(d);
+  };
+  showDemo(demoCodeShown);
+
+  input.oninput = () => {
+    input.value = input.value.replace(/\D/g, "").slice(0, 6);
+    if (input.value.length === 6) form.requestSubmit();
+  };
+
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+    err.textContent = "";
+    const code = input.value;
+    if (fieldError("otp", /^\d{6}$/.test(code) ? "" : "Enter all 6 digits.")) { input.focus(); return; }
+    busyButton(btn, "Verifying");
+    const r = await api.verifyCode(email, code);
     if (!r.ok) {
-      err.textContent = r.error; btn.disabled = false; btn.textContent = "Request access";
+      err.textContent = r.error; btn.disabled = false; btn.textContent = "Verify and create account";
+      input.select();
       return;
     }
-    if (r.confirm) return renderCheckEmail(email);
     location.hash = "";
     render();
   };
 
-  panel.append(form);
-  return panel;
-}
+  // resend, with a cooldown so nobody hammers the mail quota
+  const row = el("p", "switch");
+  const resend = el("button", "linkbtn", "Send a new code");
+  resend.type = "button";
+  const cool = (secs) => {
+    resend.disabled = true;
+    const tick = () => {
+      if (secs <= 0) { resend.disabled = false; resend.textContent = "Send a new code"; return; }
+      resend.textContent = "Send a new code (" + secs-- + "s)";
+      setTimeout(tick, 1000);
+    };
+    tick();
+  };
+  resend.onclick = async () => {
+    err.textContent = "";
+    const r = await api.resendCode(email);
+    if (!r.ok) { err.textContent = r.error; return; }
+    showDemo(r.demoCode);
+    cool(30);
+  };
+  const change = el("button", "linkbtn", "Use a different email");
+  change.type = "button";
+  change.onclick = () => renderAuth("up");
+  row.append(resend, document.createTextNode(" · "), change);
 
-function renderCheckEmail(email) {
-  const panel = el("div", "panel pending");
-  panel.append(el("div", "ring"));
-  panel.append(el("h2", null, "Check your inbox"));
-  panel.append(el("p", null,
-    "We sent a confirmation link to " + email + ". Click it to verify your address. " +
-    "After that an admin reviews your request, and we email you when you are in."));
-  const back = el("button", "btn ghost", "Back to sign in");
-  back.onclick = () => { location.hash = ""; renderAuth(); };
-  panel.append(back);
-  authShell(panel, false);
+  panel.append(form, row);
+  authShell(panel, true);
+  cool(30);
+  input.focus();
 }
 
 function renderPending() {

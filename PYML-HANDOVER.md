@@ -36,11 +36,14 @@ purpose — learners build a perceptron and backprop by hand, and it avoids a
 
 ## Signup + email (added 16 Nov 2026)
 
-- [stated] Sign up and sign in sit SIDE BY SIDE on the landing (no separate page):
-  Request access card left, Sign in card right; on phones Sign in stacks first.
-  Signup asks full name, email, password + confirm, optional "what do you want
-  to learn" (300 chars); on-blur validation, errors under each field.
-  `#signup` (the invite link) scrolls to and focuses the request form.
+- [stated] ONE auth card with Sign in | Sign up tabs, pitch beside it (card goes
+  first on phones). [stated] Sign up = email + password only, then a 6-digit
+  code emailed to them; the account only works once the code is verified
+  (`supabase.auth.verifyOtp({type:'signup'})`). Code input auto-submits at 6
+  digits; resend has a 30s cooldown; duplicate emails get "sign in instead".
+  Demo mode shows the code on screen and only creates the account on verify.
+  `#signup` opens the Sign up tab. Supabase's Confirm-signup template must
+  contain `{{ .Token }}` (SETUP-EMAIL.md step 5).
 - Live mode: Supabase email confirmation, then a "Check your inbox" screen.
   Name and reason go in user metadata and are copied into `profiles`.
 - Admin table shows name, email and reason.

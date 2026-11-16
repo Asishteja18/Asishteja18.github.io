@@ -6,7 +6,8 @@
 | Brevo | 300 emails/day, no domain needed | Confirmation emails + notifications |
 
 Emails the site sends:
-1. **Confirm your email**, to the person signing up (Supabase, delivered via Brevo SMTP)
+1. **Your 6-digit code**, to the person signing up (Supabase, delivered via Brevo SMTP).
+   The account is only usable once they type the code in.
 2. **New access request**, to every admin, once that person confirms
 3. **You're in**, to the person, the moment an admin approves them
 
@@ -28,9 +29,18 @@ Emails the site sends:
    Host `smtp-relay.brevo.com`, port `587`, user = Brevo SMTP login,
    password = Brevo SMTP key, sender = your verified Gmail, name `PyML`.
    (Supabase's built-in mailer only sends to your own team, so this step is required.)
-5. **Authentication → URL configuration**: Site URL `https://asishteja18.github.io`,
+5. **Authentication → Emails → Templates → Confirm signup**: replace the body with
+   ```html
+   <h2>Your PyML code</h2>
+   <p>Enter this code to finish signing up:</p>
+   <p style="font-size:28px;letter-spacing:6px"><b>{{ .Token }}</b></p>
+   <p>It expires in an hour. If you didn't sign up, ignore this email.</p>
+   ```
+   Subject: `Your PyML code`. Check **Authentication → Providers → Email** has
+   "Confirm email" on and the email OTP length set to 6.
+6. **Authentication → URL configuration**: Site URL `https://asishteja18.github.io`,
    and add the same address under Redirect URLs.
-6. **Project Settings → API**: copy the **Project URL** and the **anon public** key.
+7. **Project Settings → API**: copy the **Project URL** and the **anon public** key.
 
 ## 3. Switch the site to live
 Put the URL and anon key into `index.html`, where it says
@@ -38,7 +48,7 @@ Put the URL and anon key into `index.html`, where it says
 The anon key is public by design. Never put the service_role key in the site.
 
 ## 4. Make yourself admin
-Sign up on the site, click the confirmation email, then run this in the SQL editor:
+Sign up on the site, enter the code from the email, then run this in the SQL editor:
 ```sql
 update profiles set approved = true, is_admin = true where email = 'you@gmail.com';
 ```

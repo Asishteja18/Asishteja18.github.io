@@ -5,8 +5,8 @@ real Python runtime in the browser and grade your work against tests.
 
 Live at **https://asishteja18.github.io** · invite link: **https://asishteja18.github.io/#signup**
 
-Invite only: people request access, confirm their email, and see nothing until
-an admin approves them.
+Invite only: people sign up with email + password, verify a 6-digit emailed
+code, and see nothing until an admin approves them.
 
 ## What's in this repo
 
@@ -49,7 +49,7 @@ The anon key is public by design. The service_role key never goes in this repo.
 
 | When | Who gets it |
 |---|---|
-| Someone requests access | them: "confirm your email" |
+| Someone signs up | them: 6-digit code |
 | They confirm | every admin: "new access request" + link to approve |
 | An admin approves them | them: "you're in" |
 
