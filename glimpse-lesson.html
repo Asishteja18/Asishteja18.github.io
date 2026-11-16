@@ -1,0 +1,323 @@
+<title>Normalise a Feature</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/pyodide@0.29.5/pyodide.js"></script>
+<style>
+/* Dark-only by design: this is a coding surface and the editor reads best on
+   one committed ground. Every colour is painted explicitly so the page holds
+   whatever theme the host renders it in. */
+:root{
+  --bg:#0B1220; --card:#141C2E; --muted:#101A28; --line:rgba(255,255,255,.09);
+  --fg:#E9EEF7; --fg-2:#9BA9BF; --fg-3:#6B7A92;
+  --green:#22C55E; --green-ink:#07130C; --amber:#E0960F; --red:#EF5A5A;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sans:"Inter",system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);
+  font-size:15px;line-height:1.62;-webkit-font-smoothing:antialiased}
+h1,h2,h3{margin:0;line-height:1.25;text-wrap:balance;font-weight:650}
+code,pre,.mono{font-family:var(--mono);font-variant-ligatures:none}
+button{font:inherit;cursor:pointer;border:0}
+:focus-visible{outline:2px solid var(--green);outline-offset:2px;border-radius:5px}
+@media (prefers-reduced-motion:reduce){*{transition-duration:.01ms!important;animation-duration:.01ms!important}}
+
+/* ---- chrome ---- */
+.bar{display:flex;align-items:center;gap:14px;padding:12px 20px;
+  border-bottom:1px solid var(--line);background:var(--card);position:sticky;top:0;z-index:5}
+.logo{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.015em}
+.logo .dot{width:9px;height:9px;border-radius:50%;background:var(--green);
+  box-shadow:0 0 11px var(--green)}
+.crumb{font-family:var(--mono);font-size:11.5px;color:var(--fg-3);letter-spacing:.04em}
+.track{margin-left:auto;display:flex;align-items:center;gap:9px;
+  font-family:var(--mono);font-size:11.5px;color:var(--fg-2)}
+.pips{display:flex;gap:4px}
+.pip{width:22px;height:4px;border-radius:2px;background:rgba(255,255,255,.13)}
+.pip.on{background:var(--green)}
+
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:0;min-height:calc(100vh - 53px)}
+.pane{padding:28px 26px 56px;min-width:0}
+.pane.lesson{border-right:1px solid var(--line)}
+
+/* ---- lesson ---- */
+.kicker{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);
+  font-size:11px;letter-spacing:.11em;text-transform:uppercase;color:var(--green);
+  background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.26);
+  padding:5px 11px;border-radius:999px;margin-bottom:14px}
+h1{font-size:29px;letter-spacing:-.022em;margin-bottom:9px}
+.sub{color:var(--fg-2);font-size:15.5px;max-width:58ch;margin-bottom:26px}
+.lesson h2{font-size:14px;text-transform:uppercase;letter-spacing:.1em;
+  font-family:var(--mono);color:var(--fg-3);font-weight:600;
+  margin:30px 0 11px;padding-bottom:9px;border-bottom:1px solid var(--line)}
+.lesson p{margin:0 0 13px;max-width:62ch;color:#CEDAEA}
+.lesson p strong{color:var(--fg);font-weight:600}
+.lesson code:not(pre code){background:var(--muted);border:1px solid var(--line);
+  padding:1.5px 6px;border-radius:5px;font-size:13px;color:#8FE3B0}
+pre{background:#080D18;border:1px solid var(--line);border-radius:10px;
+  padding:15px 17px;overflow-x:auto;font-size:13.2px;line-height:1.72;margin:0 0 15px}
+pre .c{color:var(--fg-3)}  pre .k{color:#7AA2F7}  pre .s{color:#8FE3B0}
+pre .n{color:var(--amber)} pre .f{color:#C4A7F2}
+.callout{background:rgba(224,150,15,.08);border:1px solid rgba(224,150,15,.3);
+  border-radius:10px;padding:14px 16px;margin:4px 0 15px;font-size:14.2px;color:#F0DFC0}
+.callout b{color:var(--amber);display:block;margin-bottom:3px;
+  font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+
+/* ---- practice ---- */
+.ptop{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:13px}
+.ptitle{font-family:var(--mono);font-size:11px;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--fg-3)}
+.status{font-family:var(--mono);font-size:11.5px;color:var(--fg-3);
+  display:flex;align-items:center;gap:7px}
+.status .led{width:7px;height:7px;border-radius:50%;background:var(--fg-3)}
+.status.ready .led{background:var(--green);box-shadow:0 0 8px var(--green)}
+.status.fail .led{background:var(--red)}
+.brief{background:var(--card);border:1px solid var(--line);border-left:2px solid var(--green);
+  border-radius:0 10px 10px 0;padding:14px 16px;margin-bottom:14px;font-size:14.3px}
+.brief h3{font-size:15px;margin-bottom:5px}
+.brief p{margin:0;color:var(--fg-2)}
+
+.editor{position:relative;background:#080D18;border:1px solid var(--line);
+  border-radius:10px;overflow:hidden}
+.ehead{display:flex;align-items:center;gap:8px;padding:8px 13px;
+  border-bottom:1px solid var(--line);background:var(--muted)}
+.ehead .f{font-family:var(--mono);font-size:11.5px;color:var(--fg-2)}
+textarea{width:100%;min-height:228px;background:transparent;color:#DCE6F5;border:0;
+  padding:14px 16px;font-family:var(--mono);font-size:13.2px;line-height:1.72;
+  resize:vertical;display:block;tab-size:4}
+textarea:focus{outline:0}
+.erow{display:flex;gap:9px;padding:11px 13px;border-top:1px solid var(--line);
+  background:var(--muted);align-items:center}
+.run{background:var(--green);color:var(--green-ink);font-weight:650;font-size:13.5px;
+  padding:8px 20px;border-radius:7px;transition:filter .18s,transform .18s;
+  display:inline-flex;align-items:center;gap:7px}
+.run:hover:not(:disabled){filter:brightness(1.1)}
+.run:active:not(:disabled){transform:translateY(1px)}
+.run:disabled{opacity:.45;cursor:not-allowed}
+.ghost{background:transparent;color:var(--fg-2);border:1px solid var(--line);
+  font-size:13px;padding:8px 14px;border-radius:7px;transition:border-color .18s,color .18s}
+.ghost:hover{border-color:var(--green);color:var(--green)}
+kbd{font-family:var(--mono);font-size:10.5px;color:var(--fg-3);
+  border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:1px 5px}
+
+.tests{margin-top:15px;display:grid;gap:7px}
+.t{display:grid;grid-template-columns:auto 1fr auto;gap:11px;align-items:center;
+  background:var(--card);border:1px solid var(--line);border-radius:9px;padding:10px 13px}
+.t .ic{width:17px;height:17px;border-radius:50%;border:1.5px solid var(--fg-3);
+  display:grid;place-items:center;flex:none}
+.t .ic svg{width:9px;height:9px;opacity:0}
+.t.pass{border-color:rgba(34,197,94,.42);background:rgba(34,197,94,.07)}
+.t.pass .ic{background:var(--green);border-color:var(--green)}
+.t.pass .ic svg{opacity:1}
+.t.fail{border-color:rgba(239,90,90,.42);background:rgba(239,90,90,.07)}
+.t.fail .ic{border-color:var(--red)}
+.t .lab{font-family:var(--mono);font-size:12.6px;color:var(--fg-2);min-width:0;
+  overflow-wrap:anywhere}
+.t.pass .lab,.t.fail .lab{color:var(--fg)}
+.t .got{font-family:var(--mono);font-size:11.5px;color:var(--red);text-align:right}
+
+.out{margin-top:13px;background:#080D18;border:1px solid var(--line);border-radius:10px;
+  padding:13px 15px;font-family:var(--mono);font-size:12.6px;color:var(--fg-2);
+  white-space:pre-wrap;overflow-x:auto;min-height:46px;overflow-wrap:anywhere}
+.out:empty::before{content:"Run your code to see output here.";color:var(--fg-3)}
+.out .err{color:var(--red)}
+.done{margin-top:14px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.4);
+  border-radius:10px;padding:14px 16px;font-size:14.3px;display:none}
+.done.show{display:block}
+.done b{color:var(--green)}
+
+@media (max-width:900px){
+  .grid{grid-template-columns:1fr}
+  .pane.lesson{border-right:0;border-bottom:1px solid var(--line)}
+  .pane{padding:22px 18px 38px}
+  .track .lbl{display:none}
+}
+</style>
+
+<div class="bar">
+  <span class="logo"><span class="dot"></span>PyML</span>
+  <span class="crumb">python-basics / 04</span>
+  <span class="track"><span class="lbl">Track progress</span>
+    <span class="pips"><i class="pip on"></i><i class="pip on"></i><i class="pip on"></i><i class="pip" id="pip4"></i><i class="pip"></i><i class="pip"></i></span>
+    <span id="pipn">3/6</span>
+  </span>
+</div>
+
+<div class="grid">
+  <div class="pane lesson">
+    <span class="kicker">Lesson 04 · Python for ML</span>
+    <h1>Normalise a feature</h1>
+    <p class="sub">Every model you ever train will choke on unscaled data. The fix is four lines of plain Python — and understanding it now means <code>StandardScaler</code> is never a black box later.</p>
+
+    <h2>The problem</h2>
+    <p>Say you are predicting house prices from two features: number of bedrooms (1–5) and floor area in square feet (500–4000). To a model that measures distance, area <strong>completely drowns out</strong> bedrooms — not because it matters more, but because its numbers are bigger.</p>
+    <pre><span class="c"># distance is dominated by the larger-scale feature</span>
+house_a = [<span class="n">3</span>, <span class="n">1500</span>]
+house_b = [<span class="n">5</span>, <span class="n">1520</span>]
+<span class="c"># bedrooms differ by 2, area by 20 → the model only "sees" area</span></pre>
+
+    <h2>The fix</h2>
+    <p>Rescale each feature so it has <strong>mean 0 and standard deviation 1</strong>. Then every feature speaks in the same units: "how many standard deviations from average am I?"</p>
+    <pre><span class="k">def</span> <span class="f">standardise</span>(xs):
+    mean = sum(xs) / len(xs)
+    var  = sum((x - mean) ** <span class="n">2</span> <span class="k">for</span> x <span class="k">in</span> xs) / len(xs)
+    sd   = var ** <span class="n">0.5</span>
+    <span class="k">return</span> [(x - mean) / sd <span class="k">for</span> x <span class="k">in</span> xs]</pre>
+    <p>That is the whole idea behind <code>sklearn.preprocessing.StandardScaler</code>. The library version adds edge-case handling and the ability to apply the <em>same</em> mean and sd to your test set — which matters enormously, and is the subject of lesson 06.</p>
+
+    <div class="callout"><b>Watch out</b>
+      If every value is identical, <code>sd</code> is 0 and you divide by zero. Real scalers return zeros in that case. Your exercise has to handle it.</div>
+
+    <h2>Why this is lesson 04</h2>
+    <p>Writing it by hand costs you five minutes. Not writing it by hand costs you a week later, the first time a model performs badly and you cannot tell whether the problem is the data, the scaling, or the model.</p>
+  </div>
+
+  <div class="pane">
+    <div class="ptop">
+      <span class="ptitle">Practice</span>
+      <span class="status" id="status"><span class="led"></span><span id="statust">Booting Python…</span></span>
+    </div>
+
+    <div class="brief">
+      <h3>Write <code>standardise(xs)</code></h3>
+      <p>Return a new list, rescaled to mean 0 and standard deviation 1. If every value is the same, return a list of zeros instead of dividing by zero.</p>
+    </div>
+
+    <div class="editor">
+      <div class="ehead"><span class="f">exercise.py</span></div>
+      <textarea id="code" spellcheck="false" aria-label="Python code editor">def standardise(xs):
+    # your code here
+    return xs
+</textarea>
+      <div class="erow">
+        <button class="run" id="run" disabled>
+          <svg width="11" height="12" viewBox="0 0 11 12" fill="currentColor" aria-hidden="true"><path d="M0 0l11 6-11 6z"/></svg>
+          Run tests
+        </button>
+        <button class="ghost" id="reset">Reset</button>
+        <span style="margin-left:auto"><kbd>Ctrl</kbd> + <kbd>Enter</kbd></span>
+      </div>
+    </div>
+
+    <div class="tests" id="tests"></div>
+    <div class="out" id="out" role="status" aria-live="polite"></div>
+    <div class="done" id="done"><b>All tests passed.</b> You have just hand-built StandardScaler. Lesson 05 applies it to a real dataset with pandas.</div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var TESTS = [
+    {label:"standardise([1,2,3]) → mean 0", py:"abs(sum(standardise([1,2,3]))) < 1e-9"},
+    {label:"standardise([1,2,3]) → sd 1",   py:"abs((sum(v*v for v in standardise([1,2,3]))/3)**0.5 - 1) < 1e-9"},
+    {label:"order is preserved",            py:"standardise([5,1,3])[0] > standardise([5,1,3])[2] > standardise([5,1,3])[1]"},
+    {label:"constant input → all zeros",    py:"standardise([7,7,7]) == [0,0,0] or standardise([7,7,7]) == [0.0,0.0,0.0]"},
+    {label:"original list not mutated",     py:"(lambda a: (standardise(a), a == [1,2,3])[1])([1,2,3])"}
+  ];
+  var START = document.getElementById("code").value;
+  var pyodide = null;
+
+  var $ = function(id){ return document.getElementById(id); };
+  function setStatus(txt, cls){
+    $("status").className = "status" + (cls ? " " + cls : "");
+    $("statust").textContent = txt;
+  }
+
+  function paintTests(results){
+    var host = $("tests");
+    host.innerHTML = "";
+    TESTS.forEach(function(t, i){
+      var r = results && results[i];
+      var row = document.createElement("div");
+      row.className = "t" + (r ? (r.pass ? " pass" : " fail") : "");
+      row.innerHTML = '<span class="ic"><svg viewBox="0 0 10 10" fill="none" aria-hidden="true">' +
+        '<path d="M1.5 5.2 4 7.5 8.5 2.5" stroke="#07130C" stroke-width="2" ' +
+        'stroke-linecap="round" stroke-linejoin="round"/></svg></span>' +
+        '<span class="lab"></span><span class="got"></span>';
+      row.querySelector(".lab").textContent = t.label;
+      if (r && !r.pass && r.detail) row.querySelector(".got").textContent = r.detail;
+      host.appendChild(row);
+    });
+  }
+  paintTests(null);
+
+  async function boot(){
+    if (typeof loadPyodide !== "function"){
+      setStatus("Python unavailable — offline?", "fail");
+      $("out").innerHTML = '<span class="err">Could not reach the Python runtime. ' +
+        'The lesson still reads fine; reload when you are back online.</span>';
+      return;
+    }
+    try{
+      pyodide = await loadPyodide({ indexURL: "https://cdn.jsdelivr.net/npm/pyodide@0.29.5/" });
+      setStatus("Python ready", "ready");
+      $("run").disabled = false;
+    }catch(e){
+      setStatus("Python failed to load", "fail");
+      $("out").innerHTML = '<span class="err">Python runtime failed to load: ' +
+        String(e.message || e) + '</span>';
+    }
+  }
+
+  async function run(){
+    if (!pyodide) return;
+    $("run").disabled = true;
+    setStatus("Running…");
+    $("done").classList.remove("show");
+    var out = $("out");
+    out.textContent = "";
+
+    try{
+      pyodide.runPython(
+        "import sys, io\n_buf = io.StringIO()\nsys.stdout = _buf\n");
+      await pyodide.runPythonAsync($("code").value);
+      var printed = pyodide.runPython("sys.stdout = sys.__stdout__\n_buf.getvalue()");
+
+      var results = [];
+      for (var i = 0; i < TESTS.length; i++){
+        try{
+          var ok = pyodide.runPython("bool(" + TESTS[i].py + ")");
+          results.push({ pass: !!ok, detail: ok ? "" : "returned false" });
+        }catch(err){
+          results.push({ pass: false, detail: String(err).split("\n").pop().slice(0, 48) });
+        }
+      }
+      paintTests(results);
+      var passed = results.filter(function(r){ return r.pass; }).length;
+      out.textContent = printed || "";
+      setStatus(passed + "/" + TESTS.length + " passing", passed === TESTS.length ? "ready" : "fail");
+      if (passed === TESTS.length){
+        $("done").classList.add("show");
+        $("pip4").classList.add("on");
+        $("pipn").textContent = "4/6";
+      }
+    }catch(e){
+      try{ pyodide.runPython("sys.stdout = sys.__stdout__"); }catch(_){}
+      paintTests(null);
+      setStatus("Error in your code", "fail");
+      out.innerHTML = '<span class="err"></span>';
+      out.firstChild.textContent = String(e.message || e).split("\n").slice(-6).join("\n");
+    }
+    $("run").disabled = false;
+  }
+
+  $("run").addEventListener("click", run);
+  $("reset").addEventListener("click", function(){
+    $("code").value = START; paintTests(null); $("out").textContent = "";
+    $("done").classList.remove("show"); setStatus("Python ready", "ready");
+  });
+  $("code").addEventListener("keydown", function(e){
+    if (e.key === "Tab"){
+      e.preventDefault();
+      var s = this.selectionStart;
+      this.value = this.value.slice(0, s) + "    " + this.value.slice(this.selectionEnd);
+      this.selectionStart = this.selectionEnd = s + 4;
+    }
+    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)){ e.preventDefault(); run(); }
+  });
+
+  boot();
+})();
+</script>
