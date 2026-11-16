@@ -282,6 +282,20 @@ td.email{font-family:var(--mono);font-size:13px;overflow-wrap:anywhere}
 .step p{color:var(--fg-2);font-size:14.5px;max-width:50ch}
 .closer{font-family:var(--mono);font-size:13px;color:var(--fg-3);max-width:48ch}
 .landing .auth{position:sticky;top:28px;max-width:420px;justify-self:end;width:100%}
+.gate{max-width:1120px;margin:0 auto;padding:40px 20px 72px}
+.gate .top{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:700;
+  font-size:18px;margin-bottom:28px}
+.gate .top .dot{width:10px;height:10px;border-radius:50%;background:var(--gold);
+  box-shadow:0 0 12px var(--gold)}
+.gate .hero h1{font-size:clamp(28px,3.6vw,40px);letter-spacing:-.025em;margin-bottom:12px;max-width:22ch}
+.gate .hero .big{color:var(--fg-2);font-size:17px;max-width:60ch;margin-bottom:28px}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;margin-bottom:22px}
+.duo .panel h2{font-size:19px;margin-bottom:6px}
+.duo .panel .sub{color:var(--fg-2);font-size:14px;margin-bottom:18px}
+.duo .btn{width:100%;margin-top:4px}
+.gate .demo-note{margin-bottom:44px}
+.gate .more{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+.gate .more .why{margin-bottom:0}
 
 /* ------------------------------------------------------------- groups */
 .group{margin-bottom:38px}
@@ -297,6 +311,9 @@ td.email{font-family:var(--mono);font-size:13px;overflow-wrap:anywhere}
 @media (max-width:980px){
   .landing{grid-template-columns:1fr;gap:38px;padding:30px 18px 56px}
   .landing .auth{position:static;justify-self:stretch;max-width:none}
+  .duo,.gate .more{grid-template-columns:1fr;gap:20px}
+  .duo .signin{order:-1}
+  .gate{padding:28px 18px 56px}
 }
 
 /* ------------------------------------------------- collapsing sections */
@@ -867,7 +884,7 @@ function authShell(body, pitch) {
   if (!api.LIVE) {
     const n = el("p", "note");
     n.style.marginTop = "16px";
-    n.textContent = "Demo mode. Accounts live in this browser only and nothing is secured. Add Supabase keys in app/config.js to go live.";
+    n.textContent = "Demo mode. Accounts live in this browser only and nothing is secured. Add Supabase keys to go live.";
     card.append(n);
   }
   if (pitch) { page.append(pitchColumn(), card); }
@@ -875,12 +892,15 @@ function authShell(body, pitch) {
   root.append(page);
 }
 
-function pitchColumn() {
-  const col = el("div", "pitch");
+const HERO_H1 = "Most people meet AI as a box that answers questions.";
+const HERO_P = "A much smaller number know what is inside the box. The distance between those two groups is not talent. It is about twenty-two lessons of writing code yourself.";
 
-  col.append(el("h1", null, "Most people meet AI as a box that answers questions."));
-  col.append(el("p", "big",
-    "A much smaller number know what is inside the box. The distance between those two groups is not talent. It is about twenty-two lessons of writing code yourself."));
+function pitchColumn(hero = true) {
+  const col = el("div", "pitch");
+  if (hero) {
+    col.append(el("h1", null, HERO_H1));
+    col.append(el("p", "big", HERO_P));
+  }
 
   const why = el("div", "why");
   why.append(el("h2", null, "Why bother learning this"));
@@ -912,33 +932,56 @@ function pitchColumn() {
   return col;
 }
 
-function renderAuth(tab = "in") {
-  const panel = el("div", "panel");
-  const tabs = el("div", "tabs");
-  const bIn = el("button", null, "Sign in"), bUp = el("button", null, "Request access");
-  bIn.setAttribute("aria-selected", tab === "in");
-  bUp.setAttribute("aria-selected", tab === "up");
-  bIn.onclick = () => renderAuth("in");
-  bUp.onclick = () => { location.hash = "signup"; };
-  tabs.append(bIn, bUp);
+/* Landing: request access on one side, sign in on the other. #signup
+   deep-links straight to the request form (it is the invite link). */
+function renderAuth() {
+  root.innerHTML = "";
+  const page = el("div", "gate");
+
+  const top = el("div", "top");
+  top.append(el("span", "dot"), document.createTextNode("PyML"));
+  const hero = el("div", "hero");
+  hero.append(el("h1", null, HERO_H1), el("p", "big", HERO_P));
+
+  const duo = el("div", "duo");
+  duo.append(signupPanel(), signinPanel());
+  page.append(top, hero, duo);
+
+  if (!api.LIVE) {
+    page.append(el("p", "note demo-note",
+      "Demo mode. Accounts live in this browser only and nothing is secured. Add Supabase keys to go live."));
+  }
+
+  // the rest of the pitch: why on one side, the path on the other
+  const rest = pitchColumn(false);
+  const more = el("div", "more");
+  more.append(...rest.children);
+  page.append(more);
+  root.append(page);
+
+  if (location.hash === "#signup") {
+    const f = $("#su-name");
+    f.scrollIntoView({ block: "center" });
+    f.focus({ preventScroll: true });
+  }
+}
+
+function signinPanel() {
+  const panel = el("div", "panel signin");
+  panel.append(el("h2", null, "Sign in"));
+  panel.append(el("p", "sub", "Already approved? Pick up where you left off."));
 
   const form = el("form");
   form.innerHTML =
     '<div class="field"><label for="em">Email</label><input id="em" type="email" required autocomplete="email"></div>' +
-    '<div class="field"><label for="pw">Password</label><input id="pw" type="password" required minlength="8" ' +
-    'autocomplete="' + (tab === "up" ? "new-password" : "current-password") + '"></div>';
-  const btn = el("button", "btn", tab === "in" ? "Sign in" : "Request access");
+    '<div class="field"><label for="pw">Password</label><input id="pw" type="password" required minlength="8" autocomplete="current-password"></div>';
+  const btn = el("button", "btn", "Sign in");
   btn.type = "submit";
   const err = el("p", "err");
+  err.setAttribute("role", "alert");
   form.append(btn, err);
-  if (tab === "up") {
-    const n = el("p", "note");
-    n.style.marginTop = "12px";
-    n.textContent = "New accounts need an admin to approve them before lessons unlock.";
-    form.append(n);
-  }
 
-  if (tab === "in" && !api.LIVE) {
+  if (!api.LIVE) {
     const box = el("div", "demo-logins");
     box.append(el("p", "note", "Demo accounts. Click one to fill the form. Password is demo1234."));
     api.DEMO_ACCOUNTS.forEach((a) => {
@@ -959,27 +1002,22 @@ function renderAuth(tab = "in") {
   form.onsubmit = async (e) => {
     e.preventDefault();
     err.textContent = "";
-    busyButton(btn, tab === "in" ? "Signing in" : "Sending");
-    const email = $("#em").value.trim(), pw = $("#pw").value;
-    const r = tab === "in" ? await api.signIn(email, pw) : await api.signUp(email, pw);
-    if (!r.ok) {
-      err.textContent = r.error; btn.disabled = false;
-      btn.textContent = tab === "in" ? "Sign in" : "Request access";
-      return;
-    }
+    busyButton(btn, "Signing in");
+    const r = await api.signIn($("#em").value.trim(), $("#pw").value);
+    if (!r.ok) { err.textContent = r.error; btn.disabled = false; btn.textContent = "Sign in"; return; }
+    location.hash = "";
     render();
   };
 
-  panel.append(tabs, form);
-  authShell(panel, true);
+  panel.append(form);
+  return panel;
 }
 
-/* Dedicated signup page, deep-linkable as #signup so it can be shared. */
-function renderSignup() {
+function signupPanel() {
   const panel = el("div", "panel signup");
   panel.append(el("h2", null, "Request access"));
   panel.append(el("p", "sub",
-    "PyML is invite only. Tell us who you are and an admin will let you in" +
+    "New here? PyML is invite only. Tell us who you are and an admin will let you in" +
     (api.LIVE ? " — you get an email the moment that happens." : ".")));
 
   const form = el("form");
@@ -1012,14 +1050,14 @@ function renderSignup() {
     input.id = f.id;
     if (f.area) input.maxLength = 300;
     else { input.type = f.type; input.autocomplete = f.ac; input.required = true; }
-    const err = el("p", "ferr");
-    err.id = f.id + "-err";
-    err.setAttribute("aria-live", "polite");
-    input.setAttribute("aria-describedby", err.id + (f.hint ? " " + f.id + "-hint" : ""));
+    const ferr = el("p", "ferr");
+    ferr.id = f.id + "-err";
+    ferr.setAttribute("aria-live", "polite");
+    input.setAttribute("aria-describedby", ferr.id + (f.hint ? " " + f.id + "-hint" : ""));
     input.onblur = () => { if (input.value) show(f); };
     box.append(lab, input);
     if (f.hint) { const h = el("p", "hint", f.hint); h.id = f.id + "-hint"; box.append(h); }
-    box.append(err);
+    box.append(ferr);
     form.append(box);
   });
 
@@ -1047,15 +1085,8 @@ function renderSignup() {
     render();
   };
 
-  const sw = el("p", "switch", "Already have an account? ");
-  const back = el("button", "linkbtn", "Sign in");
-  back.type = "button";
-  back.onclick = () => { location.hash = ""; };
-  sw.append(back);
-
-  panel.append(form, sw);
-  authShell(panel, false);
-  $("#su-name").focus();
+  panel.append(form);
+  return panel;
 }
 
 function renderCheckEmail(email) {
@@ -1066,7 +1097,7 @@ function renderCheckEmail(email) {
     "We sent a confirmation link to " + email + ". Click it to verify your address. " +
     "After that an admin reviews your request, and we email you when you are in."));
   const back = el("button", "btn ghost", "Back to sign in");
-  back.onclick = () => { location.hash = ""; render(); };
+  back.onclick = () => { location.hash = ""; renderAuth(); };
   panel.append(back);
   authShell(panel, false);
 }
@@ -2014,7 +2045,7 @@ async function renderAdmin() {
 /* =================================================================== main */
 async function render() {
   const me = api.session();
-  if (!me) return location.hash === "#signup" ? renderSignup() : renderAuth();
+  if (!me) return renderAuth();
   if (!me.approved) return renderPending();
   touchStreak();
 

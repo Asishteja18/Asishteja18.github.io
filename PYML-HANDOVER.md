@@ -36,10 +36,11 @@ purpose — learners build a perceptron and backprop by hand, and it avoids a
 
 ## Signup + email (added 16 Nov 2026)
 
-- Dedicated signup page at `#signup`: full name, email, password + confirm,
-  optional "what do you want to learn" (300 chars). On-blur validation, errors
-  under each field, focus jumps to the first bad field. "Request access" on the
-  sign-in card links to it.
+- [stated] Sign up and sign in sit SIDE BY SIDE on the landing (no separate page):
+  Request access card left, Sign in card right; on phones Sign in stacks first.
+  Signup asks full name, email, password + confirm, optional "what do you want
+  to learn" (300 chars); on-blur validation, errors under each field.
+  `#signup` (the invite link) scrolls to and focuses the request form.
 - Live mode: Supabase email confirmation, then a "Check your inbox" screen.
   Name and reason go in user metadata and are copied into `profiles`.
 - Admin table shows name, email and reason.
