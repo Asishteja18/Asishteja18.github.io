@@ -681,6 +681,22 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
   .dside{position:static;order:-1}
   .onlist{max-height:none;display:flex;flex-wrap:wrap;gap:8px 14px}
 }
+
+/* ------------------------------------------------- ask from a lesson */
+.snip{position:relative}
+.snip pre{padding-top:38px}
+.snipask{position:absolute;top:8px;right:8px;min-height:28px!important;padding:4px 11px!important;
+  font-size:12px!important}
+.askhelp{margin-top:14px;border:1px solid var(--gold-line);background:var(--gold-soft);
+  border-radius:16px;padding:14px 16px}
+.askhelp[hidden]{display:none}
+.askhelp h3{font-size:15px;margin-bottom:4px}
+.askhelp .note{margin-bottom:10px}
+.askrow{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.askhelp form{margin-top:12px}
+.askhelp textarea{min-height:170px;font-family:var(--mono);font-size:12.5px}
+.lessondoubts{margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;
+  font-size:13.5px;color:var(--fg-2)}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/pyodide@0.29.5/pyodide.js"></script>
 </head>
@@ -2158,7 +2174,17 @@ function renderLesson(l) {
       const d = el("div"); d.innerHTML = s.html; left.append(d);
     } else if (s.type === "code") {
       if (s.caption) left.append(el("p", "cap", s.caption));
-      const pre = el("pre"); pre.textContent = s.code; left.append(pre);
+      const wrapPre = el("div", "snip");
+      const pre = el("pre"); pre.textContent = s.code;
+      const ask = el("button", "btn ghost sm snipask", "Ask about this");
+      ask.type = "button";
+      ask.setAttribute("aria-label", "Ask a doubt about this code example");
+      ask.onclick = () => openAsk({
+        title: l.title + ": question about an example",
+        body: "About this example from the lesson:\n\n" + s.code + "\n\nWhat I don't get: ",
+      });
+      wrapPre.append(pre, ask);
+      left.append(wrapPre);
     } else if (s.type === "callout") {
       const c = el("div", "callout " + (s.kind === "tip" ? "tip" : "warn"));
       c.append(el("b", null, s.title));
@@ -2222,6 +2248,112 @@ function renderLesson(l) {
   done.append(document.createTextNode("Marked complete."));
   right.append(done);
 
+  /* ---- doubts, right where the code went wrong ---- */
+  const help = el("div", "askhelp");
+  help.hidden = true;
+  help.setAttribute("aria-live", "polite");
+  right.append(help);
+
+  const ld = el("div", "lessondoubts");
+  const askAny = el("button", "linkbtn", "Ask a doubt about this lesson");
+  askAny.type = "button";
+  askAny.onclick = () => openAsk({ title: l.title + ": ", body: codeBlock(ta.value) + "What I don't get: " });
+  ld.append(el("span", null, "Stuck?"), askAny);
+  right.append(ld);
+  api.doubtsFeed().then((feed) => {
+    const n = feed.filter((d) => d.lesson_id === l.id).length;
+    if (!n) return;
+    const see = el("button", "linkbtn", n === 1 ? "1 doubt on this lesson" : n + " doubts on this lesson");
+    see.type = "button";
+    see.onclick = () => { DOUBT_FILTER = "lesson:" + l.id; location.hash = "doubts"; };
+    ld.append(el("span", null, "·"), see);
+  }).catch(() => {});
+
+  function codeBlock(code) {
+    code = code.length > 2600 ? code.slice(0, 2600) + "\n# …(cut)" : code;
+    return "My code:\n\n" + code + "\n\n";
+  }
+
+  // After a failed run: say what happened, offer to ask, pre-fill everything.
+  function offerHelp(what) {
+    help.innerHTML = "";
+    help.hidden = false;
+    help.append(el("h3", null, what.kind === "error" ? "Your code hit an error" : "Some tests are not passing yet"));
+    help.append(el("p", "note", "Not sure why? Ask the others. Your code and the " +
+      (what.kind === "error" ? "error" : "failing tests") + " go in for you. If nobody answers in 12 hours, it goes to the admin."));
+    const row = el("div", "askrow");
+    const go = el("button", "btn sm", "Ask a doubt");
+    go.type = "button";
+    const problem = what.kind === "error"
+      ? "The error:\n" + what.msg
+      : "Failing tests:\n" + what.fails.map((f) => "- " + f).join("\n");
+    const firstLine = what.kind === "error"
+      ? (what.msg.trim().split("\n").pop() || "error")
+      : what.fails[0];
+    go.onclick = () => openAsk({
+      title: (l.title + ": " + firstLine).slice(0, 140),
+      body: codeBlock(ta.value) + problem + "\n\nWhat I don't get: ",
+    });
+    const later = el("button", "btn ghost sm", "I'll keep trying");
+    later.type = "button";
+    later.onclick = () => { help.hidden = true; };
+    row.append(go, later);
+    help.append(row);
+  }
+
+  function openAsk(prefill) {
+    // phones show one pane at a time; the form lives in the practice pane
+    if (grid.classList.contains("practice") === false && matchMedia("(max-width: 900px)").matches) tDo.click();
+    help.innerHTML = "";
+    help.hidden = false;
+    const me = api.session();
+    if (!me.handle) {
+      help.append(handleCard(() => openAsk(prefill)));
+      help.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      return;
+    }
+    help.append(el("h3", null, "Ask the others"));
+    const form = el("form");
+    form.noValidate = true;
+    const f1 = el("div", "field");
+    const l1 = el("label", null, "Title"); l1.htmlFor = "ask-title";
+    const title = el("input"); title.id = "ask-title"; title.type = "text"; title.maxLength = 140;
+    title.value = prefill.title;
+    f1.append(l1, title);
+    const f2 = el("div", "field");
+    const l2 = el("label", null, "Details (edit anything)"); l2.htmlFor = "ask-body";
+    const body = el("textarea"); body.id = "ask-body"; body.maxLength = 4000;
+    body.value = prefill.body.slice(0, 4000);
+    f2.append(l2, body);
+    const row = el("div", "askrow");
+    const post = el("button", "btn sm", "Post doubt"); post.type = "submit";
+    const cancel = el("button", "btn ghost sm", "Cancel"); cancel.type = "button";
+    cancel.onclick = () => { help.hidden = true; };
+    row.append(post, cancel);
+    const err = el("p", "err"); err.setAttribute("role", "alert");
+    form.append(f1, f2, row, err);
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+      err.textContent = "";
+      if (title.value.trim().length < 5) { err.textContent = "Give it a title of at least 5 characters."; title.focus(); return; }
+      busyButton(post, "Posting");
+      const r = await api.askDoubt({ title: title.value, body: body.value, lesson_id: l.id });
+      if (!r.ok) { err.textContent = r.error; post.disabled = false; post.textContent = "Post doubt"; return; }
+      help.innerHTML = "";
+      help.append(el("h3", null, "Posted. Others can see it now."));
+      help.append(el("p", "note", "Keep going here; replies collect on the doubt. If nobody answers in 12 hours it goes to the admin."));
+      const open = el("button", "btn ghost sm", "Open my doubt");
+      open.type = "button";
+      open.onclick = () => { location.hash = "doubt-" + r.id; };
+      help.append(open);
+    };
+    help.append(form);
+    help.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    // cursor at the end, after "What I don't get: "
+    body.focus();
+    body.setSelectionRange(body.value.length, body.value.length);
+  }
+
   function setStatus(t, cls, busy) {
     status.className = "status" + (cls ? " " + cls : "");
     stxt.textContent = t;
@@ -2267,6 +2399,12 @@ function renderLesson(l) {
       const n = results.filter((r) => r.pass).length;
       out.textContent = printed || "";
       setStatus(n + "/" + results.length + " passing", n === results.length ? "ready" : "fail");
+      if (n < results.length) {
+        offerHelp({ kind: "fail", fails: l.exercise.tests
+          .map((t, k) => results[k].pass ? null : t.label + " (" + results[k].detail + ")").filter(Boolean) });
+      } else if (!$("#ask-title")) {
+        help.hidden = true;
+      }
       if (n === results.length) {
         done.hidden = false;
         PROGRESS[l.id] = true;
@@ -2277,6 +2415,7 @@ function renderLesson(l) {
       paint(null); setStatus("Error in your code", "fail");
       const s = el("span", "e", String(e.message || e).split("\n").slice(-6).join("\n"));
       out.textContent = ""; out.append(s);
+      offerHelp({ kind: "error", msg: String(e.message || e).split("\n").slice(-6).join("\n") });
     }
     run.disabled = false;
     run.innerHTML = runLabel;
@@ -2621,6 +2760,10 @@ async function renderDoubts() {
     ["mine", "Mine", (d) => d.user_id === me.id],
   ];
   if (me.is_admin) filters.push(["admin", "Waiting on you", (d) => d.needs_admin]);
+  if (DOUBT_FILTER.startsWith("lesson:")) {
+    const lid = DOUBT_FILTER.slice(7), ls = LESSONS.find((x) => x.id === lid);
+    filters.push([DOUBT_FILTER, ls ? ls.title : "This lesson", (d) => d.lesson_id === lid]);
+  }
   if (!filters.some((f) => f[0] === DOUBT_FILTER)) DOUBT_FILTER = "all";
 
   const paint = () => {

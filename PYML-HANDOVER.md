@@ -102,6 +102,21 @@ purpose — learners build a perceptron and backprop by hand, and it avoids a
   `tests/db_tests.sql` (17 RLS/permission checks run in a rolled-back
   transaction on the live DB) all passed before deploy.
 
+## Ask from a lesson (17 Nov 2026)
+
+- [stated] Doubts inside the code area: after a run errors or tests fail, a
+  "Stuck? Ask the others" box appears under the output. "Ask a doubt" opens an
+  inline form pre-filled with the lesson title + first error line, the learner's
+  code, the error or failing tests, and "What I don't get:" with the cursor
+  there; the doubt is tagged with the lesson. First-timers pick a code name inline.
+- Every code example in the reading pane has "Ask about this" (pre-fills the
+  example). Under the editor: "Ask a doubt about this lesson" and "N doubts on
+  this lesson", which opens Doubts filtered to that lesson. On phones, asking
+  from the Lesson tab switches to Practice.
+- `tests/test_lesson_ask.py`: 15 checks with real Python (Pyodide from
+  `npm pack pyodide@0.29.5`, routed locally because the CDN is unreachable from
+  the test box).
+
 ## How to run it
 
 ```bash
