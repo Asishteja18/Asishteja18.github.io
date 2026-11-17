@@ -27,11 +27,32 @@ answers within 12 hours is flagged to the admin (badge + "Waiting on you").
 Inside a lesson, a failed run offers to ask a doubt with the code and error
 already filled in; code examples have "Ask about this".
 
+**AI-90 — 90 days to build your own AI** (`content/ai90.json`): Days 1–30
+(Python, automation, real data) sit in Stage 1 after the 10 warm-up lessons,
+Days 31–60 (ML from scratch) in Stage 2, Days 61–90 (autograd engine → GPT →
+chat, RAG, tools, server) in Stage 3. Each day has the syllabus Visual (ASCII
+or Mermaid), the Notes with **runnable examples** (output and matplotlib plots
+show inline), and a practice pane that runs the day's real tests (307 in all)
+in a Web Worker. Earlier days a test imports are loaded from their reference
+solutions, so nobody is blocked. 39 days carry an **interactive illustration**
+(`assets/viz-*.js`, real Iris / airline / names / digits data).
+
+**Look:** Midnight Slate & Frosted Neon — aurora mesh background, film grain,
+frosted glass with an inner highlight, cursor-tracked spotlight borders on the
+bento cards, GSAP staggered entrances (CSS fallback; reduced-motion respected).
+"Frosted" light theme on the toggle.
+
 ## What's in this repo
 
 | File | What it is |
 |---|---|
-| `index.html` | **The whole site in one file**: styles, app code and all 22 lessons inlined. This is what GitHub Pages serves and what you edit. |
+| `index.html` | The app: styles, code and the 24 warm-up lessons inlined. This is what GitHub Pages serves. |
+| `content/ai90.json` | The 90 AI-90 days, **generated** — don't edit by hand. |
+| `syllabus/AI90_MASTER.md` | The AI-90 source of truth (notes, visuals, tests, solutions). Edit this. |
+| `tools/build_ai90.py` | `python3 tools/build_ai90.py` → rebuilds `content/ai90.json` (needs `pip install markdown`). |
+| `assets/viz-*.js` | The interactive illustrations (core + Python, ML, AI) and their data. |
+| `tests/ai90_pyodide.mjs` | Runs all 90 days in real Pyodide: `node tests/ai90_pyodide.mjs <pyodide-dist> solutions` (307/307) or `starters` (no crashes). |
+| `tests/test_ai90_site.py` | Browser test of AI-90 + the redesign (40 checks: tests in the worker, plots, every illustration, phone layout). |
 | `supabase-schema.sql` | Database tables and access rules. Safe to re-run in Supabase. |
 | `tests/test_v3.py` | Two-user browser test: chat, pins, solutions, points, levels, timer, calendar, roles. |
 | `tests/test_lesson_ask.py` | Asking a doubt from a failed run / code example, with real Python. |
@@ -71,7 +92,20 @@ The anon key is public by design. The service_role key never goes in this repo.
 
 The only email is the 6-digit sign-up code, sent by Supabase through Brevo SMTP.
 
-## Add a lesson
+## Change the AI-90 course
+
+Edit `syllabus/AI90_MASTER.md` (keep each day's Visual · Notes · Task · Tests ·
+Solution · Done when), then:
+
+```bash
+python3 tools/build_ai90.py
+node tests/ai90_pyodide.mjs /path/to/pyodide-0.29.5 solutions   # must stay 307/307
+```
+
+To attach an illustration to a day, add it to `VIZ` in `tools/build_ai90.py`
+and write the widget in `assets/viz-*.js` (`V.W.<id> = (host) => {...}`).
+
+## Add a warm-up lesson
 
 Lessons live in the `const __LESSONS__ = [...]` array near the top of the
 `<script>` in `index.html`, one object per lesson. Copy an existing lesson
@@ -79,7 +113,9 @@ object, change `id`, `order`, text and tests, then commit.
 
 ## Known limits
 
-- Pyodide is a ~10 MB first load. Lesson text is readable while it loads.
+- Pyodide is a ~10 MB first load (plus NumPy/pandas/scikit-learn on the days that need them). Lesson text is readable while it loads.
+- Days that call live websites (Day 19 weather, Day 20 scraping) are graded on offline parsing tests; the live call itself needs a local Python.
+- Day 65 trains a tiny network in its test and takes ~1 minute in the browser; the Stop button appears after 4 s.
 - The repo is public, so lesson text is readable on GitHub.
 - Emails sent from a Gmail address can land in spam. A verified domain in
   Brevo fixes it.

@@ -357,3 +357,53 @@ Chromium for all of it lives at
 6. Install the Claude GitHub App on the repo so updates can be pushed directly.
 3. Pyodide unverified from the sandbox (CDN blocked).
 4. Streak counts visits, not cleared work, and lives in one browser only.
+
+---
+
+## 2026-11-17 — AI-90 course + Midnight Slate & Frosted Neon redesign
+
+**AI-90 is on the site.** `syllabus/AI90_MASTER.md` (the learner's 90-day course:
+30 Python · 30 ML · 30 AI-from-scratch) → `tools/build_ai90.py` →
+`content/ai90.json`, fetched at boot and merged into `LESSONS`.
+
+- Days are lessons with `id: "dNN"`, `day: N`, `track` python/ml/ai, `section`
+  e.g. "Days 1–15 · Core Python". The old 24 lessons stay first in each stage
+  (ML/AI ones under "Warm-up · the big picture"). ML and AI stages are unlocked.
+- Lesson sections now include `visual` (ASCII), `mermaid` (lazy-loaded
+  mermaid@11.4.1 ESM), `viz` (interactive widget id) and `code` with `lang`.
+  Python examples have a **Run** button; stdout and matplotlib figures render inline.
+- Exercises with `kind: "pytest"`: the starter is generated from the reference
+  solution (bodies → `raise NotImplementedError`, docstrings/task lines kept);
+  the browser writes `dayNN.py` (learner), `test_dayNN.py`, and reference
+  solutions for every earlier day imported, then runs `harness` (in the JSON).
+  Results: pass / fail / todo ("not started").
+- **Python runs in a Web Worker now** (`PY` in index.html): one Pyodide for
+  lessons, day tests and examples; `loadPackagesFromImports` pulls NumPy,
+  pandas, scikit-learn, matplotlib, bs4; openpyxl via micropip. Stop button
+  after 4 s. Learner code is saved per lesson in localStorage `aim.code.<id>`.
+- Verified: 307/307 tests pass in real Pyodide 0.29.5 (`tests/ai90_pyodide.mjs`);
+  starters never crash on import. Day 65's test takes ~50 s in the browser.
+- `window.__aim` exposes `ai90`, `loadMermaid`, `py` for tests/console.
+
+**Illustrations** (`assets/viz-core.js`, `viz-ml.js`, `viz-ai.js`, `viz-data.js`):
+36 widgets on 39 days — hms, slicing, Collatz, running mean, hashing, min-max,
+vectors, matmul, Iris scatter, derivative, gradient descent, normal sampling,
+linear regression (closed form + GD), polynomial/ridge, sigmoid, threshold +
+confusion matrix, softmax, kNN, decision tree, k-means (k-means++ init, Iris),
+PCA, airline time series, TF-IDF, perceptron, MLP on XOR, backprop graph,
+optimiser race, LayerNorm, convolution (sklearn digits), bigram (32k real
+names), attention, sampling (temperature/top-k/top-p), BPE (bytes, Telugu,
+emoji), RAG. Real data in `viz-data.js`. Mapping lives in `VIZ` in the build script.
+
+**Design: Midnight Slate & Frosted Neon.** Tokens replaced (old names kept:
+`--gold*` = cyan neon, `--brown*` = violet, new `--neon-3` = pink). Dark is the
+default (`aim.theme` in localStorage; "Frosted" light on the toggle). Fixed
+`.aurora` (4 blurred drifting blobs, 15–22%), fixed `svg.grain` noise
+(`--grain` .035, pointer-events none), frosted surfaces with `--hi` inner top
+highlight, `.spot` cards get a cursor-tracked radial border glow (one pointermove
+listener sets `--mx/--my/--spot`). `[data-reveal]` elements get a GSAP 3.12.7
+stagger (0.08 s) via a MutationObserver; CSS fallback; reduced-motion skips it.
+Hub is now a bento grid (3 stages, Next up, 90-cell journey, level, streak, doubts).
+
+Tests: `tests/test_ai90_site.py` (40 checks) + the old `test_v3.py` and
+`test_lesson_ask.py` all pass on a demo copy (blank SUPABASE_URL).

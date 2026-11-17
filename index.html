@@ -8,58 +8,53 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Sora:wght@500;600;700;800&display=swap">
 <style>
-/* PyML — warm premium palette: brown and gold on paper by day, black, grey
-   and gold at night. Components only ever read tokens, never literals, so the
-   two themes stay in step. */
+/* AIM — Midnight Slate & Frosted Neon. Midnight slate surfaces, frosted glass
+   panels and neon cyan / violet / pink light. Dark is the default; "Frosted"
+   (light) is one click away. Components only read tokens, never literals.
+   (--gold* / --brown* keep their old names: they are now the cyan and violet
+   neon accents.) */
 :root{
-  --bg:#EDE7DA; --muted:#E2D9C6; --line:rgba(62,44,22,.16);
-  --fg:#2A1F12; --fg-2:#5C4A33; --fg-3:#6F5D44;
-  --gold:#7D560C; --gold-strong:#59400A; --gold-ink:#FFFCF5; --gold-soft:rgba(125,86,12,.11);
-  --gold-line:rgba(125,86,12,.34);
-  --brown:#7A4A1E; --brown-soft:rgba(122,74,30,.10); --brown-line:rgba(122,74,30,.32);
-  --ok:#2F6B40; --on-ok:#FFFFFF; --ok-soft:rgba(47,107,64,.12); --ok-line:rgba(47,107,64,.38);
-  --bad:#A33224; --bad-soft:rgba(163,50,36,.10); --bad-line:rgba(163,50,36,.36);
-  --code-bg:#2A2218; --code-fg:#EDE3D2; --code-inline:#6B4A10; --prose:#3E3022;
-  --snake-dark:#4A330A; --snake-mid:#8A6011; --snake-light:#D8B35C;
-  --card:rgba(255,252,245,.78); --glass:saturate(1.3) blur(16px);
-  --glow:rgba(125,86,12,.34); --glow-2:rgba(122,74,30,.20);
-  --amb-1:rgba(201,150,40,.20); --amb-2:rgba(122,74,30,.14);
-  --shadow:0 1px 2px rgba(50,35,15,.07), 0 10px 26px -18px rgba(50,35,15,.4);
+  --bg:#070B14; --muted:#121A2B; --line:rgba(148,163,184,.14);
+  --fg:#E6EDF7; --fg-2:#A9B6CA; --fg-3:#8592A8;
+  --gold:#22D3EE; --gold-strong:#67E8F9; --gold-ink:#03141B; --gold-soft:rgba(34,211,238,.11);
+  --gold-line:rgba(34,211,238,.36);
+  --brown:#A78BFA; --brown-soft:rgba(167,139,250,.12); --brown-line:rgba(167,139,250,.34);
+  --neon-3:#F472B6; --neon-3-soft:rgba(244,114,182,.12);
+  --ok:#34D399; --on-ok:#03140D; --ok-soft:rgba(52,211,153,.11); --ok-line:rgba(52,211,153,.36);
+  --bad:#FB7185; --bad-soft:rgba(251,113,133,.10); --bad-line:rgba(251,113,133,.38);
+  --code-bg:#050913; --code-fg:#D6E2F3; --code-inline:#7DD3FC; --prose:#C8D3E4;
+  --snake-dark:#3B2A86; --snake-mid:#7C5CF0; --snake-light:#67E8F9;
+  --card:rgba(17,25,43,.52); --card-solid:#0E1525; --glass:saturate(1.5) blur(16px);
+  --hi:inset 0 1px 0 0 rgba(255,255,255,.15);
+  --edge:rgba(255,255,255,.075);
+  --glow:rgba(34,211,238,.42); --glow-2:rgba(167,139,250,.30);
+  --amb-1:rgba(34,211,238,.20); --amb-2:rgba(167,139,250,.22); --amb-3:rgba(244,114,182,.15);
+  --shadow:0 1px 2px rgba(0,0,0,.5), 0 22px 48px -26px rgba(0,0,0,.95);
+  --grain:.035;
   --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
   --sans:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
   --display:"Sora","Figtree",system-ui,sans-serif;
+  color-scheme:dark;
 }
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]){
-    --bg:#0B0A08; --muted:#201C14; --line:rgba(240,220,170,.12);
-    --fg:#F3EEE3; --fg-2:#B5AC98; --fg-3:#9A9180;
-    --gold:#E7B64E; --gold-strong:#F0C66A; --gold-ink:#1A1304; --gold-soft:rgba(231,182,78,.12);
-    --gold-line:rgba(231,182,78,.36);
-    --brown:#C08A4A; --brown-soft:rgba(192,138,74,.11); --brown-line:rgba(192,138,74,.32);
-    --ok:#6FBE7E; --on-ok:#0B0A08; --ok-soft:rgba(111,190,126,.11); --ok-line:rgba(111,190,126,.36);
-    --bad:#E4756A; --bad-soft:rgba(228,117,106,.10); --bad-line:rgba(228,117,106,.36);
-    --code-bg:#050504; --code-fg:#E6DCC8; --code-inline:#F0C977; --prose:#D8D0C0;
-    --snake-dark:#6B4A0C; --snake-mid:#B07F22; --snake-light:#F0CE82;
-    --card:rgba(32,28,20,.66); --glass:saturate(1.25) blur(18px);
-    --glow:rgba(231,182,78,.40); --glow-2:rgba(192,138,74,.26);
-    --amb-1:rgba(231,182,78,.13); --amb-2:rgba(192,138,74,.10);
-    --shadow:0 1px 2px rgba(0,0,0,.6), 0 12px 32px -20px rgba(0,0,0,.95);
-  }
-}
-:root[data-theme="dark"]{
-  --bg:#0B0A08; --muted:#201C14; --line:rgba(240,220,170,.12);
-  --fg:#F3EEE3; --fg-2:#B5AC98; --fg-3:#9A9180;
-  --gold:#E7B64E; --gold-strong:#F0C66A; --gold-ink:#1A1304; --gold-soft:rgba(231,182,78,.12);
-  --gold-line:rgba(231,182,78,.36);
-  --brown:#C08A4A; --brown-soft:rgba(192,138,74,.11); --brown-line:rgba(192,138,74,.32);
-  --ok:#6FBE7E; --on-ok:#0B0A08; --ok-soft:rgba(111,190,126,.11); --ok-line:rgba(111,190,126,.36);
-  --bad:#E4756A; --bad-soft:rgba(228,117,106,.10); --bad-line:rgba(228,117,106,.36);
-  --code-bg:#050504; --code-fg:#E6DCC8; --code-inline:#F0C977; --prose:#D8D0C0;
-  --snake-dark:#6B4A0C; --snake-mid:#B07F22; --snake-light:#F0CE82;
-    --card:rgba(32,28,20,.66); --glass:saturate(1.25) blur(18px);
-    --glow:rgba(231,182,78,.40); --glow-2:rgba(192,138,74,.26);
-    --amb-1:rgba(231,182,78,.13); --amb-2:rgba(192,138,74,.10);
-  --shadow:0 1px 2px rgba(0,0,0,.6), 0 12px 32px -20px rgba(0,0,0,.95);
+:root[data-theme="light"]{
+  --bg:#EDF1F7; --muted:#DEE5F0; --line:rgba(15,23,42,.12);
+  --fg:#0B1220; --fg-2:#334155; --fg-3:#4B5A70;
+  --gold:#0E7490; --gold-strong:#155E75; --gold-ink:#FFFFFF; --gold-soft:rgba(14,116,144,.10);
+  --gold-line:rgba(14,116,144,.34);
+  --brown:#6D28D9; --brown-soft:rgba(109,40,217,.09); --brown-line:rgba(109,40,217,.30);
+  --neon-3:#BE185D; --neon-3-soft:rgba(190,24,93,.09);
+  --ok:#047857; --on-ok:#FFFFFF; --ok-soft:rgba(4,120,87,.10); --ok-line:rgba(4,120,87,.34);
+  --bad:#BE123C; --bad-soft:rgba(190,18,60,.08); --bad-line:rgba(190,18,60,.32);
+  --code-bg:#0B1220; --code-fg:#E2E8F0; --code-inline:#0E7490; --prose:#1E293B;
+  --snake-dark:#4C1D95; --snake-mid:#7C3AED; --snake-light:#22D3EE;
+  --card:rgba(255,255,255,.58); --card-solid:#FFFFFF; --glass:saturate(1.6) blur(16px);
+  --hi:inset 0 1px 0 0 rgba(255,255,255,.85);
+  --edge:rgba(15,23,42,.08);
+  --glow:rgba(14,116,144,.30); --glow-2:rgba(109,40,217,.22);
+  --amb-1:rgba(34,211,238,.24); --amb-2:rgba(167,139,250,.24); --amb-3:rgba(244,114,182,.16);
+  --shadow:0 1px 2px rgba(15,23,42,.06), 0 18px 40px -24px rgba(15,23,42,.35);
+  --grain:.05;
+  color-scheme:light;
 }
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%}
@@ -814,10 +809,318 @@ button.bubble:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
   border-radius:999px;padding:5px 13px}
 .brandfull{font-family:var(--body,inherit);font-weight:500;font-size:12.5px;color:var(--fg-3);
   letter-spacing:0;margin-left:2px}
+
+/* ====================================================================
+   Midnight Slate & Frosted Neon — the visual layer.
+   Aurora mesh behind everything, film grain over everything, frosted
+   glass with a bevelled top edge on every surface, and a cursor-tracked
+   spotlight on the 1px border of cards (.spot).
+   ==================================================================== */
+html{background:var(--bg)}
+body{background:transparent}
+body::before{display:none}
+
+/* ambient aurora: big blurred blobs drifting slowly behind the headlines */
+.aurora{position:fixed;inset:-10vmax;z-index:-2;pointer-events:none;overflow:hidden;background:var(--bg)}
+.aurora i{position:absolute;border-radius:50%;filter:blur(100px);opacity:.22;will-change:transform}
+.aurora i:nth-child(1){width:46vmax;height:38vmax;left:2%;top:-4%;background:radial-gradient(circle,var(--gold),transparent 68%);animation:drift1 38s ease-in-out infinite alternate}
+.aurora i:nth-child(2){width:42vmax;height:42vmax;right:-4%;top:6%;background:radial-gradient(circle,var(--brown),transparent 68%);animation:drift2 46s ease-in-out infinite alternate;opacity:.2}
+.aurora i:nth-child(3){width:36vmax;height:30vmax;left:30%;bottom:-6%;background:radial-gradient(circle,var(--neon-3),transparent 70%);animation:drift3 52s ease-in-out infinite alternate;opacity:.15}
+.aurora i:nth-child(4){width:30vmax;height:26vmax;left:-6%;bottom:12%;background:radial-gradient(circle,#3B82F6,transparent 70%);animation:drift2 60s ease-in-out infinite alternate-reverse;opacity:.16}
+:root[data-theme="light"] .aurora i{opacity:.28}
+@keyframes drift1{to{transform:translate(9vmax,6vmax) scale(1.12)}}
+@keyframes drift2{to{transform:translate(-8vmax,7vmax) scale(.92)}}
+@keyframes drift3{to{transform:translate(-6vmax,-8vmax) scale(1.15)}}
+
+/* film grain: fixed, never catches the pointer, gives flat gradients a matte finish */
+.grain{position:fixed;inset:0;width:100%;height:100%;z-index:60;pointer-events:none;opacity:var(--grain);mix-blend-mode:overlay}
+:root[data-theme="light"] .grain{mix-blend-mode:multiply}
+
+/* frosted glass with an inner highlight (bevelled top edge) */
+.panel,.auth,.bcard,.peakcard,.obj,.brief,.editor,.vizwrap,.asciivis,.mermaid-box,.blockintro,
+.dayprog,.whyrow,.step,.levelcard,.stat,.dcard,.calcard,.laddercard,.tblwrap,.snip pre,.out,.testsrc,.sect{
+  background:var(--card);border:1px solid var(--edge);
+  backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);
+  box-shadow:var(--hi),var(--shadow)}
+.bar{background:color-mix(in srgb,var(--bg) 62%,transparent);border-bottom:1px solid var(--edge);
+  box-shadow:var(--hi);position:sticky;top:0;z-index:40}
+pre{background:var(--code-bg)}
+.snip pre{background:color-mix(in srgb,var(--code-bg) 82%,transparent)}
+.editor{overflow:hidden}
+
+/* spotlight border: a radial gradient that follows the cursor, masked to the 1px edge */
+.spot{position:relative;isolation:isolate}
+.spot::before{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;pointer-events:none;z-index:2;
+  background:radial-gradient(240px circle at var(--mx,50%) var(--my,50%),var(--gold-strong),var(--brown) 38%,transparent 72%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);
+  opacity:var(--spot,0);transition:opacity .35s}
+.spot::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:-1;
+  background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),var(--gold-soft),transparent 60%);
+  opacity:var(--spot,0);transition:opacity .35s}
+
+/* neon type + buttons */
+.neontext{background:linear-gradient(92deg,var(--gold) 0%,var(--brown) 55%,var(--neon-3) 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.btn{background:linear-gradient(135deg,var(--gold-strong),var(--gold) 45%,var(--brown));color:var(--gold-ink);
+  box-shadow:var(--hi),0 8px 24px -12px var(--glow);border:0}
+.btn:hover:not(:disabled){filter:brightness(1.08);box-shadow:var(--hi),0 10px 30px -10px var(--glow)}
+.btn.ghost{background:color-mix(in srgb,var(--card) 70%,transparent);color:var(--fg);border:1px solid var(--edge);box-shadow:var(--hi)}
+.btn.ghost:hover:not(:disabled){border-color:var(--gold-line);color:var(--gold-strong)}
+:root[data-theme="light"] .btn.ghost:hover:not(:disabled){color:var(--gold)}
+.btn.danger{background:var(--bad-soft);color:var(--bad);border:1px solid var(--bad-line);box-shadow:none}
+.kicker,.part,.tekicker,.vizpill,.blabel{letter-spacing:.06em}
+.head h1,.lesson h1{font-size:clamp(26px,3vw,34px)}
+.logo .dot,.auth .brand .dot{background:linear-gradient(135deg,var(--gold),var(--brown));box-shadow:0 0 14px var(--glow)}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--gold-line);box-shadow:0 0 0 3px var(--gold-soft)}
+
+/* staggered entrance fallback when GSAP didn't load */
+.revealcss{animation:revealUp .6s cubic-bezier(.22,1,.36,1) both}
+@keyframes revealUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+
+/* ------------------------------------------------------------ landing */
+.landing{gap:48px}
+.pitch h1{font-size:clamp(34px,5vw,58px);line-height:1.05;max-width:16ch;letter-spacing:-.035em}
+.tekicker{background:color-mix(in srgb,var(--card) 80%,transparent);border-color:var(--edge);box-shadow:var(--hi);
+  backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass)}
+.herostats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:-14px 0 38px;max-width:560px}
+.hstat{padding:14px 16px;border-radius:16px;background:var(--card);border:1px solid var(--edge);box-shadow:var(--hi);
+  backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass)}
+.hstat b{display:block;font-family:var(--display);font-size:26px;line-height:1.1;color:var(--gold-strong)}
+:root[data-theme="light"] .hstat b{color:var(--gold)}
+.hstat span{font-size:12.5px;color:var(--fg-2)}
+.whygrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.whyrow{padding:16px 18px;border-radius:18px}
+.whyrow b{color:var(--fg)}
+.step{border-radius:18px;padding:16px 18px;margin-bottom:10px}
+.stepn{color:var(--gold-strong);font-family:var(--mono)}
+:root[data-theme="light"] .stepn{color:var(--gold)}
+.auth{border-radius:24px;padding:28px}
+@media (max-width:900px){.whygrid,.herostats{grid-template-columns:1fr}.herostats{max-width:none}}
+
+/* ---------------------------------------------------------- hub bento */
+.hubhead{margin-bottom:22px}
+.hubhead h1{font-size:clamp(30px,4.4vw,48px);line-height:1.08;letter-spacing:-.03em;max-width:20ch}
+.bento{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}
+.bcard{border-radius:24px;padding:20px 22px;text-align:left;display:flex;flex-direction:column;gap:6px;
+  min-width:0;color:var(--fg);transition:transform .3s cubic-bezier(.22,1,.36,1),border-color .3s}
+button.bcard{cursor:pointer}
+button.bcard:hover{transform:translateY(-3px)}
+button.bcard:active{transform:translateY(-1px) scale(.995)}
+.bcard.stage{grid-column:span 2;min-height:210px;justify-content:flex-end}
+.bcard.next,.bcard.journey{grid-column:span 3}
+.bcard.level,.bcard.streak,.bcard.doubts{grid-column:span 2}
+.bcard .glyph{position:static;display:block;width:38px;height:38px;color:var(--gold);margin-bottom:auto;padding-bottom:14px;box-sizing:content-box}
+.bcard.s2 .glyph{color:var(--brown)} .bcard.s3 .glyph{color:var(--neon-3)}
+.bcard .cubenum{font-family:var(--mono);font-size:11.5px;color:var(--fg-3);letter-spacing:.04em}
+.bcard .cubetitle{font-family:var(--display);font-size:22px;font-weight:650;letter-spacing:-.02em}
+.bcard .cubemeta{font-size:13px;color:var(--fg-2)}
+.bcard .cubetag{position:absolute;top:20px;right:20px;font-size:12px;font-weight:600;padding:4px 11px;border-radius:999px;
+  border:1px solid var(--gold-line);color:var(--gold-strong);background:var(--gold-soft)}
+:root[data-theme="light"] .bcard .cubetag{color:var(--gold)}
+.bbar{display:block;height:6px;border-radius:99px;background:var(--line);overflow:hidden;margin:4px 0 2px}
+.bbar i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--gold),var(--brown));box-shadow:0 0 12px var(--glow)}
+.blabel{font-family:var(--mono);font-size:11px;text-transform:uppercase;color:var(--fg-3)}
+.bcard.next h2{font-size:21px;margin:2px 0}
+.bcard.next p{color:var(--fg-2);font-size:14px;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.bcard.next .btn{align-self:flex-start;margin-top:auto}
+.jtop{display:flex;justify-content:space-between;align-items:baseline}
+.jcount{font-family:var(--display);font-size:20px}
+.jgrid{display:grid;grid-template-columns:repeat(30,minmax(0,1fr));gap:3px;margin:10px 0 8px}
+.jc{aspect-ratio:1;border-radius:3px;background:var(--line);padding:0;min-width:0;transition:transform .15s}
+.jc:hover{transform:scale(1.5);position:relative;z-index:3}
+.jc.on.b1{background:var(--gold);box-shadow:0 0 8px var(--glow)}
+.jc.on.b2{background:var(--brown);box-shadow:0 0 8px var(--glow-2)}
+.jc.on.b3{background:var(--neon-3)}
+.jc.now{outline:2px solid var(--gold-strong);outline-offset:1px;animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{50%{outline-color:transparent}}
+.jleg{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--fg-3)}
+.jleg span{display:inline-flex;align-items:center;gap:6px}
+.jleg i{width:9px;height:9px;border-radius:2px;display:inline-block}
+.jleg i.b1{background:var(--gold)} .jleg i.b2{background:var(--brown)} .jleg i.b3{background:var(--neon-3)}
+.lrow{display:flex;align-items:center;gap:12px;margin:4px 0}
+.lrow b{display:block;font-family:var(--display);font-size:18px}
+.lrow span{font-size:13px;color:var(--fg-2)}
+.bignum{font-family:var(--display);font-size:44px;line-height:1;background:linear-gradient(135deg,var(--gold),var(--brown));-webkit-background-clip:text;background-clip:text;color:transparent}
+.bsub{font-size:13px;color:var(--fg-2)}
+.btitle2{font-family:var(--display);font-size:18px}
+@media (max-width:960px){
+  .bento{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .bcard.stage,.bcard.next,.bcard.journey{grid-column:span 2}
+  .bcard.level,.bcard.streak{grid-column:span 1}
+  .bcard.doubts{grid-column:span 2}
+  .bcard.stage{min-height:170px}
+}
+@media (max-width:560px){.bcard.level,.bcard.streak{grid-column:span 2}.jgrid{grid-template-columns:repeat(15,minmax(0,1fr))}}
+
+/* ------------------------------------------------------- track pages */
+.blockintro{border-radius:20px;margin:6px 0 22px;padding:0}
+.blockintro summary{cursor:pointer;list-style:none;display:flex;gap:10px;align-items:center;padding:14px 18px;font-weight:600}
+.blockintro summary::-webkit-details-marker{display:none}
+.blockintro summary::after{content:"+";margin-left:auto;color:var(--fg-3);font-size:18px}
+.blockintro[open] summary::after{content:"–"}
+.blockbody{padding:0 18px 18px;display:grid;gap:12px}
+.peakno{font-family:var(--mono)}
+.peak.live .peakcard{border-color:var(--gold-line);box-shadow:var(--hi),0 0 0 1px var(--gold-line),0 18px 50px -20px var(--glow)}
+
+/* ------------------------------------------------------------- lessons */
+.lesson .prose{display:grid;gap:12px}
+.lesson .prose h3,.lesson .prose h4{font-size:17px;margin-top:10px}
+.lesson .prose ul,.lesson .prose ol{display:grid;gap:6px}
+.lesson > *{margin-bottom:16px}
+.daymeta{display:flex;gap:8px;flex-wrap:wrap}
+.mchip{font-size:12.5px;padding:5px 11px;border-radius:999px;border:1px solid var(--edge);background:var(--card);color:var(--fg-2);box-shadow:var(--hi)}
+.mchip b{color:var(--fg);font-weight:600}
+.dayprog{border-radius:16px;padding:12px 16px;display:grid;gap:7px}
+.dayproglab{font-family:var(--mono);font-size:11.5px;color:var(--fg-3)}
+.dayprogbar{height:7px;border-radius:9px;background:var(--line);overflow:hidden}
+.dayprogbar i{display:block;height:100%;background:linear-gradient(90deg,var(--brown),var(--neon-3));box-shadow:0 0 12px var(--glow-2)}
+.dayprog p{font-size:13.5px;color:var(--fg-2)}
+.tblscroll{overflow-x:auto;border-radius:12px;border:1px solid var(--edge)}
+.tblscroll table{width:100%;border-collapse:collapse;font-size:13.5px}
+.tblscroll th,.tblscroll td{padding:8px 11px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.tblscroll th{background:var(--gold-soft);font-weight:600}
+.asciivis{margin:0;border-radius:16px;overflow:hidden}
+.asciivis figcaption,.vizwrap figcaption{display:flex;gap:10px;align-items:center;padding:10px 14px 0;font-size:13px;color:var(--fg-2)}
+.asciivis figcaption{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--gold-strong)}
+:root[data-theme="light"] .asciivis figcaption{color:var(--gold)}
+.asciivis pre{margin:0;background:transparent;border:0;box-shadow:none;font-size:12.5px;line-height:1.45;color:var(--code-fg);overflow-x:auto}
+:root[data-theme="light"] .asciivis pre{color:var(--fg)}
+.mermaid-box{margin:0;border-radius:16px;padding:14px;overflow-x:auto;text-align:center}
+.mermaid-box svg{max-width:100%;height:auto}
+.mermaid-box .mermaid-src{text-align:left;margin:0;font-size:12px}
+.lessonnav{display:flex;gap:9px;margin-top:26px;flex-wrap:wrap}
+
+/* runnable examples */
+.snip pre{padding-top:15px;margin:0}
+.sniptools{display:flex;gap:8px;justify-content:flex-end;margin-top:8px}
+.snipask{position:static!important}
+.sniprun{display:inline-flex;align-items:center;gap:6px}
+.sniprun svg{width:11px;height:11px;color:var(--gold)}
+.snipout{margin-top:8px;border-radius:12px;border:1px solid var(--edge);background:color-mix(in srgb,var(--code-bg) 70%,transparent);padding:10px 12px;display:grid;gap:10px}
+.snipprint{margin:0;background:transparent!important;border:0!important;box-shadow:none!important;padding:0;font-size:12.5px;color:var(--code-fg);white-space:pre-wrap}
+:root[data-theme="light"] .snipprint{color:var(--fg)}
+.snipprint.e{color:var(--bad)}
+.snipfig{max-width:100%;border-radius:10px;background:#fff}
+.sniprunning{display:inline-flex;gap:6px;align-items:center;font-size:13px;color:var(--fg-2)}
+
+/* practice pane */
+.brief p{margin:0 0 6px}
+.brief ul{margin:6px 0 0;padding-left:20px;display:grid;gap:4px}
+.brief code,.donewhen code{font-size:.92em}
+.t.todo{border-color:var(--brown-line);background:var(--brown-soft)}
+.t.todo .ic{color:var(--brown);border-color:var(--brown-line)}
+.t .got{max-width:52ch;white-space:normal;text-align:right;font-size:12px}
+.testsrc{border-radius:14px;margin:12px 0}
+.testsrc summary{cursor:pointer;padding:10px 14px;font-size:13.5px;color:var(--fg-2)}
+.testsrc pre{margin:0 10px 10px;max-height:340px;overflow:auto;font-size:12.5px}
+.donewhen{font-size:13.5px;color:var(--fg-2);margin:10px 0;padding:10px 14px;border-left:2px solid var(--gold);background:var(--gold-soft);border-radius:0 12px 12px 0}
+.donewhen b{color:var(--fg)}
+textarea{font-size:13.5px;line-height:1.55}
+
+/* ----------------------------------------------- interactive illustrations */
+.vizwrap{margin:0;border-radius:20px;padding:0 0 14px;overflow:hidden}
+.vizpill{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;padding:3px 9px;border-radius:999px;
+  color:var(--gold-ink);background:linear-gradient(135deg,var(--gold),var(--brown));font-weight:600;white-space:nowrap}
+.vizstage{padding:12px 14px 0;display:grid;gap:10px}
+.vizcv{display:block;width:100%;border-radius:14px;background:color-mix(in srgb,var(--code-bg) 55%,transparent);border:1px solid var(--edge);touch-action:manipulation}
+:root[data-theme="light"] .vizcv{background:rgba(255,255,255,.55)}
+.vizctl{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center}
+.vizsl{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;color:var(--fg-2);margin:0}
+.vizsl.grow{flex:1 1 260px}
+.vizsl-l{font-family:var(--mono);font-size:11.5px;white-space:nowrap}
+.vizsl input[type=range]{width:120px;accent-color:var(--gold);min-height:24px}
+.vizsl-v{font-family:var(--mono);font-size:12px;min-width:3.4em;color:var(--fg)}
+.vizin,.vizsel,.vizta{background:var(--code-bg);color:var(--code-fg);border:1px solid var(--edge);border-radius:9px;padding:6px 9px;font-family:var(--mono);font-size:12.5px;min-height:32px}
+:root[data-theme="light"] .vizin,:root[data-theme="light"] .vizsel,:root[data-theme="light"] .vizta{background:#fff;color:var(--fg)}
+.vizin{width:9em}.vizin.wide{width:100%;flex:1}
+.vizta{width:100%;min-height:96px;resize:vertical}
+.vizchk{display:inline-flex;gap:6px;align-items:center;font-size:12.5px;color:var(--fg-2);margin:0}
+.vizbtn{min-height:32px}
+.vizread{display:flex;flex-wrap:wrap;gap:6px}
+.vizkv{display:inline-flex;gap:7px;align-items:baseline;font-size:12px;padding:5px 10px;border-radius:9px;background:var(--gold-soft);border:1px solid var(--edge)}
+.vizkv b{font-weight:500;color:var(--fg-2)}
+.vizkv code{font-size:12px;color:var(--fg)}
+.vizkv.hi{background:linear-gradient(135deg,var(--gold-soft),var(--brown-soft));border-color:var(--gold-line)}
+.vizkv.hi code{color:var(--gold-strong);font-weight:600}
+:root[data-theme="light"] .vizkv.hi code{color:var(--gold)}
+.vizhint,.vizkey{font-size:12.5px;color:var(--fg-3);margin:0}
+.vizkey i{display:inline-block;width:10px;height:10px;border-radius:3px;margin:0 5px 0 10px;vertical-align:-1px}
+.vizkey i:first-child{margin-left:0}
+.vizrow3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.vizbox{border-radius:14px;padding:12px;background:var(--gold-soft);border:1px solid var(--edge);display:grid;gap:4px}
+.vizbig{font-family:var(--display);font-size:32px;line-height:1}
+.vizlab{font-size:12px;color:var(--fg-3)}
+.vizbar{display:block;height:5px;background:var(--line);border-radius:9px;overflow:hidden}
+.vizbar b{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--brown))}
+.vizstrip{display:flex;gap:6px;flex-wrap:wrap}
+.vizcell{position:relative;display:grid;justify-items:center;gap:2px;padding:6px 0;width:42px;border-radius:10px;border:1px solid var(--edge);background:var(--card);font-family:var(--mono)}
+.vizcell span{font-size:20px;line-height:1.2}
+.vizcell small{font-size:10px;color:var(--fg-3)}
+.vizcell.on{border-color:var(--gold);background:var(--gold-soft);box-shadow:0 0 16px -4px var(--glow)}
+.vizcell em{position:absolute;top:-8px;right:-6px;font-style:normal;font-size:10px;background:var(--brown);color:#0B0A1A;border-radius:9px;padding:0 5px}
+.vizbuckets{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.vizbucket{border-radius:12px;border:1px solid var(--edge);padding:8px;min-height:64px;display:flex;flex-wrap:wrap;gap:4px;align-content:flex-start;font-family:var(--mono);font-size:12px}
+.vizbucket small{width:100%;color:var(--fg-3);font-size:10.5px}
+.vizbucket span{padding:1px 7px;border-radius:7px;background:var(--brown-soft)}
+.vizbucket.on{border-color:var(--gold);background:var(--gold-soft)}
+.vizbucket span.hit{background:var(--gold);color:var(--gold-ink)}
+.vizmm{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.vizmatw{display:grid;gap:4px}.vizmatw small{font-family:var(--mono);font-size:11px;color:var(--fg-3)}
+.vizmat{display:grid;gap:3px}
+.vizmat span{height:2.4em;display:grid;place-items:center;border-radius:8px;border:1px solid var(--edge);font-family:var(--mono);font-size:13px;background:var(--card)}
+.vizmat span.on{border-color:var(--gold);background:var(--gold-soft);color:var(--gold-strong)}
+:root[data-theme="light"] .vizmat span.on{color:var(--gold)}
+.vizmat span[tabindex]{cursor:pointer}
+.vizop{font-family:var(--mono);font-size:18px;color:var(--fg-3)}
+.vizbars{display:grid;gap:6px}
+.vizbarrow{display:grid;grid-template-columns:7.5em 1fr 4em;gap:10px;align-items:center;font-size:13px}
+.vizbarrow span{font-family:var(--mono);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vizbarrow i{position:relative;height:16px;border-radius:6px;background:var(--line);overflow:hidden}
+.vizbarrow i b,.vizbarrow i u{position:absolute;inset:0 auto 0 0;border-radius:inherit}
+.vizbarrow i u{background:var(--fg-3);opacity:.25}
+.vizbarrow i b{background:linear-gradient(90deg,var(--gold),var(--brown));box-shadow:0 0 12px var(--glow);transition:width .25s}
+.vizbarrow code{font-size:12px;text-align:right}
+.vizbarrow.off{opacity:.42}
+.vizcm{display:grid;grid-template-columns:auto 1fr 1fr;gap:4px;max-width:340px;font-size:12px;font-family:var(--mono)}
+.vizcm b{font-weight:500;color:var(--fg-3);padding:4px}
+.vizcm span{padding:8px;border-radius:8px;text-align:center}
+.vizcm .tp{background:var(--ok-soft);color:var(--ok)}.vizcm .tn{background:var(--ok-soft);color:var(--ok)}
+.vizcm .fp,.vizcm .fn{background:var(--bad-soft);color:var(--bad)}
+.viztbl{overflow-x:auto}
+.viztbl table,.vizatt table{border-collapse:separate;border-spacing:2px;font-family:var(--mono);font-size:11.5px}
+.viztbl th,.vizatt th{font-weight:500;color:var(--fg-3);padding:3px 6px;text-align:center;white-space:nowrap}
+.viztbl td,.vizatt td{padding:4px 6px;border-radius:5px;text-align:center;min-width:2.6em}
+.viztbl td.idf{color:var(--fg-3)}
+.vizatt{display:flex;gap:14px;flex-wrap:wrap;overflow-x:auto}
+.vizatt caption{caption-side:top;text-align:left;font-size:11.5px;color:var(--fg-2);padding-bottom:4px}
+.vizatt td.mask{color:var(--fg-3);opacity:.5}
+.vizln{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.vizlng{display:grid;gap:4px}.vizlng small{font-size:11.5px;color:var(--fg-2)}
+.vizlnr{display:grid;grid-template-columns:repeat(10,1fr) auto;gap:2px;align-items:center}
+.vizlnr i{height:18px;border-radius:4px}
+.vizlnr code{font-size:10.5px;color:var(--fg-3);margin-left:6px;white-space:nowrap}
+.vizconv{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start}
+.vizcg{display:grid;gap:4px}.vizcg small{font-size:11.5px;color:var(--fg-2)}
+.vizcgt{display:grid;gap:2px;width:min(200px,60vw)}
+.vizconv .vizcg:nth-child(2) .vizcgt{width:90px}
+.vizcgt span{aspect-ratio:1;border-radius:3px;border:1px solid transparent}
+.vizcgt span.on{border-color:var(--neon-3)}
+.vizcgt span[tabindex]{cursor:crosshair}
+.vizchips{display:flex;flex-wrap:wrap;gap:6px}
+.vizchips span{font-family:var(--mono);font-size:12.5px;padding:3px 9px;border-radius:8px;background:var(--brown-soft);border:1px solid var(--edge)}
+.vizchips.tok span.m{background:var(--gold-soft);border-color:var(--gold-line)}
+.vizmerges{margin:0;padding-left:20px;font-family:var(--mono);font-size:12px;color:var(--fg-2);max-height:140px;overflow:auto}
+.vizprompt{margin:0;font-size:12px;white-space:pre-wrap}
+@media (max-width:640px){.vizbuckets{grid-template-columns:repeat(2,minmax(0,1fr))}.vizln{grid-template-columns:1fr}.vizrow3{grid-template-columns:1fr}.vizsl input[type=range]{width:96px}}
+
+@media (prefers-reduced-motion:reduce){.aurora i{animation:none}.jc.now{animation:none}}
 </style>
-<script src="https://cdn.jsdelivr.net/npm/pyodide@0.29.5/pyodide.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
 </head>
 <body>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+<svg class="grain" aria-hidden="true" focusable="false"><filter id="grainf"><feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter><rect width="100%" height="100%" filter="url(#grainf)"/></svg>
 <div id="root"></div>
 <noscript><div class="centre"><p>AIM runs Python in your browser, so it needs JavaScript enabled.</p></div></noscript>
 <script type="module">
@@ -1401,12 +1704,12 @@ function busyButton(btn, label) {
 let LESSONS = [], PROGRESS = {}, pyodide = null, pyBoot = null;
 
 const TRACKS = [
-  { id: "python", title: "Introduction to Python", short: "Python",
-    why: "Every machine-learning idea you will ever read is written in Python. Not because it is the best language. The field simply agreed on it." },
-  { id: "ml", title: "How machine learning actually works", short: "Machine Learning", locked: true,
-    why: "A model is a function with numbers you can tune. Loss tells it when it is wrong; gradient descent makes it less wrong. You build every piece of it by hand." },
-  { id: "ai", title: "Build your own AI", short: "Build your own AI", locked: true,
-    why: "A neural network that learns, in under sixty lines, written by you. Then an honest account of what separates those lines from a large language model." },
+  { id: "python", title: "Python, automation and real data", short: "Python",
+    why: "Every machine-learning idea you will ever read is written in Python. Ten warm-up lessons, then AI-90 Days 1–30: core Python, automation bots, then real datasets like Titanic and Iris." },
+  { id: "ml", title: "Machine learning from scratch", short: "Machine Learning",
+    why: "A model is a function with numbers you can tune. AI-90 Days 31–60: build each algorithm in NumPy first — regression, trees, forests, boosting, PCA — then check it against scikit-learn on real data." },
+  { id: "ai", title: "Build your own AI", short: "Build your own AI",
+    why: "AI-90 Days 61–90: your own autograd engine, then a GPT trained on Shakespeare, then chat, retrieval, tools and a web server. NumPy only, every line yours." },
 ];
 
 function trackMeta(id) {
@@ -1422,7 +1725,7 @@ function orderedTracks() {
 function authShell(body, pitch) {
   root.innerHTML = "";
   const page = el("div", pitch ? "landing" : "centre");
-  const card = el("div", "auth");
+  const card = el("div", "auth spot");
   const brand = el("div", "brand");
   brand.append(el("span", "dot"), document.createTextNode("AIM"), el("span", "brandfull", "AI & Machine Learning Institute"));
   const lede = el("p", "lede",
@@ -1444,31 +1747,41 @@ const HERO_P = "AIM is the AI & Machine Learning Institute, made for the Telugu 
 
 function pitchColumn(hero = true) {
   const col = el("div", "pitch");
+  const mark = (n) => { n.dataset.reveal = ""; return n; };
   if (hero) {
-    col.append(el("p", "tekicker", "For the Telugu coders community"));
-    col.append(el("h1", null, HERO_H1));
-    col.append(el("p", "big", HERO_P));
+    col.append(mark(el("p", "tekicker", "For the Telugu coders community · AI-90")));
+    const h1 = mark(el("h1"));
+    h1.append(document.createTextNode("Build AI. "), el("span", "neontext", "Don't just vibe-code it."));
+    col.append(h1);
+    col.append(mark(el("p", "big", HERO_P)));
+    const stats = mark(el("div", "herostats"));
+    [["90", "days, one path"], ["307", "tests you turn green"], ["0", "installs: Python runs in your browser"]].forEach(([n, t]) => {
+      const s = el("div", "hstat"); s.append(el("b", null, n), el("span", null, t)); stats.append(s);
+    });
+    col.append(stats);
   }
 
   const why = el("div", "why");
-  why.append(el("h2", null, "The mission"));
+  why.append(mark(el("h2", null, "The mission")));
+  const wg = el("div", "whygrid");
   [
     ["Even vibe coding needs the basics.", "AI can write the code. You still have to read it, fix it and know when it is wrong. That starts with real Python."],
-    ["Build the AI, don't just use it.", "Learn what is inside a model by writing one yourself: data, loss, gradient descent, and finally your own network."],
+    ["Build the AI, don't just use it.", "Write every piece yourself: data, loss, gradient descent, an autograd engine, then a GPT that trains on Shakespeare."],
     ["All of it in one place.", "Basics, machine learning and building AI, in one path, in the order they depend on each other."],
     ["Learn together, and have fun.", "Ask doubts in the group chat, help others, earn points and climb from Bronze all the way to God tier."],
   ].forEach(([h, p]) => {
-    const r = el("div", "whyrow");
+    const r = mark(el("div", "whyrow spot"));
     r.append(el("b", null, h), el("span", null, p));
-    why.append(r);
+    wg.append(r);
   });
+  why.append(wg);
   col.append(why);
 
   const path = el("div", "path");
-  path.append(el("h2", null, "One path, start to finish"));
+  path.append(mark(el("h2", null, "One path, start to finish")));
   TRACKS.forEach((t, i) => {
-    const step = el("div", "step");
-    step.append(el("span", "stepn", "Part " + (i + 1)));
+    const step = mark(el("div", "step"));
+    step.append(el("span", "stepn", "Days " + (i * 30 + 1) + "–" + (i * 30 + 30)));
     const b = el("div");
     b.append(el("h3", null, t.title), el("p", null, t.why));
     step.append(b);
@@ -1476,7 +1789,7 @@ function pitchColumn(hero = true) {
   });
   col.append(path);
 
-  col.append(el("p", "closer", "Let's learn together. Every lesson ends with code you write and tests that either pass or do not."));
+  col.append(mark(el("p", "closer", "Let's learn together. Every lesson ends with code you write and tests that either pass or do not.")));
   return col;
 }
 
@@ -1715,33 +2028,21 @@ function topBar() {
   return frag;
 }
 
-// Entering the course drops you into dark, which is what a coding surface
-// wants. An explicit toggle choice always wins and is never overwritten.
-function courseDark() {
-  try {
-    if (localStorage.getItem("pyml.theme")) return;
-    localStorage.setItem("pyml.theme", "dark");
-  } catch (e) {}
-  document.documentElement.setAttribute("data-theme", "dark");
-}
+// Midnight is the default everywhere; "Frosted" (light) is an explicit choice
+// that is remembered. (New key, so the old warm-theme choice doesn't stick.)
+function courseDark() {}
 
-// Both palettes are designed, so give people a way to see the other one.
 function themeButton() {
   const b = el("button", "btn ghost sm themebtn");
+  const isLight = () => document.documentElement.getAttribute("data-theme") === "light";
   const paint = () => {
-    const dark = document.documentElement.getAttribute("data-theme") === "dark" ||
-      (!document.documentElement.getAttribute("data-theme") &&
-       matchMedia("(prefers-color-scheme: dark)").matches);
-    b.textContent = dark ? "Light" : "Dark";
-    b.setAttribute("aria-label", "Switch to " + (dark ? "light" : "dark") + " theme");
+    b.textContent = isLight() ? "Midnight" : "Frosted";
+    b.setAttribute("aria-label", "Switch to " + (isLight() ? "Midnight (dark)" : "Frosted (light)") + " theme");
   };
   b.onclick = () => {
-    const dark = document.documentElement.getAttribute("data-theme") === "dark" ||
-      (!document.documentElement.getAttribute("data-theme") &&
-       matchMedia("(prefers-color-scheme: dark)").matches);
-    const next = dark ? "light" : "dark";
+    const next = isLight() ? "dark" : "light";
     document.documentElement.setAttribute("data-theme", next);
-    try { localStorage.setItem("pyml.theme", next); } catch (e) {}
+    try { localStorage.setItem("aim.theme", next); } catch (e) {}
     paint();
   };
   paint();
@@ -1749,9 +2050,9 @@ function themeButton() {
 }
 
 try {
-  const saved = localStorage.getItem("pyml.theme");
-  if (saved) document.documentElement.setAttribute("data-theme", saved);
-} catch (e) {}
+  const saved = localStorage.getItem("aim.theme");
+  document.documentElement.setAttribute("data-theme", saved === "light" ? "light" : "dark");
+} catch (e) { document.documentElement.setAttribute("data-theme", "dark"); }
 
 /* ================================================================= panel */
 // One account menu for every signed-in screen. It is also the only stop list
@@ -1964,52 +2265,107 @@ function renderHub() {
   root.innerHTML = "";
   root.append(topBar());
   const wrap = el("div", "wrap hubwrap");
+  const me = api.session();
 
-  const head = el("div", "head");
-  head.append(el("h1", null, "Choose your path"));
-  head.append(el("p", null,
-    "Three stages, and they lock together in one order. Python first, because the two after it are written in it."));
+  const head = el("div", "head hubhead");
+  const k = el("span", "part", "AIM · AI-90"); k.dataset.reveal = "";
+  const h = el("h1"); h.dataset.reveal = "";
+  h.append(document.createTextNode("Build AI. "), el("span", "neontext", "Don't just vibe-code it."));
+  const p = el("p", null, "Three stages, ninety days, one path. Python first, because the two after it are written in it.");
+  p.dataset.reveal = "";
+  head.append(k, h, p);
   wrap.append(head);
 
-  const cubes = el("div", "cubes");
+  const bento = el("div", "bento");
+  const card = (cls, tag = "div") => {
+    const c = el(tag, "bcard spot " + cls);
+    c.dataset.reveal = "";
+    bento.append(c);
+    return c;
+  };
+
+  // the three stages
   orderedTracks().forEach((id, i) => {
     const meta = trackMeta(id);
     const ls = LESSONS.filter((l) => l.track === id);
     const done = ls.filter((l) => PROGRESS[l.id]).length;
-    const locked = !!meta.locked;
-
-    if (i > 0) {
-      const link = el("i", "link" + (locked ? "" : " live"));
-      link.setAttribute("aria-hidden", "true");
-      cubes.append(link);
-    }
-
-    const cube = el(locked ? "div" : "button", "cube " + (locked ? "locked" : "open"));
-    const glyph = el("span", "glyph");
-    glyph.innerHTML = GLYPH[id] || GLYPH.python;
-    cube.append(glyph);
-    const body = el("span", "cubebody");
-    body.append(el("span", "cubenum", "Stage " + (i + 1)));
-    body.append(el("span", "cubetitle", meta.short || meta.title));
-    body.append(el("span", "cubemeta", locked
-      ? ls.length + " stops · locked"
-      : done + " of " + ls.length + " cleared"));
-    body.append(el("span", locked ? "cubetag" : "cubetag go",
-      locked ? "Coming soon" : (done ? "Continue" : "Start here")));
-    cube.append(body);
-    if (!locked) {
-      cube.onclick = () => { location.hash = id; };
-      cube.setAttribute("aria-label", "Open " + meta.title);
-    }
-    cube.style.animationDelay = i * 90 + "ms";
-    cubes.append(cube);
+    const c = card("stage s" + (i + 1), "button");
+    c.setAttribute("aria-label", "Open stage " + (i + 1) + ": " + meta.title);
+    c.onclick = () => { location.hash = id; };
+    const glyph = el("span", "glyph"); glyph.innerHTML = GLYPH[id] || GLYPH.python;
+    const days = ls.filter((l) => l.day);
+    const range = days.length ? "Days " + days[0].day + "–" + days[days.length - 1].day : ls.length + " stops";
+    c.append(glyph, el("span", "cubenum", "Stage " + (i + 1) + " · " + range), el("span", "cubetitle", meta.short || meta.title));
+    const bar = el("span", "bbar"); const fill = el("i"); fill.style.width = ls.length ? (done / ls.length * 100) + "%" : "0"; bar.append(fill);
+    c.append(bar, el("span", "cubemeta", done + " of " + ls.length + " cleared"));
+    c.append(el("span", "cubetag go", done ? "Continue" : (i ? "Open" : "Start here")));
   });
-  wrap.append(cubes);
 
-  const note = el("p", "hubnote");
-  note.textContent = "Machine learning and the build-your-own-AI stage unlock once the Python path is finished. They are written and waiting, not empty.";
-  wrap.append(note);
+  // next up
+  const next = LESSONS.find((l) => !PROGRESS[l.id]);
+  const nc = card("next");
+  nc.append(el("span", "blabel", "Next up"));
+  if (next) {
+    nc.append(el("h2", null, (next.day ? "Day " + next.day + " · " : "") + next.title), el("p", null, next.blurb));
+    const go = el("button", "btn", "Continue →");
+    go.onclick = () => { location.hash = next.id; };
+    nc.append(go);
+  } else {
+    nc.append(el("h2", null, "All 90 days cleared."), el("p", null, "Ship it: your repo, your demo, your model card."));
+  }
 
+  // AI-90 journey: one cell per day
+  const days = LESSONS.filter((l) => l.day);
+  if (days.length) {
+    const jc = card("journey");
+    const cleared = days.filter((l) => PROGRESS[l.id]).length;
+    const top = el("div", "jtop");
+    top.append(el("span", "blabel", "Your AI-90 journey"), el("b", "jcount", cleared + " / 90"));
+    jc.append(top);
+    const g = el("div", "jgrid");
+    days.forEach((l) => {
+      const cell = el("button", "jc b" + (l.day <= 30 ? 1 : l.day <= 60 ? 2 : 3) + (PROGRESS[l.id] ? " on" : "") + (next && next.id === l.id ? " now" : ""));
+      cell.title = "Day " + l.day + " · " + l.title;
+      cell.setAttribute("aria-label", cell.title + (PROGRESS[l.id] ? ", cleared" : ""));
+      cell.onclick = () => { location.hash = l.id; };
+      g.append(cell);
+    });
+    jc.append(g);
+    const leg = el("div", "jleg");
+    [["b1", "Python 1–30"], ["b2", "ML 31–60"], ["b3", "AI 61–90"]].forEach(([c, t]) => { const s = el("span"); s.append(el("i", c), document.createTextNode(t)); leg.append(s); });
+    jc.append(leg);
+  }
+
+  // level
+  const lc = card("level", "button");
+  lc.onclick = () => { location.hash = "me"; };
+  lc.setAttribute("aria-label", "Open your progress");
+  const tier = tierOf(me.points || 0);
+  lc.append(el("span", "blabel", "Your level"));
+  const lrow = el("div", "lrow");
+  lrow.append(tierBadge(me.points || 0, 44));
+  const lt = el("div"); lt.append(el("b", null, tier.name), el("span", null, (me.points || 0) + " points" + (tier.next ? " · " + (tier.next.min - (me.points || 0)) + " to " + tier.next.name : "")));
+  lrow.append(lt); lc.append(lrow);
+  const lb = el("span", "bbar"); const lf = el("i"); lf.style.width = tier.pct + "%"; lb.append(lf); lc.append(lb);
+
+  // streak
+  const sc = card("streak", "button");
+  sc.onclick = () => { location.hash = "me"; };
+  sc.setAttribute("aria-label", "Open your calendar and hours");
+  sc.append(el("span", "blabel", "Streak"));
+  const big = el("b", "bignum", String(streakDays())); sc.append(big, el("span", "bsub", streakDays() === 1 ? "day in a row" : "days in a row"));
+
+  // doubts
+  const dc = card("doubts", "button");
+  dc.onclick = () => { location.hash = "doubts"; };
+  dc.setAttribute("aria-label", "Open doubts group chat");
+  dc.append(el("span", "blabel", "Doubts"));
+  dc.append(el("b", "btitle2", "Ask. Answer. +20 points."));
+  const on = el("span", "bsub", "Group chat for every lesson");
+  dc.append(on);
+  PAGE_SUBS.push(api.onOnline((m) => { on.textContent = (m.size || 1) + " online now · unsolved doubts are pinned"; }));
+
+  wrap.append(bento);
   root.append(wrap);
 }
 
@@ -2259,7 +2615,26 @@ function renderTracks(trackId) {
   bar.append(fill);
   meter.append(bar, el("span", "n", done + " of " + ls.length + " challenges cleared"));
   head.append(meter);
+  head.querySelectorAll(":scope > *").forEach((n) => { n.dataset.reveal = ""; });
   wrap.append(head);
+
+  // the AI-90 block overview: how this stage's days fit together
+  const blk = (AI90?.blocks || []).find((b) => b.track === id);
+  if (blk && blk.sections.length) {
+    const det = el("details", "blockintro spot");
+    det.dataset.reveal = "";
+    const sm = el("summary");
+    sm.append(el("span", "vizpill", "AI-90"), el("span", null, "How the 30 days in this stage fit together"));
+    det.append(sm);
+    const body = el("div", "blockbody");
+    blk.sections.forEach((s) => {
+      if (s.type === "prose") { const d = el("div", "prose"); d.innerHTML = s.html; body.append(d); }
+      else if (s.type === "mermaid") body.append(mermaidBlock(s.code));
+      else if (s.type === "visual") body.append(asciiVisual(s.text));
+    });
+    det.append(body);
+    wrap.append(det);
+  }
 
   if (!ls.length) {
     wrap.append(el("p", "empty", "No stops here yet."));
@@ -2314,7 +2689,7 @@ function renderTracks(trackId) {
           '<path d="M2 6.3 4.7 9 10 3.2" stroke="currentColor" stroke-width="2.4" ' +
           'stroke-linecap="round" stroke-linejoin="round"/></svg>';
       } else {
-        badge.textContent = String(l.order).padStart(2, "0");
+        badge.textContent = l.day ? "D" + String(l.day).padStart(2, "0") : String(l.order).padStart(2, "0");
       }
       const top = el("span", "peaktop");
       top.append(badge);
@@ -2361,52 +2736,388 @@ function renderTracks(trackId) {
   root.append(wrap);
 }
 
+/* ================================================================ AI-90 */
+// The 90-day course lives in content/ai90.json (built from AI90_MASTER.md by
+// tools/build_ai90.py). Days 1-30 join the Python stage, 31-60 Machine
+// Learning, 61-90 Build your own AI.
+const ASSET_V = "20261117";
+let AI90 = null;
+async function loadAI90() {
+  if (AI90) return AI90;
+  try {
+    const r = await fetch("content/ai90.json?v=" + ASSET_V);
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    AI90 = await r.json();
+  } catch (e) {
+    console.warn("AI-90 content did not load:", e);
+    AI90 = { lessons: [], blocks: [], harness: "" };
+  }
+  return AI90;
+}
+const AI90_MOD = () => Object.fromEntries((AI90?.lessons || []).map((l) => [l.exercise.module, l]));
+function lessonKey(l) { return l.day ? 100 + l.day : l.order; }
+
+// Earlier days a piece of code imports (and what they import), as reference solutions.
+function dayFiles(code, skip) {
+  const mods = AI90_MOD(), out = {}, seen = new Set();
+  const add = (m) => {
+    if (seen.has(m) || m === skip || !mods[m]) return;
+    seen.add(m);
+    out[m + ".py"] = mods[m].exercise.solution;
+    mods[m].exercise.deps.forEach(add);
+  };
+  for (const m of code.matchAll(/^\s*(?:from|import)\s+(day\d\d)\b/gm)) add(m[1]);
+  return out;
+}
+
+/* ========================================================== python runtime */
+// One Pyodide, in a Web Worker, so long tests (training a model) never freeze
+// the page and a stuck run can be stopped.
+const PYODIDE_URL = "https://cdn.jsdelivr.net/npm/pyodide@0.29.5/";
+const PY_WORKER = `
+let py = null;
+const post = (m) => postMessage(m);
+const boot = (async () => {
+  importScripts(${JSON.stringify(PYODIDE_URL)} + "pyodide.js");
+  py = await loadPyodide({ indexURL: ${JSON.stringify(PYODIDE_URL)} });
+  py.runPython("import os; os.environ['MPLBACKEND'] = 'agg'");
+})();
+boot.then(() => post({ id: 0, ok: true }), (e) => post({ id: 0, ok: false, error: String(e && e.message || e) }));
+
+async function libs(code) {
+  post({ progress: "Loading libraries" });
+  await py.loadPackagesFromImports(code, { messageCallback: () => {} });
+  if (/\\bopenpyxl\\b|to_excel|read_excel/.test(code)) {
+    await py.loadPackage("micropip");
+    await py.runPythonAsync("import micropip\\nawait micropip.install('openpyxl')");
+  }
+}
+function writeFiles(files) {
+  try { py.FS.mkdirTree("/ai90/run"); } catch (e) {}
+  for (const f of py.FS.readdir("/ai90")) if (/\\.py$/.test(f)) py.FS.unlink("/ai90/" + f);
+  for (const [name, code] of Object.entries(files)) py.FS.writeFile("/ai90/" + name, code);
+}
+
+const SNIPPET = \`
+import sys, io, os, json, base64, traceback, re
+os.makedirs("/ai90/run", exist_ok=True); os.chdir("/ai90/run")
+if "/ai90" not in sys.path: sys.path.insert(0, "/ai90")
+for _m in [k for k in list(sys.modules) if re.fullmatch(r"(test_)?day\\\\d\\\\d", k)]: del sys.modules[_m]
+_buf = io.StringIO(); _old = sys.stdout, sys.stderr; sys.stdout = sys.stderr = _buf
+_figs, _err = [], ""
+try:
+    exec(compile(CODE, "example.py", "exec"), {"__name__": "__main__"})
+except BaseException as e:
+    tb = traceback.format_exception(type(e), e, e.__traceback__)
+    _err = "".join(tb[-3:]) if len(tb) > 3 else "".join(tb)
+finally:
+    sys.stdout, sys.stderr = _old
+if "matplotlib.pyplot" in sys.modules:
+    import matplotlib.pyplot as plt
+    for n in plt.get_fignums():
+        b = io.BytesIO(); plt.figure(n).savefig(b, format="png", dpi=110, bbox_inches="tight")
+        _figs.append(base64.b64encode(b.getvalue()).decode())
+    plt.close("all")
+json.dumps({"printed": _buf.getvalue()[-8000:], "figs": _figs[:4], "error": _err[-3000:]})
+\`;
+
+const EXPRS = \`
+import sys, io, json, traceback
+_buf = io.StringIO(); _old = sys.stdout; sys.stdout = _buf
+_ns = {"__name__": "__main__"}; _res = []; _err = ""
+try:
+    exec(compile(CODE, "exercise.py", "exec"), _ns)
+    for _e in EXPRS:
+        try:
+            _res.append({"pass": bool(eval(_e, _ns)), "detail": "returned false"})
+        except Exception as e:
+            _res.append({"pass": False, "detail": (type(e).__name__ + ": " + str(e))[:60]})
+except BaseException as e:
+    _err = "".join(traceback.format_exception(type(e), e, e.__traceback__)[-3:])
+finally:
+    sys.stdout = _old
+json.dumps({"results": _res, "printed": _buf.getvalue()[-6000:], "error": _err})
+\`;
+
+onmessage = async (e) => {
+  const m = e.data;
+  try {
+    await boot;
+    let out;
+    if (m.type === "pytest") {
+      writeFiles(m.files);
+      await libs(Object.values(m.files).join("\\n"));
+      post({ progress: "Running tests" });
+      py.globals.set("TEST", m.test);
+      out = JSON.parse(py.runPython(m.harness));
+    } else if (m.type === "snippet") {
+      writeFiles(m.files || {});
+      await libs(m.code + "\\n" + Object.values(m.files || {}).join("\\n"));
+      post({ progress: "Running" });
+      py.globals.set("CODE", m.code);
+      out = JSON.parse(py.runPython(SNIPPET));
+    } else if (m.type === "exprs") {
+      await libs(m.code);
+      py.globals.set("CODE", m.code);
+      py.globals.set("EXPRS", py.toPy(m.exprs));
+      out = JSON.parse(py.runPython(EXPRS));
+    }
+    post({ id: m.id, ok: true, data: out });
+  } catch (err) {
+    post({ id: m.id, ok: false, error: String(err && err.message || err) });
+  }
+};
+`;
+
+const PY = (() => {
+  let w = null, ready = null, seq = 0;
+  const pending = new Map();
+  let status = () => {};
+  const fail = (msg) => { pending.forEach((p) => p.rej(new Error(msg))); pending.clear(); };
+  function start() {
+    if (w) return ready;
+    const url = URL.createObjectURL(new Blob([PY_WORKER], { type: "text/javascript" }));
+    w = new Worker(url);
+    ready = new Promise((res, rej) => pending.set(0, { res, rej }));
+    w.onmessage = (e) => {
+      const d = e.data;
+      if (d.progress) { status(d.progress); return; }
+      const p = pending.get(d.id);
+      if (!p) return;
+      pending.delete(d.id);
+      d.ok ? p.res(d.data) : p.rej(new Error(d.error));
+    };
+    w.onerror = (e) => { fail("Python worker crashed: " + (e.message || "unknown error")); w = null; };
+    return ready;
+  }
+  function call(msg) {
+    return start().then(() => new Promise((res, rej) => {
+      const id = ++seq;
+      pending.set(id, { res, rej });
+      w.postMessage(Object.assign({ id }, msg));
+    }));
+  }
+  function stop() { if (w) w.terminate(); w = null; ready = null; fail("Stopped."); }
+  return { start, call, stop, onStatus(f) { status = f || (() => {}); }, get on() { return !!w; } };
+})();
+
+// read-only handle for tests and the console
+window.__aim = { get ai90() { return AI90; }, loadMermaid: () => loadMermaid(), py: PY };
+
+// kept for older code paths: resolves once Python is up
+function bootPython() { return PY.start(); }
+
+/* ============================================================== visuals */
+let MERMAID = null;
+function loadMermaid() {
+  if (MERMAID) return MERMAID;
+  MERMAID = import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs").then((m) => {
+    const mm = m.default;
+    const light = document.documentElement.getAttribute("data-theme") === "light";
+    mm.initialize({
+      startOnLoad: false, securityLevel: "strict", theme: "base",
+      fontFamily: "Figtree, system-ui, sans-serif",
+      themeVariables: light
+        ? { primaryColor: "#E0F2FE", primaryTextColor: "#0B1220", primaryBorderColor: "#0E7490", lineColor: "#6D28D9", clusterBkg: "#F1F5F9", clusterBorder: "#94A3B8", fontSize: "14px" }
+        : { primaryColor: "#0F1B2E", primaryTextColor: "#E6EDF7", primaryBorderColor: "#22D3EE", lineColor: "#A78BFA", clusterBkg: "#0B1322", clusterBorder: "#334155", secondaryColor: "#1A1433", tertiaryColor: "#0B1322", fontSize: "14px" },
+    });
+    return mm;
+  });
+  return MERMAID;
+}
+let MERMAID_N = 0;
+function mermaidBlock(code) {
+  const box = el("figure", "mermaid-box");
+  const pre = el("pre", "mermaid-src"); pre.textContent = code;
+  box.append(pre);
+  loadMermaid().then(async (mm) => {
+    const { svg } = await mm.render("mmd" + (++MERMAID_N), code);
+    box.innerHTML = svg;
+    box.classList.add("drawn");
+  }).catch(() => { /* keep the source: still readable */ });
+  return box;
+}
+
+function asciiVisual(text) {
+  const f = el("figure", "asciivis");
+  const pre = el("pre"); pre.textContent = text;
+  f.append(el("figcaption", null, "Visual"), pre);
+  return f;
+}
+
+let VIZ_READY = null;
+function loadViz() {
+  if (VIZ_READY) return VIZ_READY;
+  const add = (src) => new Promise((res, rej) => {
+    const s = document.createElement("script");
+    s.src = src + "?v=" + ASSET_V; s.onload = res; s.onerror = () => rej(new Error(src));
+    document.head.append(s);
+  });
+  VIZ_READY = add("assets/viz-data.js").then(() => add("assets/viz-core.js"))
+    .then(() => Promise.all([add("assets/viz-ml.js"), add("assets/viz-ai.js")]));
+  return VIZ_READY;
+}
+function vizBlock(id, caption) {
+  const box = el("figure", "vizwrap spot");
+  const head = el("figcaption");
+  head.append(el("span", "vizpill", "Interactive"), el("span", null, caption));
+  const stage = el("div", "vizstage");
+  box.append(head, stage);
+  loadViz().then(() => {
+    if (!window.AIMViz.mount(id, stage)) box.remove();
+  }).catch(() => { stage.append(el("p", "note", "The illustration could not load. Reload to try again.")); });
+  return box;
+}
+
+// A worked example you can run. Output, errors and any matplotlib figures
+// appear underneath, so every example is also a visual.
+function runnableSnippet(code, opts) {
+  const wrap = el("div", "snip");
+  const pre = el("pre"); pre.textContent = code;
+  const tools = el("div", "sniptools");
+  const run = el("button", "btn ghost sm sniprun");
+  run.type = "button";
+  run.innerHTML = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 2.2v7.6L9.6 6z" fill="currentColor"/></svg><span>Run</span>';
+  run.setAttribute("aria-label", "Run this example");
+  const ask = el("button", "btn ghost sm snipask", "Ask about this");
+  ask.type = "button";
+  ask.setAttribute("aria-label", "Ask a doubt about this code example");
+  ask.onclick = () => opts.onAsk(code);
+  tools.append(run, ask);
+  const res = el("div", "snipout"); res.hidden = true; res.setAttribute("aria-live", "polite");
+  wrap.append(pre, tools, res);
+  run.onclick = async () => {
+    res.hidden = false; res.innerHTML = "";
+    const st = el("span", "sniprunning"); st.append(spinner(), document.createTextNode(PY.on ? " Running" : " Starting Python"));
+    res.append(st);
+    run.disabled = true;
+    PY.onStatus((t) => { st.lastChild.textContent = " " + t; });
+    try {
+      const out = await PY.call({ type: "snippet", code, files: dayFiles(code, null) });
+      res.innerHTML = "";
+      if (out.printed) { const p = el("pre", "snipprint"); p.textContent = out.printed; res.append(p); }
+      out.figs.forEach((b64) => { const img = el("img", "snipfig"); img.alt = "Plot drawn by this example"; img.src = "data:image/png;base64," + b64; res.append(img); });
+      if (out.error) { const e = el("pre", "snipprint e"); e.textContent = out.error; res.append(e); }
+      if (!out.printed && !out.figs.length && !out.error) res.append(el("p", "note", "Ran fine. It printed nothing: add a print() to see a value."));
+    } catch (e) {
+      res.innerHTML = ""; res.append(el("p", "err", "Could not run: " + e.message));
+    }
+    run.disabled = false;
+  };
+  return wrap;
+}
+
+/* ===================================================== motion + spotlight */
+// Staggered entrance: anything marked data-reveal fades and slides up once,
+// 80 ms apart. GSAP when it loaded, a CSS keyframe when it didn't, nothing
+// when the learner asked for reduced motion.
+const REVEAL_SEEN = new WeakSet();
+function reveal(scope) {
+  const els = [...(scope || document).querySelectorAll("[data-reveal]")].filter((n) => !REVEAL_SEEN.has(n));
+  if (!els.length) return;
+  els.forEach((n) => REVEAL_SEEN.add(n));
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  if (window.gsap) {
+    window.gsap.from(els, { opacity: 0, y: 18, duration: 0.62, ease: "power3.out", stagger: 0.08, clearProps: "opacity,transform" });
+  } else {
+    els.forEach((n, i) => { n.style.animationDelay = i * 80 + "ms"; n.classList.add("revealcss"); });
+  }
+}
+new MutationObserver(() => requestAnimationFrame(() => reveal(document))).observe(document.getElementById("root"), { childList: true, subtree: true });
+
+// Spotlight borders: one pointer listener feeds every .spot card its own
+// cursor position, so the 1px border lights up under the pointer.
+document.addEventListener("pointermove", (e) => {
+  if (e.pointerType === "touch") return;
+  for (const c of document.querySelectorAll(".spot")) {
+    const r = c.getBoundingClientRect();
+    if (e.clientX < r.left - 140 || e.clientX > r.right + 140 || e.clientY < r.top - 140 || e.clientY > r.bottom + 140) {
+      if (c.style.getPropertyValue("--spot") !== "0") c.style.setProperty("--spot", "0");
+      continue;
+    }
+    c.style.setProperty("--mx", e.clientX - r.left + "px");
+    c.style.setProperty("--my", e.clientY - r.top + "px");
+    c.style.setProperty("--spot", "1");
+  }
+}, { passive: true });
+
 /* ================================================================= lesson */
+const CODE_KEY = (id) => "aim.code." + id;
+function savedCode(l) { try { return localStorage.getItem(CODE_KEY(l.id)); } catch (e) { return null; } }
+function saveCode(l, v) { try { v === l.exercise.starter ? localStorage.removeItem(CODE_KEY(l.id)) : localStorage.setItem(CODE_KEY(l.id), v); } catch (e) {} }
+
 function renderLesson(l) {
   root.innerHTML = "";
   root.append(topBar());
   const grid = el("div", "grid");
+  const ex = l.exercise;
+  const isDay = !!l.day;
 
   /* ---- left: the teaching ---- */
   const left = el("div", "pane lesson");
-  left.append(el("span", "kicker",
-    "Lesson " + String(l.order).padStart(2, "0") + " · " + trackMeta(l.track).title));
-  left.append(el("h1", null, l.title));
-  left.append(el("p", "sub", l.blurb));
+  const kick = el("span", "kicker",
+    isDay ? "Day " + String(l.day).padStart(2, "0") + " of 90 · " + trackMeta(l.track).short
+          : "Lesson " + String(l.order).padStart(2, "0") + " · " + trackMeta(l.track).title);
+  kick.dataset.reveal = "";
+  left.append(kick);
+  const h1 = el("h1", null, l.title); h1.dataset.reveal = ""; left.append(h1);
+  const sub = el("p", "sub", l.blurb); sub.dataset.reveal = ""; left.append(sub);
 
-  const obj = el("div", "obj");
-  obj.append(el("h2", null, "After this you can"));
-  const ul = el("ul");
-  l.objectives.forEach((o) => ul.append(el("li", null, o)));
-  obj.append(ul); left.append(obj);
-
-  l.sections.forEach((s) => {
-    if (s.type === "prose") {
-      // Trusted: lesson HTML ships in our own repo, not user input.
-      const d = el("div"); d.innerHTML = s.html; left.append(d);
-    } else if (s.type === "code") {
-      if (s.caption) left.append(el("p", "cap", s.caption));
-      const wrapPre = el("div", "snip");
-      const pre = el("pre"); pre.textContent = s.code;
-      const ask = el("button", "btn ghost sm snipask", "Ask about this");
-      ask.type = "button";
-      ask.setAttribute("aria-label", "Ask a doubt about this code example");
-      ask.onclick = () => openAsk({
-        title: l.title + ": question about an example",
-        body: "About this example from the lesson:\n\n" + s.code + "\n\nWhat I don't get: ",
-      });
-      wrapPre.append(pre, ask);
-      left.append(wrapPre);
-    } else if (s.type === "callout") {
-      const c = el("div", "callout " + (s.kind === "tip" ? "tip" : "warn"));
-      c.append(el("b", null, s.title));
-      c.append(document.createTextNode(s.body));
-      left.append(c);
+  if (isDay && l.meta) {
+    const chips = el("div", "daymeta"); chips.dataset.reveal = "";
+    if (l.meta.dataset) chips.append(metaChip("Dataset", l.meta.dataset));
+    if (l.meta.time) chips.append(metaChip("Time", l.meta.time));
+    left.append(chips);
+    if (l.meta.progress) {
+      const pg = el("div", "dayprog spot"); pg.dataset.reveal = "";
+      const m = /(\d+)\/(\d+)/.exec(l.meta.progress) || [0, 0, 30];
+      const bar = el("div", "dayprogbar"); const fill = el("i"); fill.style.width = (m[1] / m[2] * 100) + "%"; bar.append(fill);
+      pg.append(el("span", "dayproglab", "Block 3 · " + m[1] + "/" + m[2]), bar);
+      if (l.meta.system) pg.append(el("p", null, "System after today: " + l.meta.system));
+      left.append(pg);
     }
+  }
+
+  if (l.objectives && l.objectives.length) {
+    const obj = el("div", "obj"); obj.dataset.reveal = "";
+    obj.append(el("h2", null, isDay ? "Today you build" : "After this you can"));
+    const ul = el("ul");
+    // day objectives are generated from the syllabus (trusted, escaped by markdown)
+    l.objectives.forEach((o) => { const li = el("li"); isDay ? (li.innerHTML = o) : (li.textContent = o); ul.append(li); });
+    obj.append(ul); left.append(obj);
+  }
+
+  const askExample = (code) => openAsk({
+    title: l.title + ": question about an example",
+    body: "About this example from the lesson:\n\n" + code + "\n\nWhat I don't get: ",
   });
 
-  const nav = el("div");
-  nav.style.cssText = "display:flex;gap:9px;margin-top:26px;flex-wrap:wrap";
+  l.sections.forEach((s) => {
+    let node = null;
+    if (s.type === "prose") {
+      // Trusted: lesson HTML ships in our own repo, not user input.
+      node = el("div", "prose"); node.innerHTML = s.html;
+      node.querySelectorAll("table").forEach((t) => { const w = el("div", "tblscroll"); t.replaceWith(w); w.append(t); });
+    } else if (s.type === "code") {
+      if (s.caption) left.append(el("p", "cap", s.caption));
+      const py = !s.lang || s.lang === "python";
+      if (py) node = runnableSnippet(s.code, { onAsk: askExample });
+      else { node = el("div", "snip"); const pre = el("pre", "lang-" + s.lang); pre.textContent = s.code; node.append(pre); }
+    } else if (s.type === "callout") {
+      node = el("div", "callout " + (s.kind === "tip" ? "tip" : "warn"));
+      node.append(el("b", null, s.title));
+      node.append(document.createTextNode(s.body));
+    } else if (s.type === "visual") {
+      node = asciiVisual(s.text);
+    } else if (s.type === "mermaid") {
+      node = mermaidBlock(s.code);
+    } else if (s.type === "viz") {
+      node = vizBlock(s.viz, s.caption);
+    }
+    if (node) { node.dataset.reveal = ""; left.append(node); }
+  });
+
+  const nav = el("div", "lessonnav");
   const toMap = el("button", "btn ghost sm", "← Map");
   toMap.onclick = () => { location.hash = l.track; };
   nav.append(toMap);
@@ -2424,41 +3135,57 @@ function renderLesson(l) {
   left.append(nav);
 
   /* ---- right: the practice ---- */
-  const right = el("div", "pane");
+  const right = el("div", "pane practice");
   const ptop = el("div", "ptop");
   ptop.append(el("span", "ptitle", "Practice"));
   const status = el("span", "status");
-  const led = spinner(), stxt = el("span", null, "Starting Python");
-  status.append(led, stxt); ptop.append(status);
+  const stxt = el("span", null, "Starting Python");
+  status.append(spinner(), stxt); ptop.append(status);
   right.append(ptop);
 
-  right.append(el("div", "brief", l.exercise.brief));
+  const brief = el("div", "brief");
+  if (ex.kind === "pytest") brief.innerHTML = ex.brief_html; else brief.textContent = ex.brief;
+  right.append(brief);
 
   const ed = el("div", "editor");
-  ed.append(el("div", "ehead", "exercise.py"));
+  ed.append(el("div", "ehead", ex.module ? ex.module + ".py" : "exercise.py"));
   const ta = el("textarea");
   ta.spellcheck = false;
   ta.setAttribute("aria-label", "Python code editor");
-  ta.value = l.exercise.starter;
+  ta.value = savedCode(l) ?? ex.starter;
+  if (ex.kind === "pytest") ta.rows = Math.min(28, Math.max(12, ex.starter.split("\n").length + 2));
   ed.append(ta);
   const erow = el("div", "erow");
   const run = el("button", "btn"); run.disabled = true;
   run.append(el("span", null, "Run tests"));
+  const stop = el("button", "btn ghost sm", "Stop"); stop.hidden = true;
   const reset = el("button", "btn ghost sm", "Reset");
   const sol = el("button", "btn ghost sm", "Show solution");
   const hint = el("span"); hint.style.marginLeft = "auto";
   hint.innerHTML = "<kbd>Ctrl</kbd> + <kbd>Enter</kbd>";
-  erow.append(run, reset, sol, hint);
+  erow.append(run, stop, reset, sol, hint);
   ed.append(erow); right.append(ed);
 
   const tests = el("div", "tests"); right.append(tests);
+  if (ex.kind === "pytest") {
+    const det = el("details", "testsrc");
+    det.append(el("summary", null, "Read the test file (" + ex.tests.length + " tests)"));
+    const pre = el("pre"); pre.textContent = ex.tests_code; det.append(pre);
+    right.append(det);
+  }
   const out = el("div", "out");
   out.setAttribute("role", "status"); out.setAttribute("aria-live", "polite");
   right.append(out);
   const done = el("div", "done"); done.hidden = true;
   done.innerHTML = "<b>All tests passed.</b> ";
-  done.append(document.createTextNode("Marked complete."));
+  done.append(document.createTextNode(isDay ? "Day " + l.day + " marked complete." : "Marked complete."));
   right.append(done);
+  if (ex.kind === "pytest" && ex.done_html) {
+    const dw = el("div", "donewhen");
+    dw.append(el("b", null, "Done when "));
+    const s = el("span"); s.innerHTML = ex.done_html.replace(/^<p>|<\/p>$/g, ""); dw.append(s);
+    right.append(dw);
+  }
 
   /* ---- doubts, right where the code went wrong ---- */
   const help = el("div", "askhelp");
@@ -2572,48 +3299,75 @@ function renderLesson(l) {
     const mark = busy ? spinner() : el("span", "led");
     status.replaceChild(mark, status.firstChild);
   }
+  // results: [{state: "pass"|"fail"|"todo", detail}] in ex.tests order
   function paint(results) {
     tests.innerHTML = "";
-    l.exercise.tests.forEach((t, k) => {
+    ex.tests.forEach((t, k) => {
       const r = results && results[k];
-      const row = el("div", "t" + (r ? (r.pass ? " pass" : " fail") : ""));
+      const row = el("div", "t" + (r ? " " + r.state : ""));
       const ic = el("span", "ic");
       ic.innerHTML = '<svg viewBox="0 0 10 10" fill="none" aria-hidden="true">' +
         '<path d="M1.5 5.2 4 7.5 8.5 2.5" stroke="currentColor" stroke-width="2" ' +
         'stroke-linecap="round" stroke-linejoin="round"/></svg>';
-      row.append(ic, el("span", "lab", t.label), el("span", "got", r && !r.pass ? r.detail : ""));
+      row.append(ic, el("span", "lab", t.label), el("span", "got", r && r.state !== "pass" ? r.detail : ""));
+      if (r && r.state === "fail" && r.detail.length > 44) row.title = r.detail;
       tests.append(row);
     });
   }
   paint(null);
 
-  reset.onclick = () => { ta.value = l.exercise.starter; paint(null); out.textContent = ""; done.hidden = true; };
+  ta.addEventListener("input", () => saveCode(l, ta.value));
+  reset.onclick = () => { ta.value = ex.starter; saveCode(l, ex.starter); paint(null); out.textContent = ""; done.hidden = true; };
   sol.onclick = () => {
     if (!confirm("Show the worked solution? Try your own version first. That is where the learning happens.")) return;
-    ta.value = l.exercise.solution;
+    ta.value = ex.solution;
   };
+  stop.onclick = () => { PY.stop(); setStatus("Stopped. Python restarts on the next run", "fail"); };
 
   async function runTests() {
-    if (!pyodide) return;
     const runLabel = run.innerHTML;
     busyButton(run, "Running");
-    setStatus("Running your code", "", true);
+    setStatus(PY.on ? "Running your code" : "Starting Python", "", true);
+    PY.onStatus((t) => setStatus(t, "", true));
     done.hidden = true; out.textContent = "";
+    const t0 = Date.now();
+    const slow = setTimeout(() => { stop.hidden = false; }, 4000);
+    const tick = setInterval(() => { const s = Math.round((Date.now() - t0) / 1000); if (s >= 5) stxt.textContent = stxt.textContent.replace(/ · \d+s$/, "") + " · " + s + "s"; }, 1000);
+    let results = null, printed = "", error = "";
     try {
-      pyodide.runPython("import sys, io\n_buf = io.StringIO()\nsys.stdout = _buf\n");
-      await pyodide.runPythonAsync(ta.value);
-      const printed = pyodide.runPython("sys.stdout = sys.__stdout__\n_buf.getvalue()");
-      const results = l.exercise.tests.map((t) => {
-        try { return { pass: !!pyodide.runPython("bool(" + t.expr + ")"), detail: "returned false" }; }
-        catch (e) { return { pass: false, detail: String(e).split("\n").pop().slice(0, 44) }; }
-      });
+      if (ex.kind === "pytest") {
+        const files = Object.assign(dayFiles(ex.tests_code + "\n" + ta.value, ex.module), {
+          [ex.module + ".py"]: ta.value, ["test_" + ex.module + ".py"]: ex.tests_code });
+        const r = await PY.call({ type: "pytest", files, test: "test_" + ex.module, harness: AI90.harness });
+        printed = r.printed;
+        if (r.results.length === 1 && r.results[0][1] === "error") error = r.results[0][2];
+        else {
+          const by = Object.fromEntries(r.results.map(([n, s, m]) => [n, { state: s, detail: m }]));
+          results = ex.tests.map((t) => by[t.name] || { state: "fail", detail: "not run" });
+        }
+      } else {
+        const r = await PY.call({ type: "exprs", code: ta.value, exprs: ex.tests.map((t) => t.expr) });
+        printed = r.printed; error = r.error;
+        if (!error) results = r.results.map((x) => ({ state: x.pass ? "pass" : "fail", detail: x.detail }));
+      }
+    } catch (e) { error = e.message; }
+    clearTimeout(slow); clearInterval(tick); stop.hidden = true;
+    PY.onStatus(null);
+
+    if (error) {
+      paint(null); setStatus("Error in your code", "fail");
+      const s = el("span", "e", error.split("\n").slice(-6).join("\n"));
+      out.textContent = printed || ""; out.append(s);
+      if (!/^Stopped/.test(error)) offerHelp({ kind: "error", msg: error.split("\n").slice(-6).join("\n") });
+    } else {
       paint(results);
-      const n = results.filter((r) => r.pass).length;
+      const n = results.filter((r) => r.state === "pass").length;
+      const todo = results.filter((r) => r.state === "todo").length;
       out.textContent = printed || "";
-      setStatus(n + "/" + results.length + " passing", n === results.length ? "ready" : "fail");
-      if (n < results.length) {
-        offerHelp({ kind: "fail", fails: l.exercise.tests
-          .map((t, k) => results[k].pass ? null : t.label + " (" + results[k].detail + ")").filter(Boolean) });
+      setStatus(n + "/" + results.length + " passing" + (todo ? " · " + todo + " not started" : ""), n === results.length ? "ready" : "fail");
+      if (n < results.length && todo < results.length) {
+        offerHelp({ kind: "fail", fails: ex.tests
+          .map((t, k) => results[k].state === "pass" ? null : t.label + " (" + results[k].detail + ")").filter(Boolean) });
       } else if (!$("#ask-title")) {
         help.hidden = true;
       }
@@ -2622,12 +3376,6 @@ function renderLesson(l) {
         PROGRESS[l.id] = true;
         await api.setDone(l.id, true);
       }
-    } catch (e) {
-      try { pyodide.runPython("sys.stdout = sys.__stdout__"); } catch (_) {}
-      paint(null); setStatus("Error in your code", "fail");
-      const s = el("span", "e", String(e.message || e).split("\n").slice(-6).join("\n"));
-      out.textContent = ""; out.append(s);
-      offerHelp({ kind: "error", msg: String(e.message || e).split("\n").slice(-6).join("\n") });
     }
     run.disabled = false;
     run.innerHTML = runLabel;
@@ -2639,8 +3387,9 @@ function renderLesson(l) {
       const s = ta.selectionStart;
       ta.value = ta.value.slice(0, s) + "    " + ta.value.slice(ta.selectionEnd);
       ta.selectionStart = ta.selectionEnd = s + 4;
+      saveCode(l, ta.value);
     }
-    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); runTests(); }
+    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); if (!run.disabled) runTests(); }
   });
 
   // On a phone the practice pane sits three screens below the reading pane,
@@ -2666,7 +3415,7 @@ function renderLesson(l) {
 
   grid.append(tabs, left, right); root.append(grid);
 
-  bootPython().then(
+  PY.start().then(
     () => { setStatus("Python ready", "ready"); run.disabled = false; },
     (e) => {
       setStatus("Python unavailable", "fail");
@@ -2676,15 +3425,10 @@ function renderLesson(l) {
     });
 }
 
-function bootPython() {
-  if (pyodide) return Promise.resolve(pyodide);
-  if (pyBoot) return pyBoot;
-  pyBoot = (async () => {
-    if (typeof loadPyodide !== "function") throw new Error("runtime script blocked");
-    pyodide = await loadPyodide({ indexURL: "https://cdn.jsdelivr.net/npm/pyodide@0.29.5/" });
-    return pyodide;
-  })();
-  return pyBoot;
+function metaChip(k, v) {
+  const c = el("span", "mchip");
+  c.append(el("b", null, k), document.createTextNode(" " + v));
+  return c;
 }
 
 /* ================================================================== admin */
@@ -3539,7 +4283,14 @@ async function render() {
   PAGE_SUBS = [];
 
   if (!LESSONS.length) {
-    try { LESSONS = await api.lessons(); } catch (e) {
+    try {
+      LESSONS = await api.lessons();
+      if (LESSONS.length) {
+        const data = await loadAI90();
+        LESSONS.forEach((l) => { if (!l.section) l.section = "Warm-up · the big picture"; });
+        LESSONS = LESSONS.concat(data.lessons);
+      }
+    } catch (e) {
       root.innerHTML = "";
       root.append(topBar());
       const w = el("div", "wrap");
@@ -3551,7 +4302,7 @@ async function render() {
     // the three tracks interleave.
     const pos = orderedTracks();
     LESSONS.sort((a, b) =>
-      (pos.indexOf(a.track) - pos.indexOf(b.track)) || (a.order - b.order));
+      (pos.indexOf(a.track) - pos.indexOf(b.track)) || (lessonKey(a) - lessonKey(b)));
     PROGRESS = await api.getProgress();
   }
   const id = location.hash.slice(1);
