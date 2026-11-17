@@ -2,7 +2,7 @@
 
 Telugu coders' home for learning to **build** AI, not just vibe-code it:
 basic Python first, then machine learning, then your own models, all in one
-path, learned together. తెలుగు కోడర్ల కోసం.
+path, learned together.
 
 
 Python and machine learning taught by making you write the code. Lessons run a

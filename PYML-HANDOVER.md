@@ -156,11 +156,12 @@ purpose — learners build a perceptron and backprop by hand, and it avoids a
 - Visible brand is now AIM everywhere (title, logo, sign-in card with
   "AI & Machine Learning Institute", chat copy, loading). Internal keys
   (`pyml.*` storage, demo emails, repo file names) intentionally unchanged.
-- Landing: Telugu kicker "తెలుగు కోడర్ల కోసం · For Telugu coders"; hero "Build AI.
-  Don't just vibe-code it."; "The mission" (basics before vibe coding, build the
-  AI, all in one place, learn together and have fun); closer "కలిసి నేర్చుకుందాం —
-  let's learn together". Noto Sans Telugu loaded from Google Fonts.
-- Supabase sign-up email: subject "Your AIM code" + AIM welcome line (done). Sender
+- Landing: badge "For the Telugu coders community"; hero "Build AI. Don't just
+  vibe-code it."; "The mission" (basics before vibe coding, build the AI, all in
+  one place, learn together and have fun); closer "Let's learn together".
+- [stated] No Telugu script / Telugu font on the site (removed 17 Nov at Asish's
+  request); the community is named in English.
+- Supabase sign-up email: subject "Your AIM code" + AIM welcome line, English only (done). Sender
   name is still "PyML": the SMTP form loads with an empty password box, so saving
   it needs the Brevo SMTP key re-pasted by Asish (Claude must not paste keys).
 

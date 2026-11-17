@@ -6,7 +6,7 @@
 <title>AIM — AI &amp; Machine Learning Institute</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Sora:wght@500;600;700;800&family=Noto+Sans+Telugu:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Sora:wght@500;600;700;800&display=swap">
 <style>
 /* PyML — warm premium palette: brown and gold on paper by day, black, grey
    and gold at night. Components only ever read tokens, never literals, so the
@@ -809,14 +809,11 @@ button.bubble:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 }
 
 /* ------------------------------------------------------------ AIM brand */
-.te{font-family:"Noto Sans Telugu",var(--display);letter-spacing:0;text-transform:none}
 .tekicker{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px;
   font-size:13px;color:var(--fg-2);border:1px solid var(--gold-line);background:var(--gold-soft);
   border-radius:999px;padding:5px 13px}
-.tekicker .te{color:var(--gold);font-weight:700;font-size:14px}
 .brandfull{font-family:var(--body,inherit);font-weight:500;font-size:12.5px;color:var(--fg-3);
   letter-spacing:0;margin-left:2px}
-.closer .te{color:var(--gold);font-weight:700;font-size:14px}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/pyodide@0.29.5/pyodide.js"></script>
 </head>
@@ -1448,11 +1445,7 @@ const HERO_P = "AIM is the AI & Machine Learning Institute, made for the Telugu 
 function pitchColumn(hero = true) {
   const col = el("div", "pitch");
   if (hero) {
-    const k = el("p", "tekicker");
-    const te = el("span", "te", "తెలుగు కోడర్ల కోసం");
-    te.lang = "te";
-    k.append(te, el("span", null, "· For Telugu coders"));
-    col.append(k);
+    col.append(el("p", "tekicker", "For the Telugu coders community"));
     col.append(el("h1", null, HERO_H1));
     col.append(el("p", "big", HERO_P));
   }
@@ -1483,11 +1476,7 @@ function pitchColumn(hero = true) {
   });
   col.append(path);
 
-  const closer = el("p", "closer");
-  const te2 = el("span", "te", "కలిసి నేర్చుకుందాం");
-  te2.lang = "te";
-  closer.append(te2, document.createTextNode(" — let's learn together. Every lesson ends with code you write and tests that either pass or do not."));
-  col.append(closer);
+  col.append(el("p", "closer", "Let's learn together. Every lesson ends with code you write and tests that either pass or do not."));
   return col;
 }
 
