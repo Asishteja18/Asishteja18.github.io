@@ -8,7 +8,7 @@ path, learned together.
 Python and machine learning taught by making you write the code. Lessons run a
 real Python runtime in the browser and grade your work against tests.
 
-Live at **https://asishteja18.github.io** · sign-up link: **https://asishteja18.github.io/#signup**
+Live at **https://telugucoders.com** · sign-up link: **https://telugucoders.com/#signup**
 
 People sign up with email + password, verify a 6-digit emailed code, and go
 straight into the lessons. One admin (asishtejavinnakota@gmail.com, enforced by
