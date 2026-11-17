@@ -165,6 +165,21 @@ purpose — learners build a perceptron and backprop by hand, and it avoids a
   name is still "PyML": the SMTP form loads with an empty password box, so saving
   it needs the Brevo SMTP key re-pasted by Asish (Claude must not paste keys).
 
+## Sign-up email + spam (17 Nov 2026)
+
+- [stated] Codes were landing in spam; Asish wants them to look good and reach the inbox.
+- Cause: sender is a Gmail address via Brevo; Brevo rewrites From to
+  `…@12822868.brevosend.com`, so DMARC/DKIM don't align for gmail.com and Gmail
+  files it as spam. Content changes can't fix that; a domain AIM owns, verified
+  in Brevo (SPF/DKIM/DMARC records), is the fix.
+- Done: branded table-layout email (`email/confirm-signup.html`, inline styles,
+  no images/fonts, hidden preheader with the code, "why you got this" footer),
+  subject "Your AIM sign-up code", saved in Supabase. Code screen shows a
+  "check Spam / mark Not spam" hint in live mode (shortcut: remove after domain).
+- Waiting on Asish: buy a domain; then Brevo domain auth + DNS records, switch
+  Supabase sender email (needs SMTP key re-paste by Asish) and optionally point
+  GitHub Pages at the domain.
+
 ## How to run it
 
 ```bash
