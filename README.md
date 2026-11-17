@@ -6,14 +6,21 @@ real Python runtime in the browser and grade your work against tests.
 Live at **https://asishteja18.github.io** · sign-up link: **https://asishteja18.github.io/#signup**
 
 People sign up with email + password, verify a 6-digit emailed code, and go
-straight into the lessons. Admins can block an account from the admin page.
+straight into the lessons. One admin (asishtejavinnakota@gmail.com, enforced by
+the database) can see every learner's stats and block accounts.
+
+**Doubts** (`#doubts`): learners pick a code name (`AIM-` + their choice), ask
+questions, reply to each other, and see who is online. A doubt nobody else
+answers within 12 hours is flagged to the admin (badge + "Waiting on you").
 
 ## What's in this repo
 
 | File | What it is |
 |---|---|
 | `index.html` | **The whole site in one file**: styles, app code and all 22 lessons inlined. This is what GitHub Pages serves and what you edit. |
-| `supabase-schema.sql` | Database tables and access rules. Run once in Supabase. |
+| `supabase-schema.sql` | Database tables and access rules. Safe to re-run in Supabase. |
+| `tests/test_v2.py` | Two-user browser test of doubts, presence, code names, roles (demo mode). |
+| `tests/db_tests.sql` | 17 permission checks; run inside `begin; … ` and abort, see the file. |
 | `SETUP-EMAIL.md` | Step-by-step for going live with real accounts and free email (Supabase + Brevo). |
 | `admin.html` | Redirects to `index.html#admin`. |
 | `glimpse-lesson.html` | Standalone preview of one lesson. |

@@ -632,6 +632,55 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
   .mepanel{padding:16px 14px 18px}
 }
 
+
+/* ---------------------------------------------------------------- doubts */
+.doubtsbtn{position:relative}
+.badge{position:absolute;top:-6px;right:-6px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;
+  background:var(--gold);color:var(--gold-ink);font:700 11px/18px var(--mono);text-align:center}
+.dgrid{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:24px;align-items:start}
+.dside{position:sticky;top:84px}
+.dside h2,.dmain h2{font-size:16px;margin-bottom:4px}
+.dlist{display:grid;gap:12px;margin-top:14px}
+.dcard{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);
+  border-radius:16px;padding:16px 18px;cursor:pointer;color:inherit;font:inherit;transition:border-color .2s}
+.dcard:hover{border-color:var(--gold-line)}
+.dcard:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.dcard h3{font-size:16px;margin-bottom:8px;overflow-wrap:anywhere}
+.dmeta{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;color:var(--fg-3);font-size:12.5px}
+.whochip{display:inline-flex;align-items:center;gap:7px;color:var(--fg-2);font-weight:600;font-size:13px}
+.odot{width:9px;height:9px;border-radius:50%;background:var(--fg-3);opacity:.45;flex:none;transition:all .3s}
+.odot.on{background:var(--ok);opacity:1;box-shadow:0 0 0 3px var(--ok-soft),0 0 10px var(--ok-line)}
+.fchips{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}
+.fchip{background:transparent;border:1px solid var(--line);color:var(--fg-2);border-radius:999px;
+  padding:7px 14px;font:inherit;font-size:13px;cursor:pointer;min-height:36px}
+.fchip[aria-pressed=true]{background:var(--gold-soft);border-color:var(--gold-line);color:var(--fg);font-weight:600}
+.fchip .n{color:var(--fg-3);margin-left:6px;font-family:var(--mono);font-size:11.5px}
+.dbody{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65;color:var(--fg)}
+.dthread .panel{margin-bottom:16px}
+.dthread h1{font-size:24px;letter-spacing:-.015em;margin:10px 0 10px;overflow-wrap:anywhere}
+.dactions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.reply{border-top:1px solid var(--line);padding:16px 0}
+.reply:first-child{border-top:0;padding-top:4px}
+.reply .dmeta{margin-bottom:8px}
+.esc{border:1px solid var(--gold-line);background:var(--gold-soft);border-radius:14px;padding:12px 14px;
+  font-size:14px;margin-top:14px;color:var(--fg)}
+.handlebox{display:flex;align-items:stretch}
+.handlebox .pre{display:flex;align-items:center;padding:0 12px;background:var(--gold-soft);
+  border:1px solid var(--line);border-right:0;border-radius:12px 0 0 12px;font-family:var(--mono);
+  color:var(--gold);font-weight:700}
+.handlebox input{border-radius:0 12px 12px 0!important}
+.field select{width:100%;background:var(--muted);border:1px solid var(--line);color:var(--fg);
+  border-radius:12px;padding:11px 13px;font:inherit;font-size:14.5px}
+.onlist{display:grid;gap:9px;margin-top:12px;max-height:360px;overflow:auto}
+.oncount{color:var(--fg-3);font-size:13px}
+.backlink{background:none;border:0;color:var(--fg-2);font:inherit;font-size:13.5px;cursor:pointer;padding:6px 0}
+.backlink:hover{color:var(--gold)}
+.youare{display:flex;align-items:center;gap:10px;flex-wrap:wrap;color:var(--fg-2);font-size:13.5px;margin-bottom:6px}
+@media (max-width:900px){
+  .dgrid{grid-template-columns:1fr}
+  .dside{position:static;order:-1}
+  .onlist{max-height:none;display:flex;flex-wrap:wrap;gap:8px 14px}
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/pyodide@0.29.5/pyodide.js"></script>
 </head>
@@ -670,14 +719,22 @@ const demo = {
   read() {
     let s = null;
     try { s = JSON.parse(localStorage.getItem(DEMO_KEY)); } catch {}
-    if (s && s.users) return s;
+    // the signed-in demo user is per tab, so two tabs can be two people
+    const cur = (() => { try { return sessionStorage.getItem(DEMO_KEY + ".me"); } catch { return null; } })();
+    if (s && s.users) { s.current = cur; return s; }
     const users = {};
     for (const a of DEMO_ACCOUNTS) {
       users[a.email] = { email: a.email, password: a.password, approved: a.approved, is_admin: a.is_admin };
     }
-    return { users, current: null };
+    return { users, current: cur };
   },
-  write(s) { try { localStorage.setItem(DEMO_KEY, JSON.stringify(s)); } catch {} },
+  write(s) {
+    try {
+      if (s.current) sessionStorage.setItem(DEMO_KEY + ".me", s.current);
+      else sessionStorage.removeItem(DEMO_KEY + ".me");
+      localStorage.setItem(DEMO_KEY, JSON.stringify({ ...s, current: null }));
+    } catch {}
+  },
 };
 
 /* ------------------------------------------------------------------ init */
@@ -703,9 +760,10 @@ async function loadProfile() {
   if (!user) { me = null; return; }
   const { data } = await sb.from("profiles").select("*").eq("id", user.id).single();
   me = data
-    ? { id: user.id, email: data.email, approved: data.approved, is_admin: data.is_admin }
+    ? { id: user.id, email: data.email, approved: data.approved, is_admin: data.is_admin,
+        handle: data.handle || null, streak: data.streak || 0, reach: data.reach || {} }
     // the signup trigger may not have committed yet; everyone gets in by default
-    : { id: user.id, email: user.email, approved: true, is_admin: false };
+    : { id: user.id, email: user.email, approved: true, is_admin: false, handle: null, streak: 0, reach: {} };
 }
 
 function session() { return me; }
@@ -782,6 +840,7 @@ async function signIn(email, password) {
 }
 
 async function signOut() {
+  stopPresence();
   if (LIVE) await sb.auth.signOut();
   else { const s = demo.read(); s.current = null; demo.write(s); }
   me = null;
@@ -791,13 +850,23 @@ async function signOut() {
 async function listUsers() {
   if (!me?.is_admin) return [];
   if (LIVE) {
-    const { data } = await sb.from("profiles").select("*").order("created_at", { ascending: false });
-    return data || [];
+    const [{ data }, { data: prog }] = await Promise.all([
+      sb.from("profiles").select("*").order("created_at", { ascending: false }),
+      sb.from("progress").select("user_id").eq("completed", true),
+    ]);
+    const cleared = {};
+    (prog || []).forEach((r) => { cleared[r.user_id] = (cleared[r.user_id] || 0) + 1; });
+    return (data || []).map((u) => ({ ...u, cleared: cleared[u.id] || 0 }));
   }
-  return Object.values(demo.read().users).map((u) => ({
-    id: u.email, email: u.email, approved: u.approved, is_admin: u.is_admin,
-    full_name: u.full_name || "", reason: u.reason || "",
-  }));
+  return Object.values(demo.read().users).map((u) => {
+    let p = {};
+    try { p = JSON.parse(localStorage.getItem("pyml.progress." + u.email)) || {}; } catch {}
+    return {
+      id: u.email, email: u.email, approved: u.approved, is_admin: u.is_admin,
+      handle: u.handle || null, streak: u.streak || 0, last_seen: u.last_seen || null,
+      cleared: Object.values(p).filter(Boolean).length,
+    };
+  });
 }
 
 async function setApproved(id, approved) {
@@ -831,10 +900,11 @@ async function getProgress() {
 async function setDone(lessonId, completed) {
   if (!me) return;
   if (LIVE) {
-    await sb.from("progress").upsert(
-      { user_id: me.id, lesson_id: lessonId, completed, updated_at: new Date() },
+    const { error } = await sb.from("progress").upsert(
+      { user_id: me.id, lesson_id: lessonId, completed, updated_at: new Date().toISOString() },
       { onConflict: "user_id,lesson_id" });
-    return;
+    if (error) { console.error("PyML: progress not saved", error); return { ok: false, error: error.message }; }
+    return { ok: true };
   }
   const p = await getProgress();
   p[lessonId] = completed;
@@ -842,8 +912,246 @@ async function setDone(lessonId, completed) {
 }
 
 
+/* ----------------------------------------------------------------- stats */
+// Streak, snake reach and last-seen live on the profile row (live) or the demo
+// user record (demo). Writes go through RPCs so a learner can only ever touch
+// their own numbers, never their role or block flag.
+function demoMe(fn) {
+  const s = demo.read(), u = s.users[me.id];
+  if (!u) return;
+  fn(u);
+  demo.write(s);
+  Object.assign(me, u);
+}
+
+async function touchStreakDb(today) {
+  if (!me) return 0;
+  if (LIVE) {
+    const { data, error } = await sb.rpc("touch_streak", { today });
+    if (!error) me.streak = data;
+    return me.streak || 0;
+  }
+  demoMe((u) => {
+    const prev = new Date(Date.parse(today + "T12:00:00") - 864e5).toISOString().slice(0, 10);
+    if (u.streak_day !== today) {
+      u.streak = u.streak_day === prev ? (u.streak || 0) + 1 : 1;
+      u.streak_day = today;
+    }
+    u.last_seen = new Date().toISOString();
+  });
+  return me.streak || 0;
+}
+
+async function saveReach(k, n) {
+  if (!me) return;
+  me.reach = me.reach || {};
+  if ((me.reach[k] || 0) >= n) return;
+  me.reach[k] = n;
+  if (LIVE) { await sb.rpc("set_reach", { k, n }); return; }
+  demoMe((u) => { u.reach = { ...(u.reach || {}), [k]: n }; });
+}
+
+const HANDLE_RE = /^[A-Za-z0-9_]{3,16}$/;
+
+async function setHandle(name) {
+  name = (name || "").trim();
+  if (!HANDLE_RE.test(name)) return { ok: false, error: "Use 3 to 16 letters, numbers or underscores." };
+  if (LIVE) {
+    const { data, error } = await sb.rpc("set_handle", { name });
+    if (error) return { ok: false, error: error.message };
+    me.handle = data;
+  } else {
+    const h = "AIM-" + name, s = demo.read();
+    const taken = Object.values(s.users).some((u) =>
+      u.email !== me.id && (u.handle || "").toLowerCase() === h.toLowerCase());
+    if (taken) return { ok: false, error: "That code name is taken. Try another." };
+    demoMe((u) => { u.handle = h; });
+  }
+  retrackPresence();
+  return { ok: true, handle: me.handle };
+}
+
+/* ---------------------------------------------------------------- doubts */
+const ESCALATE_MS = 12 * 3600e3;
+
+function demoDoubts() {
+  const s = demo.read();
+  s.doubts = s.doubts || [];
+  s.replies = s.replies || [];
+  s.seq = s.seq || 0;
+  return s;
+}
+
+async function doubtsFeed() {
+  if (!me) return [];
+  if (LIVE) {
+    const { data, error } = await sb.rpc("doubts_feed");
+    if (error) throw new Error(error.message);
+    return data || [];
+  }
+  const s = demoDoubts();
+  return s.doubts.slice().sort((a, b) => b.created_at.localeCompare(a.created_at)).map((d) => {
+    const rs = s.replies.filter((r) => r.doubt_id === d.id);
+    const u = s.users[d.user_id] || {};
+    return {
+      ...d, handle: u.handle || null, replies: rs.length,
+      last_reply_at: rs.length ? rs[rs.length - 1].created_at : null,
+      needs_admin: !d.resolved && Date.now() - Date.parse(d.created_at) > ESCALATE_MS &&
+        !rs.some((r) => r.user_id !== d.user_id),
+      admin_replied: rs.some((r) => (s.users[r.user_id] || {}).is_admin),
+    };
+  });
+}
+
+async function doubtThread(id) {
+  if (LIVE) {
+    const { data, error } = await sb.rpc("doubt_thread", { did: id });
+    if (error) throw new Error(error.message);
+    return data || [];
+  }
+  const s = demoDoubts();
+  return s.replies.filter((r) => r.doubt_id === id).map((r) => {
+    const u = s.users[r.user_id] || {};
+    return { ...r, handle: u.handle || null, is_admin: !!u.is_admin };
+  });
+}
+
+async function askDoubt({ title, body, lesson_id }) {
+  title = (title || "").trim(); body = (body || "").trim();
+  if (title.length < 5) return { ok: false, error: "Give it a title of at least 5 characters." };
+  if (LIVE) {
+    const { data, error } = await sb.from("doubts").insert({ title, body, lesson_id: lesson_id || null })
+      .select("id").single();
+    if (error) return { ok: false, error: error.message };
+    announceChange();
+    return { ok: true, id: data.id };
+  }
+  const s = demoDoubts();
+  const d = { id: ++s.seq, user_id: me.id, title, body, lesson_id: lesson_id || null,
+              resolved: false, created_at: new Date().toISOString() };
+  s.doubts.push(d);
+  demo.write(s);
+  announceChange();
+  return { ok: true, id: d.id };
+}
+
+async function replyDoubt(doubt_id, body) {
+  body = (body || "").trim();
+  if (!body) return { ok: false, error: "Write a reply first." };
+  if (LIVE) {
+    const { error } = await sb.from("doubt_replies").insert({ doubt_id, body });
+    if (error) return { ok: false, error: error.message };
+  } else {
+    const s = demoDoubts();
+    s.replies.push({ id: ++s.seq, doubt_id, user_id: me.id, body, created_at: new Date().toISOString() });
+    demo.write(s);
+  }
+  announceChange();
+  return { ok: true };
+}
+
+async function setResolved(id, resolved) {
+  if (LIVE) {
+    const { error } = await sb.from("doubts").update({ resolved }).eq("id", id);
+    if (error) return { ok: false, error: error.message };
+  } else {
+    const s = demoDoubts(), d = s.doubts.find((x) => x.id === id);
+    if (!d || (d.user_id !== me.id && !me.is_admin)) return { ok: false, error: "Not yours to change." };
+    d.resolved = resolved;
+    demo.write(s);
+  }
+  announceChange();
+  return { ok: true };
+}
+
+async function deleteDoubt(id) {
+  if (LIVE) {
+    const { error } = await sb.from("doubts").delete().eq("id", id);
+    if (error) return { ok: false, error: error.message };
+  } else {
+    const s = demoDoubts(), d = s.doubts.find((x) => x.id === id);
+    if (!d || (d.user_id !== me.id && !me.is_admin)) return { ok: false, error: "Not yours to delete." };
+    s.doubts = s.doubts.filter((x) => x.id !== id);
+    s.replies = s.replies.filter((r) => r.doubt_id !== id);
+    demo.write(s);
+  }
+  announceChange();
+  return { ok: true };
+}
+
+/* -------------------------------------------------------------- presence */
+// Who is on the site right now. Live: Supabase Realtime presence on one shared
+// channel. Demo: a BroadcastChannel heartbeat between tabs of this browser.
+// The same channel carries a "changed" ping so open doubt pages refresh.
+const online = new Map();          // user id -> { handle }
+const onlineSubs = new Set(), changeSubs = new Set();
+let presenceCh = null, demoBC = null, demoBeat = null;
+const demoSeen = new Map();
+
+function emitOnline() { onlineSubs.forEach((f) => f(online)); }
+function emitChanged() { changeSubs.forEach((f) => f()); }
+
+function startPresence() {
+  if (!me || presenceCh || demoBC) return;
+  if (LIVE) {
+    presenceCh = sb.channel("pyml-online", { config: { presence: { key: me.id } } });
+    presenceCh.on("presence", { event: "sync" }, () => {
+      const st = presenceCh.presenceState();
+      online.clear();
+      for (const k in st) online.set(k, { handle: (st[k][0] || {}).handle || null });
+      emitOnline();
+    });
+    presenceCh.on("broadcast", { event: "changed" }, emitChanged);
+    presenceCh.subscribe((status) => {
+      if (status === "SUBSCRIBED") presenceCh.track({ handle: me ? me.handle : null });
+    });
+    return;
+  }
+  demoBC = new BroadcastChannel("pyml-demo");
+  const prune = () => {
+    online.clear();
+    if (me) online.set(me.id, { handle: me.handle || null });
+    const now = Date.now();
+    demoSeen.forEach((v, k) => { if (now - v.at < 6000) online.set(k, { handle: v.handle }); });
+    emitOnline();
+  };
+  demoBC.onmessage = (e) => {
+    const m = e.data || {};
+    if (m.type === "here") { demoSeen.set(m.id, { handle: m.handle, at: Date.now() }); prune(); }
+    else if (m.type === "bye") { demoSeen.delete(m.id); prune(); }
+    else if (m.type === "changed") emitChanged();
+  };
+  const beat = () => me && demoBC && demoBC.postMessage({ type: "here", id: me.id, handle: me.handle || null });
+  beat(); prune();
+  demoBeat = setInterval(() => { beat(); prune(); }, 2000);
+  addEventListener("pagehide", () => { if (demoBC && me) demoBC.postMessage({ type: "bye", id: me.id }); });
+}
+
+function retrackPresence() {
+  if (LIVE && presenceCh) presenceCh.track({ handle: me.handle });
+  if (demoBC) demoBC.postMessage({ type: "here", id: me.id, handle: me.handle || null });
+}
+
+function stopPresence() {
+  if (presenceCh) { sb.removeChannel(presenceCh); presenceCh = null; }
+  if (demoBC) { if (me) demoBC.postMessage({ type: "bye", id: me.id }); demoBC.close(); demoBC = null; }
+  if (demoBeat) { clearInterval(demoBeat); demoBeat = null; }
+  online.clear(); demoSeen.clear();
+}
+
+function announceChange() {
+  if (LIVE && presenceCh) presenceCh.send({ type: "broadcast", event: "changed", payload: {} });
+  if (demoBC) demoBC.postMessage({ type: "changed" });
+}
+
+function onOnline(f) { onlineSubs.add(f); f(online); return () => onlineSubs.delete(f); }
+function onChanged(f) { changeSubs.add(f); return () => changeSubs.delete(f); }
+
 const api = { LIVE, DEMO_ACCOUNTS, init, session, signUp, verifyCode, resendCode, signIn, signOut,
-              listUsers, setApproved, lessons, getProgress, setDone };
+              listUsers, setApproved, lessons, getProgress, setDone,
+              touchStreak: touchStreakDb, saveReach, setHandle, HANDLE_RE,
+              doubtsFeed, doubtThread, askDoubt, replyDoubt, setResolved, deleteDoubt,
+              startPresence, onOnline, onChanged };
 
 
 
@@ -1171,6 +1479,7 @@ function topBar() {
   bar.append(logo);
   bar.append(el("span", api.LIVE ? "tag ok" : "tag demo", api.LIVE ? "Live" : "Demo"));
   const sp = el("span", "sp"); bar.append(sp);
+  bar.append(doubtsButton());
   bar.append(themeButton());
   bar.append(youButton(me));
 
@@ -1253,7 +1562,7 @@ document.addEventListener("keydown", (e) => {
 });
 
 function initial(email) { return (email || "?").charAt(0).toUpperCase(); }
-function meName(me) { return (me.email || "").split("@")[0]; }
+function meName(me) { return me.handle || (me.email || "").split("@")[0]; }
 
 /* ------------------------------------------------------------- streak */
 // shortcut: counts days you opened the site, not days you cleared work, and it
@@ -1269,26 +1578,19 @@ function streakStore() {
   try { return JSON.parse(localStorage.getItem(STREAK_KEY)) || {}; } catch (e) { return {}; }
 }
 
+// Streak lives on the profile now (database when live). Bumped once per session.
+let STREAK_TOUCHED = false;
 function touchStreak() {
-  const me = api.session();
-  if (!me) return 0;
-  const all = streakStore();
-  const r = all[me.id] || { last: null, days: 0 };
-  const t = dayKey(new Date());
-  if (r.last !== t) {
-    // a gap of more than one day starts again from one
-    r.days = r.last === dayKey(new Date(Date.now() - 864e5)) ? r.days + 1 : 1;
-    r.last = t;
-    all[me.id] = r;
-    try { localStorage.setItem(STREAK_KEY, JSON.stringify(all)); } catch (e) {}
-  }
-  return r.days;
+  if (STREAK_TOUCHED || !api.session()) return;
+  STREAK_TOUCHED = true;
+  api.touchStreak(dayKey(new Date())).then(paintStreak);
 }
-
+function paintStreak() {
+  document.querySelectorAll("[data-streak]").forEach((n) => { n.textContent = streakLabel(); });
+}
 function streakDays() {
   const me = api.session();
-  const r = me && streakStore()[me.id];
-  return r ? r.days : 0;
+  return me ? me.streak || 0 : 0;
 }
 
 function streakLabel() { return streakDays() + " day streak"; }
@@ -1310,7 +1612,9 @@ function youButton(me) {
   b.append(el("span", "meav", initial(me.email)));
   const t = el("span", "whotext");
   t.append(el("span", "whoname", meName(me)));
-  t.append(el("span", "who", streakLabel()));
+  const st = el("span", "who", streakLabel());
+  st.dataset.streak = "1";
+  t.append(st);
   b.append(t);
   b.setAttribute("aria-haspopup", "true");
   b.setAttribute("aria-expanded", PANEL ? "true" : "false");
@@ -1334,7 +1638,7 @@ function profilePanel() {
   const head = el("div", "mehead");
   head.append(el("span", "meav", initial(me.email)));
   const who = el("div", "mewho");
-  who.append(el("span", "mename", me.email.split("@")[0]));
+  who.append(el("span", "mename", meName(me)));
   who.append(el("span", "memail", me.email));
   head.append(who);
   const x = el("button", "mex");
@@ -1349,7 +1653,9 @@ function profilePanel() {
   const chips = el("div", "mechips");
   chips.append(el("span", me.is_admin ? "tag ok" : "tag", me.is_admin ? "Admin" : "Learner"));
   chips.append(el("span", api.LIVE ? "tag ok" : "tag demo", api.LIVE ? "Live" : "Demo"));
-  chips.append(el("span", "tag ok", streakLabel()));
+  const sc = el("span", "tag ok", streakLabel());
+  sc.dataset.streak = "1";
+  chips.append(sc);
   panel.append(chips);
 
   const cleared = LESSONS.filter((l) => PROGRESS[l.id]);
@@ -1404,6 +1710,9 @@ function profilePanel() {
   panel.append(body);
 
   const foot = el("div", "mefoot");
+  const db = el("button", "btn ghost sm", "Doubts");
+  db.onclick = () => { togglePanel(false); location.hash = "doubts"; };
+  foot.append(db);
   if (me.is_admin) {
     const a = el("button", "btn ghost sm", "Admin");
     a.onclick = () => { togglePanel(false); location.hash = "admin"; };
@@ -1494,12 +1803,22 @@ function reachId(track, section) {
   const me = api.session();
   return (me ? me.id : "?") + "|" + track + "|" + section;
 }
-function getReach(track, section) { return reachAll()[reachId(track, section)] || 0; }
+// The profile row is the record; this browser's copy is a cache and a one-time
+// migration source for reach saved before it moved to the database.
+function getReach(track, section) {
+  const me = api.session(), k = track + "|" + section;
+  const db = (me && me.reach && me.reach[k]) || 0;
+  const local = reachAll()[reachId(track, section)] || 0;
+  if (local > db) api.saveReach(k, local);
+  return Math.max(db, local);
+}
 function setReach(track, section, i) {
   const m = reachAll(), k = reachId(track, section);
-  if ((m[k] || 0) >= i) return;
-  m[k] = i;
-  try { localStorage.setItem(REACH_KEY, JSON.stringify(m)); } catch (e) {}
+  if ((m[k] || 0) < i) {
+    m[k] = i;
+    try { localStorage.setItem(REACH_KEY, JSON.stringify(m)); } catch (e) {}
+  }
+  api.saveReach(track + "|" + section, i);
 }
 const SVGNS = "http://www.w3.org/2000/svg";
 
@@ -2031,10 +2350,24 @@ async function renderAdmin() {
   }
 
   const head = el("div", "head");
-  head.append(el("h1", null, "Who gets in"));
+  head.append(el("h1", null, "Learners"));
   head.append(el("p", null,
-    "Everyone who verifies their email gets in. Block an account to lock it out of the lessons; restore it to let it back in."));
+    "Everyone who verifies their email gets in. Block an account to lock it out; restore it to let it back in. You are the only admin."));
   wrap.append(head);
+
+  try {
+    const waiting = (await api.doubtsFeed()).filter((d) => d.needs_admin).length;
+    if (waiting) {
+      const esc = el("div", "esc");
+      esc.append(document.createTextNode(waiting + (waiting === 1 ? " doubt has" : " doubts have") +
+        " had no reply for 12 hours and " + (waiting === 1 ? "is" : "are") + " waiting on you. "));
+      const go = el("button", "linkbtn", "Open doubts");
+      go.onclick = () => { DOUBT_FILTER = "admin"; location.hash = "doubts"; };
+      esc.append(go);
+      esc.style.marginBottom = "18px";
+      wrap.append(esc);
+    }
+  } catch (e) {}
 
   const users = await api.listUsers();
   const box = el("div", "tblwrap");
@@ -2042,15 +2375,17 @@ async function renderAdmin() {
     box.append(el("p", "empty", "No accounts yet."));
   } else {
     const table = el("table");
-    table.innerHTML = "<thead><tr><th>Person</th><th>Status</th><th>Role</th><th></th></tr></thead>";
+    table.innerHTML = "<thead><tr><th>Person</th><th>Cleared</th><th>Streak</th><th>Last seen</th><th>Status</th><th>Role</th><th></th></tr></thead>";
     const tb = el("tbody");
     users.forEach((u) => {
       const tr = el("tr");
       const who = el("td");
-      if (u.full_name) who.append(el("div", null, u.full_name));
+      who.append(el("div", null, u.handle || "No code name yet"));
       who.append(el("div", "email note", u.email));
-      if (u.reason) { const r = el("div", "note", "“" + u.reason + "”"); r.style.marginTop = "4px"; who.append(r); }
       tr.append(who);
+      tr.append(el("td", null, String(u.cleared || 0)));
+      tr.append(el("td", null, (u.streak || 0) + "d"));
+      tr.append(el("td", "note", u.last_seen ? timeAgo(u.last_seen) : "—"));
       const st = el("td");
       st.append(el("span", u.approved ? "tag ok" : "tag demo", u.approved ? "Active" : "Blocked"));
       tr.append(st, el("td", null, u.is_admin ? "Admin" : "Learner"));
@@ -2086,12 +2421,386 @@ async function renderAdmin() {
   root.append(wrap);
 }
 
+/* ================================================================ doubts */
+let PAGE_SUBS = [];          // unsubscribers for the current screen
+let DOUBT_FILTER = "all";
+let LAST_LESSON = null;       // pre-fills "which lesson?" when you ask from a lesson
+
+function timeAgo(iso) {
+  const sec = Math.max(0, (Date.now() - Date.parse(iso)) / 1000);
+  if (sec < 60) return "just now";
+  if (sec < 3600) return Math.floor(sec / 60) + "m ago";
+  if (sec < 86400) return Math.floor(sec / 3600) + "h ago";
+  return Math.floor(sec / 86400) + "d ago";
+}
+
+let ONLINE = new Map();
+function whoChip(handle, uid, isAdmin) {
+  const w = el("span", "whochip");
+  w.dataset.uid = uid;
+  const on = ONLINE.has(uid);
+  w.append(el("span", "odot" + (on ? " on" : "")), el("span", null, handle || "New member"));
+  w.title = on ? "Online now" : "Offline";
+  if (isAdmin) w.append(el("span", "tag ok", "Admin"));
+  return w;
+}
+function paintDots() {
+  document.querySelectorAll(".whochip[data-uid]").forEach((w) => {
+    const on = ONLINE.has(w.dataset.uid);
+    w.querySelector(".odot").classList.toggle("on", on);
+    w.title = on ? "Online now" : "Offline";
+  });
+}
+
+function doubtsButton() {
+  const b = el("button", "btn ghost sm doubtsbtn", "Doubts");
+  b.onclick = () => { location.hash = "doubts"; };
+  const me = api.session();
+  if (me && me.is_admin) {
+    api.doubtsFeed().then((f) => {
+      const n = f.filter((d) => d.needs_admin).length;
+      if (!n) return;
+      const c = el("span", "badge", String(n));
+      b.setAttribute("aria-label", "Doubts, " + n + " waiting on you");
+      b.append(c);
+    }).catch(() => {});
+  }
+  return b;
+}
+
+function onlinePanel() {
+  const box = el("div", "panel");
+  box.append(el("h2", null, "Online now"));
+  const count = el("p", "oncount");
+  const list = el("div", "onlist");
+  list.setAttribute("aria-live", "polite");
+  box.append(count, list);
+  PAGE_SUBS.push(api.onOnline((m) => {
+    ONLINE = new Map(m);
+    count.textContent = m.size === 1 ? "Just you right now." : m.size + " people on PyML";
+    list.innerHTML = "";
+    m.forEach((v, uid) => list.append(whoChip(v.handle, uid, false)));
+    paintDots();
+  }));
+  return box;
+}
+
+function handleCard(onDone, current) {
+  const box = el("div", "panel");
+  box.append(el("h2", null, current ? "Change your code name" : "Pick your code name"));
+  box.append(el("p", "note", "This is how everyone in Doubts sees you. It always starts with AIM-, then the name you choose."));
+  const form = el("form");
+  form.noValidate = true;
+  form.style.marginTop = "14px";
+  const f = el("div", "field");
+  const lab = el("label", null, "Code name");
+  lab.htmlFor = "handle";
+  const hb = el("div", "handlebox");
+  const input = el("input");
+  input.id = "handle"; input.type = "text"; input.autocomplete = "nickname";
+  input.maxLength = 16; input.placeholder = "Asish";
+  input.value = current ? current.replace(/^AIM-/, "") : "";
+  input.setAttribute("aria-describedby", "handle-hint handle-err");
+  hb.append(el("span", "pre", "AIM-"), input);
+  const hint = el("p", "hint", "3 to 16 letters, numbers or underscores.");
+  hint.id = "handle-hint";
+  const ferr = el("p", "ferr");
+  ferr.id = "handle-err";
+  ferr.setAttribute("aria-live", "polite");
+  f.append(lab, hb, hint, ferr);
+  const btn = el("button", "btn", "Save code name");
+  btn.type = "submit";
+  form.append(f, btn);
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+    ferr.textContent = "";
+    if (!api.HANDLE_RE.test(input.value.trim())) {
+      ferr.textContent = "Use 3 to 16 letters, numbers or underscores.";
+      input.setAttribute("aria-invalid", "true"); input.focus(); return;
+    }
+    busyButton(btn, "Saving");
+    const r = await api.setHandle(input.value);
+    if (!r.ok) {
+      ferr.textContent = r.error; input.setAttribute("aria-invalid", "true");
+      btn.disabled = false; btn.textContent = "Save code name"; return;
+    }
+    onDone();
+  };
+  box.append(form);
+  return box;
+}
+
+function askCard(onAsked) {
+  const box = el("div", "panel");
+  box.append(el("h2", null, "Ask a doubt"));
+  const form = el("form");
+  form.noValidate = true;
+  form.style.marginTop = "12px";
+  const mk = (id, label, tag) => {
+    const f = el("div", "field");
+    const l = el("label", null, label); l.htmlFor = id;
+    const i = el(tag); i.id = id;
+    f.append(l, i);
+    return [f, i];
+  };
+  const [ft, title] = mk("d-title", "What are you stuck on?", "input");
+  title.type = "text"; title.maxLength = 140; title.placeholder = "e.g. Why does my loop print one extra line?";
+  const [fb, body] = mk("d-body", "Details (optional)", "textarea");
+  body.maxLength = 4000; body.placeholder = "Paste your code or the error you see.";
+  const [fl, lesson] = mk("d-lesson", "Which lesson? (optional)", "select");
+  lesson.append(new Option("Not about a specific lesson", ""));
+  LESSONS.filter((l) => !trackMeta(l.track).locked).forEach((l) => lesson.append(new Option(l.title, l.id)));
+  const here = LESSONS.find((l) => l.id === LAST_LESSON);
+  if (here) lesson.value = here.id;
+  const btn = el("button", "btn", "Post doubt");
+  btn.type = "submit";
+  const err = el("p", "err"); err.setAttribute("role", "alert");
+  form.append(ft, fb, fl, btn, err);
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+    err.textContent = "";
+    if (title.value.trim().length < 5) { err.textContent = "Give it a title of at least 5 characters."; title.focus(); return; }
+    busyButton(btn, "Posting");
+    const r = await api.askDoubt({ title: title.value, body: body.value, lesson_id: lesson.value });
+    if (!r.ok) { err.textContent = r.error; btn.disabled = false; btn.textContent = "Post doubt"; return; }
+    location.hash = "doubt-" + r.id;
+  };
+  box.append(form);
+  return box;
+}
+
+function doubtTags(d) {
+  const t = [];
+  if (d.resolved) t.push(el("span", "tag ok", "Resolved"));
+  else if (d.needs_admin) t.push(el("span", "tag demo", "Sent to admin"));
+  if (d.admin_replied) t.push(el("span", "tag ok", "Admin replied"));
+  return t;
+}
+
+async function renderDoubts() {
+  const me = api.session();
+  root.innerHTML = "";
+  root.append(topBar());
+  const wrap = el("div", "wrap");
+  const head = el("div", "head");
+  head.append(el("h1", null, "Doubts"));
+  head.append(el("p", null,
+    "Stuck? Ask here and anyone on PyML can answer. If nobody replies within 12 hours, your doubt goes straight to the admin."));
+  wrap.append(head);
+
+  const grid = el("div", "dgrid");
+  const main = el("div", "dmain");
+  const side = el("aside", "dside");
+  side.setAttribute("aria-label", "Who is online");
+  grid.append(main, side);
+  wrap.append(grid);
+  root.append(wrap);
+  side.append(onlinePanel());
+
+  if (!me.handle) {
+    main.append(handleCard(() => renderDoubts()));
+  } else {
+    const you = el("div", "youare");
+    you.append(document.createTextNode("You post as "), whoChip(me.handle, me.id, me.is_admin));
+    const ch = el("button", "linkbtn", "Change");
+    ch.onclick = () => { you.replaceWith(handleCard(() => renderDoubts(), me.handle)); };
+    you.append(ch);
+    main.append(you, askCard());
+  }
+
+  const chips = el("div", "fchips");
+  chips.setAttribute("role", "group");
+  chips.setAttribute("aria-label", "Filter doubts");
+  const list = el("div", "dlist");
+  main.append(chips, list);
+
+  let feed = [];
+  const filters = [
+    ["all", "All", () => true],
+    ["open", "Unanswered", (d) => !d.resolved && d.replies === 0],
+    ["mine", "Mine", (d) => d.user_id === me.id],
+  ];
+  if (me.is_admin) filters.push(["admin", "Waiting on you", (d) => d.needs_admin]);
+  if (!filters.some((f) => f[0] === DOUBT_FILTER)) DOUBT_FILTER = "all";
+
+  const paint = () => {
+    chips.innerHTML = "";
+    filters.forEach(([key, label, fn]) => {
+      const b = el("button", "fchip");
+      b.type = "button";
+      b.setAttribute("aria-pressed", DOUBT_FILTER === key ? "true" : "false");
+      b.append(document.createTextNode(label), el("span", "n", String(feed.filter(fn).length)));
+      b.onclick = () => { DOUBT_FILTER = key; paint(); };
+      chips.append(b);
+    });
+    const fn = filters.find((f) => f[0] === DOUBT_FILTER)[2];
+    const shown = feed.filter(fn);
+    list.innerHTML = "";
+    if (!shown.length) {
+      list.append(el("p", "empty", feed.length ? "Nothing in this filter." : "No doubts yet. Be the first to ask."));
+      return;
+    }
+    shown.forEach((d) => {
+      const c = el("button", "dcard");
+      c.type = "button";
+      c.onclick = () => { location.hash = "doubt-" + d.id; };
+      c.append(el("h3", null, d.title));
+      const meta = el("div", "dmeta");
+      meta.append(whoChip(d.handle, d.user_id, false), el("span", null, timeAgo(d.created_at)),
+        el("span", null, d.replies === 1 ? "1 reply" : d.replies + " replies"), ...doubtTags(d));
+      c.append(meta);
+      list.append(c);
+    });
+  };
+
+  const load = async () => {
+    try { feed = await api.doubtsFeed(); }
+    catch (e) { list.innerHTML = ""; list.append(el("p", "empty", "Could not load doubts: " + e.message)); return; }
+    paint();
+  };
+  list.append(el("p", "empty", "Loading doubts…"));
+  await load();
+  PAGE_SUBS.push(api.onChanged(load));
+}
+
+async function renderThread(id) {
+  const me = api.session();
+  root.innerHTML = "";
+  root.append(topBar());
+  const wrap = el("div", "wrap");
+  const grid = el("div", "dgrid");
+  const main = el("div", "dmain dthread");
+  const side = el("aside", "dside");
+  grid.append(main, side);
+  wrap.append(grid);
+  root.append(wrap);
+  side.append(onlinePanel());
+
+  const back = el("button", "backlink", "← All doubts");
+  back.onclick = () => { location.hash = "doubts"; };
+  main.append(back);
+
+  const top = el("div", "panel");
+  const replies = el("div", "panel");
+  replies.setAttribute("aria-label", "Replies");
+  main.append(top, replies);
+
+  const paintTop = (d) => {
+    top.innerHTML = "";
+    top.append(el("h1", null, d.title));
+    const meta = el("div", "dmeta");
+    meta.append(whoChip(d.handle, d.user_id, false), el("span", null, timeAgo(d.created_at)), ...doubtTags(d));
+    const l = d.lesson_id && LESSONS.find((x) => x.id === d.lesson_id);
+    if (l) {
+      const a = el("button", "linkbtn", "Lesson: " + l.title);
+      a.onclick = () => { location.hash = l.id; };
+      meta.append(a);
+    }
+    top.append(meta);
+    if (d.body) { const b = el("p", "dbody", d.body); b.style.marginTop = "14px"; top.append(b); }
+    if (d.needs_admin) {
+      top.append(el("div", "esc", me.is_admin
+        ? "Nobody has answered this for 12 hours. It is waiting on you."
+        : "Nobody answered within 12 hours, so this has gone to the admin."));
+    }
+    const mine = d.user_id === me.id;
+    if (mine || me.is_admin) {
+      const acts = el("div", "dactions");
+      const res = el("button", "btn ghost sm", d.resolved ? "Reopen" : "Mark resolved");
+      res.onclick = async () => {
+        res.disabled = true;
+        const r = await api.setResolved(d.id, !d.resolved);
+        if (!r.ok) { res.disabled = false; res.textContent = r.error; return; }
+        load();
+      };
+      // two-step delete instead of a confirm() dialog
+      const del = el("button", "btn danger sm", "Delete");
+      let armed = null;
+      del.onclick = async () => {
+        if (!armed) {
+          del.textContent = "Click again to delete";
+          armed = setTimeout(() => { armed = null; del.textContent = "Delete"; }, 4000);
+          return;
+        }
+        clearTimeout(armed);
+        del.disabled = true;
+        const r = await api.deleteDoubt(d.id);
+        if (!r.ok) { del.disabled = false; del.textContent = r.error; return; }
+        location.hash = "doubts";
+      };
+      acts.append(res, del);
+      top.append(acts);
+    }
+  };
+
+  const list = el("div");
+  replies.append(el("h2", null, "Replies"), list);
+  const form = el("form");
+  form.noValidate = true;
+  form.style.marginTop = "16px";
+  if (me.handle) {
+    const f = el("div", "field");
+    const lab = el("label", null, "Your reply");
+    lab.htmlFor = "r-body";
+    const ta = el("textarea");
+    ta.id = "r-body"; ta.maxLength = 4000;
+    f.append(lab, ta);
+    const btn = el("button", "btn", "Post reply");
+    btn.type = "submit";
+    const err = el("p", "err"); err.setAttribute("role", "alert");
+    form.append(f, btn, err);
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+      err.textContent = "";
+      if (!ta.value.trim()) { err.textContent = "Write a reply first."; ta.focus(); return; }
+      busyButton(btn, "Posting");
+      const r = await api.replyDoubt(id, ta.value);
+      btn.disabled = false; btn.textContent = "Post reply";
+      if (!r.ok) { err.textContent = r.error; return; }
+      ta.value = "";
+      load();
+    };
+    replies.append(form);
+  } else {
+    replies.append(handleCard(() => renderThread(id)));
+  }
+
+  const load = async () => {
+    let feed, rs;
+    try { [feed, rs] = await Promise.all([api.doubtsFeed(), api.doubtThread(id)]); }
+    catch (e) { list.innerHTML = ""; list.append(el("p", "empty", "Could not load: " + e.message)); return; }
+    const d = feed.find((x) => x.id === id);
+    if (!d) {
+      top.innerHTML = "";
+      top.append(el("p", "empty", "This doubt was deleted or does not exist."));
+      replies.remove();
+      return;
+    }
+    paintTop(d);
+    list.innerHTML = "";
+    if (!rs.length) list.append(el("p", "note", "No replies yet. Know the answer? Help them out."));
+    rs.forEach((r) => {
+      const item = el("div", "reply");
+      const meta = el("div", "dmeta");
+      meta.append(whoChip(r.handle, r.user_id, r.is_admin), el("span", null, timeAgo(r.created_at)));
+      item.append(meta, el("p", "dbody", r.body));
+      list.append(item);
+    });
+    paintDots();
+  };
+  await load();
+  PAGE_SUBS.push(api.onChanged(load));
+}
+
 /* =================================================================== main */
 async function render() {
   const me = api.session();
   if (!me) return renderAuth();
   if (!me.approved) return renderPending();
   touchStreak();
+  api.startPresence();
+  PAGE_SUBS.forEach((off) => off());
+  PAGE_SUBS = [];
 
   if (!LESSONS.length) {
     try { LESSONS = await api.lessons(); } catch (e) {
@@ -2111,10 +2820,13 @@ async function render() {
   }
   const id = location.hash.slice(1);
   if (id === "admin") return renderAdmin();
+  if (id === "doubts") return renderDoubts();
+  const dm = /^doubt-(\d+)$/.exec(id);
+  if (dm) return renderThread(Number(dm[1]));
   if (TRACKS.some((t) => t.id === id && !t.locked)) { courseDark(); return renderTracks(id); }
   const l = LESSONS.find((x) => x.id === id);
   if (l && trackMeta(l.track).locked) { location.hash = ""; return renderHub(); }
-  if (l) { courseDark(); return renderLesson(l); }
+  if (l) { LAST_LESSON = l.id; courseDark(); return renderLesson(l); }
   renderHub();
 }
 

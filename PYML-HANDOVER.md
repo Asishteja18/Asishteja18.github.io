@@ -73,6 +73,35 @@ purpose — learners build a perceptron and backprop by hand, and it avoids a
 - Codes from a Gmail sender get rewritten to `…@…brevosend.com` and tend to land
   in spam; a verified domain in Brevo is the fix.
 
+## v2 (17 Nov 2026): stats in the DB, one admin, code names, doubts
+
+- [stated] Asish asked: store user stats in the database; only
+  asishtejavinnakota@gmail.com is admin, everyone else a normal user; a Doubts
+  section where users ask and chat; unanswered for 12h goes to the admin; show
+  who is online; code names = "AIM" prefix + their own name; test before deploying.
+- Before v2 the progress table had 0 rows for 2 users and streak/snake reach were
+  browser-only. Now on `profiles`: `streak`, `streak_day`, `reach` (jsonb),
+  `last_seen`, `handle`. Written only via RPCs `touch_streak(today)`,
+  `set_reach(k,n)`, `set_handle(name)` so users can never touch role/block.
+  `setDone` now reports upsert errors. Old browser-saved reach migrates up on read.
+- Admin lock: trigger `lock_admin` sets `is_admin` from the auth email on every
+  insert/update; the admin is always approved (cannot block themself).
+- Code names: `AIM-` + 3–16 of [A-Za-z0-9_], unique case-insensitively.
+- Doubts: tables `doubts`, `doubt_replies`; column-level grants (users cannot set
+  `created_at`/`user_id`); RLS needs active + code name to post. Read via RPCs
+  `doubts_feed()` (adds `needs_admin` = unresolved, >12h, no reply from anyone
+  but the author; `admin_replied`) and `doubt_thread(did)`. Author/admin can
+  resolve/delete (two-click delete, no confirm dialog).
+- Online status + live refresh: one Supabase Realtime channel `pyml-online`
+  (presence keyed by user id, plus a "changed" broadcast). Demo mode uses a
+  BroadcastChannel heartbeat; demo login is now per tab (sessionStorage).
+- Admin page: code name, cleared count, streak, last seen per learner, plus a
+  banner and top-bar badge for doubts waiting on the admin. Escalation is
+  in-app only (no email; would need a Brevo API key + pg_cron).
+- Tests: `tests/test_v2.py` (28 browser checks, 2 users at once) and
+  `tests/db_tests.sql` (17 RLS/permission checks run in a rolled-back
+  transaction on the live DB) all passed before deploy.
+
 ## How to run it
 
 ```bash
