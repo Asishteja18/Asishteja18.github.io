@@ -18,6 +18,9 @@ from pathlib import Path
 
 import markdown
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from build_notes import GH_VIEW, filename as note_filename  # noqa: E402
+
 FENCE = "`" * 3
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -348,6 +351,7 @@ def build_day(n, title, body, files):
         "section": next(s[3] for s in SECTIONS if s[0] <= n <= s[1]),
         "meta": meta,
         "objectives": [],
+        "notes": {"path": "notes/" + note_filename(n, title), "github": GH_VIEW + note_filename(n, title)},
         "sections": sections,
         "exercise": {
             "kind": "pytest",

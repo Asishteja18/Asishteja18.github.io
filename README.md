@@ -49,6 +49,9 @@ bento cards, GSAP staggered entrances (CSS fallback; reduced-motion respected).
 | `index.html` | The app: styles, code and the 24 warm-up lessons inlined. This is what GitHub Pages serves. |
 | `content/ai90.json` | The 90 AI-90 days, **generated** — don't edit by hand. |
 | `syllabus/AI90_MASTER.md` | The AI-90 source of truth (notes, visuals, tests, solutions). Edit this. |
+| `notes/` | **90 per-day notes** (`dayNN-<topic>.md`) + `README.md` library + `links.json`, **generated** — read on GitHub or download from `telugucoders.com/notes/…`. Each AI-90 day page links to its note. |
+| `tools/build_notes.py` | `python3 tools/build_notes.py` → rebuilds `notes/` from the master file. Run it before `build_ai90.py`. |
+| `tests/test_notes_links.py` | Browser test of the per-day notes links (desktop + phone, 31 checks). |
 | `tools/build_ai90.py` | `python3 tools/build_ai90.py` → rebuilds `content/ai90.json` (needs `pip install markdown`). |
 | `assets/viz-*.js` | The interactive illustrations (core + Python, ML, AI) and their data. |
 | `tests/ai90_pyodide.mjs` | Runs all 90 days in real Pyodide: `node tests/ai90_pyodide.mjs <pyodide-dist> solutions` (307/307) or `starters` (no crashes). |
