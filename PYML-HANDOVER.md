@@ -129,7 +129,7 @@ purpose — learners build a perceptron and backprop by hand, and it avoids a
   bottom: first line = title, Enter sends, Shift+Enter newline. Thread = chat
   with the question as the first bubble. Sidebar: online, your level, top solvers.
 - Points: only via RPC `accept_answer(did, rid)` — asker or admin picks; never
-  your own reply (admin included); +20 to the reply's author, moved if the
+  your own reply (admin included); +20 (now +2, see v4) to the reply's author, moved if the
   solution changes, revoked if the solved doubt or reply is deleted.
   `profiles.points/solved_count/best_streak`, `doubts.solved_reply_id`.
 - Tiers: Newbie 0, Bronze 100, Silver 500, Gold 1500, Platinum 3000, Diamond
@@ -407,3 +407,15 @@ Hub is now a bento grid (3 stages, Next up, 90-cell journey, level, streak, doub
 
 Tests: `tests/test_ai90_site.py` (40 checks) + the old `test_v3.py` and
 `test_lesson_ask.py` all pass on a demo copy (blank SUPABASE_URL).
+
+## v4 points (17 Nov 2026)
+
+- [stated] Asish: +5 points for each day of progress, +2 for clearing a doubt, to keep it fair.
+- Points = 5 × lessons/days cleared + 2 × doubts solved, recomputed by
+  `recalc_points(uid)` (trigger on `progress` insert/update/delete, and from
+  `accept_answer` and both revoke triggers). Only real ids count (`d01`–`d90`,
+  the 24 warm-ups), so fake progress rows earn nothing. Top solvers now ranks by
+  doubts solved. Applied to the live DB as a delta (the full schema file is not
+  cleanly re-runnable: `doubts_feed` changed return type in v3); everyone backfilled.
+- Tests: `tests/db_tests.sql` now 29 checks (all passed, rolled back), test_v3 and
+  test_ai90_site updated and passing. Demo mode mirrors it in `demoPoints()`.

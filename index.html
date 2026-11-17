@@ -1356,6 +1356,8 @@ async function setDone(lessonId, completed) {
   const p = await getProgress();
   p[lessonId] = completed;
   try { localStorage.setItem("pyml.progress." + me.id, JSON.stringify(p)); } catch {}
+  const s = demo.read(), u = s.users[me.id];
+  if (u) { demoPoints(u); demo.write(s); me.points = u.points; }
 }
 
 
@@ -1525,7 +1527,7 @@ async function deleteDoubt(id) {
     if (d.solved_reply_id) {
       const prev = s.replies.find((r) => r.id === d.solved_reply_id);
       const pu = prev && s.users[prev.user_id];
-      if (pu) { pu.points = Math.max((pu.points || 0) - 20, 0); pu.solved_count = Math.max((pu.solved_count || 0) - 1, 0); }
+      if (pu) { pu.solved_count = Math.max((pu.solved_count || 0) - 1, 0); demoPoints(pu); }
     }
     s.doubts = s.doubts.filter((x) => x.id !== id);
     s.replies = s.replies.filter((r) => r.doubt_id !== id);
@@ -1604,7 +1606,17 @@ function onOnline(f) { onlineSubs.add(f); f(online); return () => onlineSubs.del
 function onChanged(f) { changeSubs.add(f); return () => changeSubs.delete(f); }
 
 /* ---------------------------------------------------- points & activity */
-const SOLVE_POINTS = 20;
+// Points: +5 per lesson or AI-90 day cleared, +2 per doubt solved. Always
+// recomputed from the facts (the database does the same in recalc_points).
+const SOLVE_POINTS = 2, LESSON_POINTS = 5;
+const POINT_LESSON = /^(d(0[1-9]|[1-8][0-9]|90)|py-0[1-8]|py-intro|py-what|ml-0[1-8]|ai-0[1-6])$/;
+function demoPoints(u) {
+  let p = {};
+  try { p = JSON.parse(localStorage.getItem("pyml.progress." + u.email)) || {}; } catch (e) {}
+  const cleared = Object.keys(p).filter((k) => p[k] && POINT_LESSON.test(k)).length;
+  u.points = LESSON_POINTS * cleared + SOLVE_POINTS * (u.solved_count || 0);
+  return u;
+}
 
 async function acceptAnswer(did, rid) {
   if (LIVE) {
@@ -1620,11 +1632,11 @@ async function acceptAnswer(did, rid) {
     if (d.solved_reply_id !== rid) {
       if (d.solved_reply_id) {
         const prev = s.replies.find((x) => x.id === d.solved_reply_id), pu = prev && s.users[prev.user_id];
-        if (pu) { pu.points = Math.max((pu.points || 0) - SOLVE_POINTS, 0); pu.solved_count = Math.max((pu.solved_count || 0) - 1, 0); }
+        if (pu) { pu.solved_count = Math.max((pu.solved_count || 0) - 1, 0); demoPoints(pu); }
       }
       const u = s.users[r.user_id];
-      u.points = (u.points || 0) + SOLVE_POINTS;
       u.solved_count = (u.solved_count || 0) + 1;
+      demoPoints(u);
       d.solved_reply_id = rid;
       d.resolved = true;
       demo.write(s);
@@ -1671,8 +1683,8 @@ async function topSolvers() {
     return data || [];
   }
   return Object.values(demo.read().users)
-    .filter((u) => u.handle && (u.points || 0) > 0 && u.approved)
-    .sort((a, b) => (b.points || 0) - (a.points || 0)).slice(0, 10)
+    .filter((u) => u.handle && (u.solved_count || 0) > 0 && u.approved)
+    .sort((a, b) => (b.solved_count || 0) - (a.solved_count || 0) || (b.points || 0) - (a.points || 0)).slice(0, 10)
     .map((u) => ({ user_id: u.email, handle: u.handle, points: u.points || 0, solved_count: u.solved_count || 0 }));
 }
 
@@ -1681,7 +1693,7 @@ const api = { LIVE, DEMO_ACCOUNTS, init, session, signUp, verifyCode, resendCode
               touchStreak: touchStreakDb, saveReach, setHandle, HANDLE_RE,
               doubtsFeed, doubtThread, askDoubt, replyDoubt, setResolved, deleteDoubt,
               startPresence, onOnline, onChanged,
-              acceptAnswer, logTime, myActivity, refreshMe, topSolvers, SOLVE_POINTS };
+              acceptAnswer, logTime, myActivity, refreshMe, topSolvers, SOLVE_POINTS, LESSON_POINTS };
 
 
 
@@ -2366,7 +2378,7 @@ function renderHub() {
   dc.onclick = () => { location.hash = "doubts"; };
   dc.setAttribute("aria-label", "Open doubts group chat");
   dc.append(el("span", "blabel", "Doubts"));
-  dc.append(el("b", "btitle2", "Ask. Answer. +20 points."));
+  dc.append(el("b", "btitle2", "Ask. Answer. +2 points."));
   const on = el("span", "bsub", "Group chat for every lesson");
   dc.append(on);
   PAGE_SUBS.push(api.onOnline((m) => { on.textContent = (m.size || 1) + " online now · unsolved doubts are pinned"; }));
@@ -3382,6 +3394,7 @@ function renderLesson(l) {
         done.hidden = false;
         PROGRESS[l.id] = true;
         await api.setDone(l.id, true);
+        await api.refreshMe();
       }
     }
     run.disabled = false;
@@ -3759,7 +3772,7 @@ function sidePanels(side) {
     (t.next ? (t.next.min - (me.points || 0)) + " to " + t.next.name : "Top level reached")));
   card.append(tierBadge(me.points || 0, 52), info);
   lv.append(card);
-  const how = el("p", "note", "Solve doubts to level up: +" + api.SOLVE_POINTS + " when your reply is marked as the solution.");
+  const how = el("p", "note", "Level up: +" + api.LESSON_POINTS + " for every lesson or day you clear, +" + api.SOLVE_POINTS + " when your reply is marked as the solution.");
   how.style.marginTop = "10px";
   const more = el("button", "linkbtn", "Your progress");
   more.onclick = () => { location.hash = "me"; };
@@ -4220,7 +4233,7 @@ async function renderProgress() {
   // ladder
   const lad = el("div", "panel laddercard");
   lad.style.marginTop = "16px";
-  lad.append(el("h2", null, "Levels"), el("p", "note", "Every solved doubt is +" + api.SOLVE_POINTS + " points."));
+  lad.append(el("h2", null, "Levels"), el("p", "note", "+" + api.LESSON_POINTS + " points for every lesson or day cleared, +" + api.SOLVE_POINTS + " for every doubt you solve."));
   const ll = el("div", "ladder");
   TIERS.forEach((tt, i) => {
     const r = el("div", "rung" + (i === t.idx ? " now" : i > t.idx ? " locked" : ""));
@@ -4232,7 +4245,7 @@ async function renderProgress() {
 }
 
 /* ================================================================ levels */
-// Points come only from solving doubts (+20 each); the streak is separate.
+// Points: +5 per lesson/day cleared, +2 per solved doubt; the streak is separate.
 const TIERS = [
   { name: "Newbie",      min: 0,     c1: "#B9AFA4", c2: "#6E655C" },
   { name: "Bronze",      min: 100,   c1: "#F0B27A", c2: "#9A5B2A" },

@@ -81,7 +81,9 @@ reset role;
 -- ================================================================== v3 checks
 -- learner asks, admin answers, learner marks the solution
 update profiles set approved = true where id = current_setting('t.l')::uuid;
-update profiles set points = 0, solved_count = 0 where id in (current_setting('t.a')::uuid, current_setting('t.l')::uuid);
+delete from progress where user_id in (current_setting('t.a')::uuid, current_setting('t.l')::uuid) and lesson_id <> 'zz-test-lesson';
+update profiles set solved_count = 0 where id in (current_setting('t.a')::uuid, current_setting('t.l')::uuid);
+select recalc_points(current_setting('t.a')::uuid), recalc_points(current_setting('t.l')::uuid);
 set local role authenticated;
 select set_config('request.jwt.claims', json_build_object('sub', current_setting('t.l'), 'role', 'authenticated')::text, true);
 insert into doubts (title) values ('ZZ v3 doubt');
@@ -103,7 +105,7 @@ do $$ declare did bigint; rid bigint; own bigint; begin
   -- T19 the asker cannot mark their own reply
   begin perform accept_answer(did, own); raise exception 'T19 own reply accepted';
   exception when raise_exception then if sqlerrm like 'T19%' then raise; end if; end;
-  -- T20 the asker marks the admin's reply: +20 to the admin, doubt resolved
+  -- T20 the asker marks the admin's reply: +2 to the admin, doubt resolved
   perform accept_answer(did, rid);
   perform accept_answer(did, rid);   -- twice is a no-op
   -- T21 learners cannot write points or activity directly
@@ -119,7 +121,7 @@ do $$ declare did bigint; rid bigint; own bigint; begin
 end $$;
 reset role;
 do $$ begin
-  if (select points from profiles where id = current_setting('t.a')::uuid) <> 20 then raise exception 'T20 solver points %', (select points from profiles where id = current_setting('t.a')::uuid); end if;
+  if (select points from profiles where id = current_setting('t.a')::uuid) <> 2 then raise exception 'T20 solver points %', (select points from profiles where id = current_setting('t.a')::uuid); end if;
   if (select points from profiles where id = current_setting('t.l')::uuid) <> 0 then raise exception 'T20 asker got points'; end if;
   if not (select resolved from doubts where title = 'ZZ v3 doubt') then raise exception 'T20 not resolved'; end if;
   if (select best_streak from profiles where id = current_setting('t.l')::uuid) < 1 then raise exception 'T23 best streak'; end if;
@@ -128,10 +130,36 @@ end $$;
 set local role authenticated;
 select set_config('request.jwt.claims', json_build_object('sub', current_setting('t.l'), 'role', 'authenticated')::text, true);
 do $$ begin
-  if (select count(*) from top_solvers() where points = 20) <> 1 then raise exception 'T25 leaderboard'; end if;
+  if (select count(*) from top_solvers() where points = 2 and solved_count = 1) <> 1 then raise exception 'T25 leaderboard'; end if;
 end $$;
 delete from doubts where title = 'ZZ v3 doubt';
 reset role;
 do $$ begin
   if (select points from profiles where id = current_setting('t.a')::uuid) <> 0 then raise exception 'T24 points not revoked'; end if;
+end $$;
+
+-- ================================================================== v4 points: +5 per lesson/day cleared
+set local role authenticated;
+select set_config('request.jwt.claims', json_build_object('sub', current_setting('t.l'), 'role', 'authenticated')::text, true);
+insert into progress (user_id, lesson_id, completed) values (auth.uid(), 'd01', true);
+insert into progress (user_id, lesson_id, completed) values (auth.uid(), 'py-intro', true);
+insert into progress (user_id, lesson_id, completed) values (auth.uid(), 'd01', true)
+  on conflict (user_id, lesson_id) do update set completed = true;                     -- same day again
+insert into progress (user_id, lesson_id, completed) values (auth.uid(), 'd91', true); -- not a real day
+insert into progress (user_id, lesson_id, completed) values (auth.uid(), 'zz-farm-1', true);
+update profiles set points = 99999 where id = auth.uid();                              -- T28: must not stick
+do $$ begin
+  -- T26 two real lessons cleared = 10; repeats and fake ids add nothing
+  if (select points from profiles where id = auth.uid()) <> 10 then raise exception 'T26 lesson points %', (select points from profiles where id = auth.uid()); end if;
+end $$;
+delete from progress where user_id = auth.uid() and lesson_id = 'd01';
+do $$ begin
+  -- T27 un-clearing takes the 5 back
+  if (select points from profiles where id = auth.uid()) <> 5 then raise exception 'T27 points after delete %', (select points from profiles where id = auth.uid()); end if;
+end $$;
+reset role;
+do $$ begin
+  -- T28 a learner can't write points directly; T29 leaderboard ignores lesson-only points
+  if (select points from profiles where id = current_setting('t.l')::uuid) <> 5 then raise exception 'T28 points written directly'; end if;
+  if exists (select 1 from top_solvers() where user_id = current_setting('t.l')::uuid) then raise exception 'T29 non-solver on leaderboard'; end if;
 end $$;

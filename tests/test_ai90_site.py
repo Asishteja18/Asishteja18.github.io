@@ -152,7 +152,8 @@ async def main():
         st = await run_tests(pg)
         check("5/5 passing" in st, "Day 1 reference solution passes 5/5 (%s)" % st)
         check(await pg.is_visible(".done"), "done banner shown")
-        check(await pg.evaluate("JSON.parse(localStorage.getItem('pyml.demo.v1')).users['learner@pyml.dev'].progress?.d01 ?? true"), "progress recorded")
+        pts = await pg.evaluate("JSON.parse(localStorage.getItem('pyml.demo.v1')).users['learner@pyml.dev'].points")
+        check(pts == 5, "clearing Day 1 earns +5 points (got %s)" % pts)
         # a wrong answer shows a failure with a message
         await set_code(pg, "def c_to_f(c):\n    return 0\n")
         st = await run_tests(pg)

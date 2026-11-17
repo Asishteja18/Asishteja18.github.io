@@ -287,8 +287,8 @@ begin
 end $$;
 
 -- The asker (or the admin) marks one reply as the solution. Its author gets
--- 20 points. Switching the solution moves the points; nobody earns points on
--- their own doubt.
+-- 2 points (see recalc_points). Switching the solution moves them; nobody earns
+-- points on their own doubt.
 create or replace function accept_answer(did bigint, rid bigint) returns void
 language plpgsql security definer set search_path = public as $$
 declare d doubts; r doubt_replies; prev uuid;
@@ -304,10 +304,12 @@ begin
   if d.solved_reply_id = rid then return; end if;
   if d.solved_reply_id is not null then
     select user_id into prev from doubt_replies where id = d.solved_reply_id;
-    update profiles set points = greatest(points - 20, 0), solved_count = greatest(solved_count - 1, 0) where id = prev;
+    update profiles set solved_count = greatest(solved_count - 1, 0) where id = prev;
+    perform recalc_points(prev);
   end if;
   update doubts set solved_reply_id = rid, resolved = true where id = did;
-  update profiles set points = points + 20, solved_count = solved_count + 1 where id = r.user_id;
+  update profiles set solved_count = solved_count + 1 where id = r.user_id;
+  perform recalc_points(r.user_id);
 end $$;
 
 -- Deleting a solved doubt takes its points back, so solve-and-delete can't farm.
@@ -317,7 +319,8 @@ declare prev uuid;
 begin
   if old.solved_reply_id is not null then
     select user_id into prev from doubt_replies where id = old.solved_reply_id;
-    update profiles set points = greatest(points - 20, 0), solved_count = greatest(solved_count - 1, 0) where id = prev;
+    update profiles set solved_count = greatest(solved_count - 1, 0) where id = prev;
+    perform recalc_points(prev);
   end if;
   return old;
 end $$;
@@ -369,8 +372,8 @@ create or replace function revoke_points_on_reply_delete() returns trigger
 language plpgsql security definer set search_path = public as $$
 begin
   if exists (select 1 from doubts where solved_reply_id = old.id) then
-    update profiles set points = greatest(points - 20, 0), solved_count = greatest(solved_count - 1, 0)
-     where id = old.user_id;
+    update profiles set solved_count = greatest(solved_count - 1, 0) where id = old.user_id;
+    perform recalc_points(old.user_id);
     update doubts set resolved = false where solved_reply_id = old.id;
   end if;
   return old;
@@ -378,3 +381,44 @@ end $$;
 drop trigger if exists replies_revoke_points on doubt_replies;
 create trigger replies_revoke_points before delete on doubt_replies
   for each row execute function revoke_points_on_reply_delete();
+
+-- ===================================================================== v4
+-- Points (17 Nov 2026): +5 for every lesson or AI-90 day cleared, +2 for each
+-- doubt you solve. Points are always recomputed from the facts (progress rows
+-- + solved_count), never incremented blindly, so they can't drift or be farmed.
+-- Only real lesson ids count: the 24 warm-ups and days d01..d90.
+create or replace function recalc_points(uid uuid) returns void
+language plpgsql security definer set search_path = public as $$
+begin
+  if uid is null then return; end if;
+  update profiles p set points =
+      5 * (select count(distinct g.lesson_id) from progress g
+            where g.user_id = uid and g.completed
+              and g.lesson_id ~ '^(d(0[1-9]|[1-8][0-9]|90)|py-0[1-8]|py-intro|py-what|ml-0[1-8]|ai-0[1-6])$')
+    + 2 * p.solved_count
+   where p.id = uid;
+end $$;
+revoke all on function recalc_points(uuid) from public, anon, authenticated;
+
+create or replace function points_on_progress() returns trigger
+language plpgsql security definer set search_path = public as $$
+begin
+  perform recalc_points(coalesce(new.user_id, old.user_id));
+  return null;
+end $$;
+drop trigger if exists progress_points on progress;
+create trigger progress_points after insert or update or delete on progress
+  for each row execute function points_on_progress();
+
+-- Top solvers ranks by doubts solved, now that points also come from lessons.
+create or replace function top_solvers() returns table (user_id uuid, handle text, points int, solved_count int)
+language sql stable security definer set search_path = public as $$
+  select id, handle, points, solved_count from profiles
+   where is_active() and handle is not null and solved_count > 0 and approved
+   order by solved_count desc, points desc limit 10
+$$;
+
+-- backfill everyone onto the new scale
+do $$ declare u uuid; begin
+  for u in select id from profiles loop perform recalc_points(u); end loop;
+end $$;

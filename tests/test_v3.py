@@ -88,7 +88,9 @@ async def main():
         check(await B.locator(".pin", has_text="reversed as None").count() == 1, "pinned for everyone")
 
         # --- thread chat + solution + points
-        await patch_user(B, "admin@pyml.dev", "u.points = 90")      # 90 -> 110 crosses Bronze
+        # admin has cleared 20 real lessons (= 100 points); fake ids never count
+        await B.evaluate("""() => { const p = {}; for (let d = 1; d <= 20; d++) p['d' + String(d).padStart(2, '0')] = true;
+          p['zz-farm'] = true; p['d91'] = true; localStorage.setItem('pyml.progress.admin@pyml.dev', JSON.stringify(p)); }""")
         await B.locator(".pin", has_text="reversed as None").click()
         await B.wait_for_selector(".threadhead h1")
         rta = B.locator(".composer textarea")
@@ -103,10 +105,10 @@ async def main():
         await A.wait_for_timeout(300)
         check(await A.locator(".markbtn").count() == 1, "asker sees Mark as solution only on others' replies")
         await A.click(".markbtn"); await A.wait_for_selector(".bubble.solution")
-        check("+20 pts to AIM-Asish" in await A.inner_text(".bubble.solution"), "solution tagged with +20 to solver")
+        check("+2 pts to AIM-Asish" in await A.inner_text(".bubble.solution"), "solution tagged with +2 to solver")
         s = await store(A)
-        check(s["users"]["admin@pyml.dev"]["points"] == 110 and s["users"]["admin@pyml.dev"]["solved_count"] == 1,
-              "solver got 20 points (90 -> 110)")
+        check(s["users"]["admin@pyml.dev"]["points"] == 102 and s["users"]["admin@pyml.dev"]["solved_count"] == 1,
+              "solver: 20 lessons x5 + 1 solve x2 = 102 (got %s)" % s["users"]["admin@pyml.dev"].get("points"))
         check(s["users"]["learner@pyml.dev"].get("points", 0) == 0, "asker gets no points")
         check("solved" in (await A.inner_text(".threadhead")).lower(), "thread shows Solved")
         await go(A, "doubts"); await A.wait_for_selector(".stream .msg")
@@ -117,7 +119,7 @@ async def main():
         # --- levels
         await B.reload(); await B.wait_for_selector(".bar")
         await go(B, "doubts"); await B.wait_for_selector(".levelcard")
-        check("Bronze" in await B.inner_text(".levelcard"), "110 points = Bronze")
+        check("Bronze" in await B.inner_text(".levelcard"), "102 points = Bronze")
         check(await B.locator(".solver", has_text="AIM-Asish").count() == 1, "leaderboard lists the solver")
         check(await B.locator(".whobtn .tierbadge[title=Bronze]").count() == 1, "Bronze badge in the top bar")
 
@@ -137,7 +139,7 @@ async def main():
         await B.click(".threadhead >> text=Delete"); await B.click(".threadhead >> text=Click again to delete")
         await B.wait_for_selector(".chathead")
         s = await store(B)
-        check(s["users"]["admin@pyml.dev"]["points"] == 90, "points revoked when the solved doubt is deleted")
+        check(s["users"]["admin@pyml.dev"]["points"] == 100, "solve points revoked when the solved doubt is deleted (lesson points stay)")
 
         # --- learning-time tracker (fake clock)
         T = await ctx.new_page(); T.on("pageerror", lambda e: errs.append("T " + str(e)))

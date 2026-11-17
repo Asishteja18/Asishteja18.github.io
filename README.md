@@ -17,7 +17,9 @@ the database) can see every learner's stats and block accounts.
 **Doubts** (`#doubts`): a group chat. Learners pick a code name (`AIM-` + their
 choice), ask (first line = title, Enter to send), reply, and see who is online.
 Unsolved doubts stay pinned on top. The asker marks a reply as the solution and
-its author earns +20 points; points set the level (Bronze 100, Silver 500,
+its author earns +2 points. Every lesson or AI-90 day cleared is +5. Points
+(recomputed by the database from progress + solved doubts, so they can't be
+farmed) set the level (Bronze 100, Silver 500,
 Gold 1,500, Platinum 3,000, Diamond 6,000, Master 10,000, Grandmaster 16,000,
 God tier 25,000).
 
