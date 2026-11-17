@@ -95,7 +95,7 @@ async def main():
         check(pe == "none", "grain never catches the pointer")
         check(await pg.evaluate("!!window.gsap"), "GSAP loaded for staggered reveals")
         txt = await pg.inner_text("body")
-        check("Days 61–90" in txt and "Advanced 1–13" in txt and "355" in txt and "103" in txt, "landing pitch shows the 4-stage path, 103 lessons, 355 tests")
+        check("Days 61–90" in txt and "Advanced 1–13" in txt and "131" in txt and "575" in txt, "landing pitch shows the Digital path and both paths' totals")
         check("~29 h" in txt, "landing path shows stage hours")
         bf = await pg.evaluate("getComputedStyle(document.querySelector('.auth')).backdropFilter")
         check("blur(16px)" in bf, "auth card is frosted glass (blur 16px)")
@@ -176,7 +176,8 @@ async def main():
         pts = await pg.evaluate("JSON.parse(localStorage.getItem('pyml.demo.v1')).users['learner@pyml.dev'].points")
         ch = await pg.evaluate("document.querySelector('.bcard.challenge') ? 1 : 0") if False else None
         want = 15 if await pg.evaluate("(() => { const d = new Date(); const day = Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()); const k = Math.floor(Math.round((day - Date.UTC(2026, 10, 16)) / 864e5) / 7); return (((k * 37) % 90) + 90) % 90 + 1; })()") == 1 else 5
-        check(pts == want, "clearing Day 1 earns +5 (+10 when it's the weekly challenge): got %s, want %s" % (pts, want))
+        want += 5  # Advanced 9 was cleared earlier in this run (+5)
+        check(pts == want, "clearing Day 1 earns +5 (+10 when it's the weekly challenge), on top of Advanced 9's +5: got %s, want %s" % (pts, want))
         # a wrong answer shows a failure with a message
         await set_code(pg, "def c_to_f(c):\n    return 0\n")
         st = await run_tests(pg)

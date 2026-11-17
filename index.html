@@ -930,6 +930,94 @@ button.bcard:active{transform:translateY(-1px) scale(.995)}
 .bcard.next,.bcard.journey{grid-column:span 6}
 .bcard.level,.bcard.streak,.bcard.doubts{grid-column:span 4}
 .bcard .cubehours{font-family:var(--mono);font-size:11.5px;color:var(--fg-2)}
+.jgrid.med{grid-template-columns:repeat(14,minmax(0,1fr));gap:4px}
+/* Digital | Biological switch */
+.pathseg{display:inline-grid;grid-template-columns:1fr 1fr;gap:6px;padding:5px;border-radius:16px;border:1px solid var(--edge);
+  background:color-mix(in srgb,var(--card) 70%,transparent);backdrop-filter:blur(12px);margin-top:14px;max-width:520px;width:100%}
+.pathbtn{display:flex;flex-direction:column;align-items:flex-start;gap:1px;text-align:left;padding:10px 14px;border-radius:12px;border:1px solid transparent;
+  background:transparent;color:var(--fg-2);cursor:pointer;min-height:48px;transition:background .25s,border-color .25s,color .25s}
+.pathbtn b{font-family:var(--display);font-size:16px;color:var(--fg)}
+.pathbtn span{font-size:12.5px}
+.pathbtn:hover{background:var(--muted)}
+.pathbtn.on{border-color:var(--gold-line);background:var(--gold-soft);color:var(--fg)}
+.pathbtn.on b{color:var(--gold-strong)}
+:root[data-theme="light"] .pathbtn.on b{color:var(--gold)}
+.pathbtn:focus-visible{outline:2px solid var(--gold-strong);outline-offset:2px}
+.pathseg.sm .pathbtn{padding:8px 12px;min-height:44px}
+.pathsub{color:var(--fg-2);margin:4px 0 6px}
+.path .pathseg{margin:4px 0 14px}
+/* graded checks */
+.quiz{display:grid;gap:12px;margin:6px 0 4px}
+.qitem{border:1px solid var(--edge);border-radius:16px;padding:14px 16px;margin:0;min-width:0;background:color-mix(in srgb,var(--code-bg) 40%,transparent);transition:border-color .25s}
+.qitem.ok{border-color:color-mix(in srgb,var(--ok) 60%,transparent)}
+.qitem.bad{border-color:color-mix(in srgb,var(--bad) 60%,transparent)}
+.qhead{display:flex;gap:10px;align-items:flex-start;padding:0;font-size:15px;line-height:1.5;color:var(--fg);float:left;width:100%}
+.qitem>.qopts,.qitem>.qrow,.qitem>.qfb{clear:both}
+.qno{flex:none;width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-family:var(--mono);font-size:12px;background:var(--muted);color:var(--fg-2)}
+.qitem.ok .qno{background:var(--ok);color:#06240f}
+.qitem.bad .qno{background:var(--bad);color:#2a0710}
+.qopts{display:grid;gap:6px;margin:10px 0 0 36px}
+.qopt{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:10px;cursor:pointer;font-size:14.5px;color:var(--fg-2)}
+.qopt:hover{background:var(--muted)}
+.qopt input{margin-top:3px;accent-color:var(--gold)}
+.qopt:has(input:checked){color:var(--fg);background:var(--gold-soft)}
+.qrow{display:flex;gap:10px;align-items:center;margin:10px 0 0 36px;flex-wrap:wrap}
+.qin{flex:1 1 220px;min-height:44px;padding:9px 12px;border-radius:10px;border:1px solid var(--edge);background:var(--card);color:var(--fg);font:inherit;font-size:15px}
+.qin.codes{font-family:var(--mono);letter-spacing:.03em}
+.qin:focus{outline:2px solid var(--gold-strong);outline-offset:1px}
+.qhint{font-size:12px;color:var(--fg-3);font-family:var(--mono)}
+.qfb{margin:10px 0 0 36px;font-size:14px;line-height:1.55;color:var(--fg-2)}
+.qitem.ok .qfb b{color:var(--ok)} .qitem.bad .qfb b{color:var(--bad)}
+.qans{display:block;margin-top:4px;font-family:var(--mono);color:var(--fg)}
+.quizbar{position:sticky;bottom:10px;z-index:2;padding:10px;border-radius:14px;border:1px solid var(--edge);
+  background:var(--card-solid);box-shadow:0 -8px 24px rgba(0,0,0,.25)}
+.qtimer{margin-left:auto;font-family:var(--mono);font-size:12.5px;padding:4px 10px;border-radius:999px;border:1px solid var(--edge);color:var(--fg-2)}
+.qtimer.over{color:var(--bad);border-color:var(--bad)}
+@media (max-width:560px){.qopts,.qrow,.qfb{margin-left:0}}
+/* medical coding tools (assets/viz-bio.js) */
+.biobox{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:4px 0}
+.biochip{display:inline-flex;align-items:center;padding:5px 10px;border-radius:999px;border:1px solid var(--edge);font-family:var(--mono);font-size:13px;color:var(--fg)}
+.biochip.pre{border-color:var(--gold-line);color:var(--gold-strong)} .biochip.root{border-color:color-mix(in srgb,var(--brown) 50%,transparent);color:var(--brown)}
+.biochip.suf{border-color:color-mix(in srgb,var(--neon-3) 50%,transparent);color:var(--neon-3)} .biochip.cv{opacity:.7}
+:root[data-theme="light"] .biochip.pre{color:var(--gold)}
+.termeq{font-family:var(--display);font-size:22px;margin-left:6px}
+.biofig{font-family:var(--mono);font-size:13px;line-height:1.35;color:var(--fg-2);background:color-mix(in srgb,var(--code-bg) 50%,transparent);border:1px solid var(--edge);border-radius:12px;padding:12px;overflow:auto;margin:0}
+.biogrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin:4px 0}
+.biogrid.surg{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}
+.biosys{min-height:44px;padding:8px 12px;border-radius:12px;border:1px solid var(--edge);background:var(--card);color:var(--fg);font:inherit;font-size:14px;text-align:left;cursor:pointer}
+.biosys.small{font-size:13px;min-height:40px}
+.biosys.surg{border-color:var(--gold-line)}
+.biosys:hover{background:var(--muted)} .biosys.on{background:var(--gold-soft);border-color:var(--gold-line)}
+.biosys:focus-visible,.biovisit:focus-visible,.lkcode:focus-visible{outline:2px solid var(--gold-strong);outline-offset:2px}
+.biocodes{margin:6px 0;padding-left:22px;display:grid;gap:4px;font-size:14px;color:var(--fg-2)}
+.biocodes code{font-size:14px;color:var(--fg)}
+.biochk{display:inline-flex;gap:6px;align-items:center;font-size:14px;color:var(--fg-2);min-height:36px}
+.biochk input{accent-color:var(--gold)}
+.biotl{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.biovisit{min-height:48px;border-radius:12px;border:1px solid var(--edge);background:var(--card);color:var(--fg-2);font:inherit;font-size:14px;cursor:pointer;padding:8px}
+.biovisit.on{border-color:var(--gold-line);background:var(--gold-soft);color:var(--fg)}
+.biotri{display:flex;gap:4px;margin:6px 0}
+.triseg{padding:10px 8px;border-radius:10px;border:1px solid var(--edge);font-size:12.5px;color:var(--fg-3);text-align:center;min-width:0}
+.triseg.on{background:var(--gold-soft);border-color:var(--gold-line);color:var(--fg)}
+.biostrip{display:flex;flex-wrap:wrap;gap:6px;align-items:stretch}
+.biocell{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:62px;padding:8px 6px;border-radius:10px;border:1px solid var(--edge)}
+.biocell b{font-family:var(--mono);font-size:22px}
+.biocell small{font-size:10.5px;color:var(--fg-3);text-align:center;line-height:1.2}
+.biocell.cat{border-color:var(--gold-line)} .biocell.det{border-color:color-mix(in srgb,var(--brown) 45%,transparent)}
+.biocell.ext{border-color:color-mix(in srgb,var(--neon-3) 50%,transparent)} .biocell.ph{opacity:.65;border-style:dashed}
+.biodot{align-self:center;font-size:26px;color:var(--fg-3)}
+.biosearch{flex:1 1 320px} .biosearch .vizin{flex:1;min-width:0}
+.lkres{list-style:none;margin:6px 0;padding:0;display:grid;gap:4px;max-height:340px;overflow:auto}
+.lkres li{display:flex;gap:10px;align-items:baseline;font-size:14px;color:var(--fg-2);padding:3px 0;border-bottom:1px solid var(--line)}
+.lkcode{flex:none;min-width:88px;min-height:32px;font-family:var(--mono);font-size:13.5px;padding:4px 8px;border-radius:8px;border:1px solid var(--gold-line);background:var(--gold-soft);color:var(--fg);cursor:pointer}
+.biorep{display:grid;gap:6px;margin:6px 0}
+.reprow{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.reprow .vizin{width:80px}
+.claimdx{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:8px;font-size:13px}
+.claimlines{display:grid;gap:6px}
+.claimrow{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:center;padding:8px 10px;border-radius:10px;border:1px solid var(--edge)}
+.claimsvc{font-size:14px;color:var(--fg)} .claimptr{display:flex;gap:10px}
+@media (max-width:560px){.biotl{grid-template-columns:1fr}}
 .bcard .glyph{position:static;display:block;width:38px;height:38px;color:var(--gold);margin-bottom:auto;padding-bottom:14px;box-sizing:content-box}
 .bcard.s2 .glyph{color:var(--brown)} .bcard.s3 .glyph{color:#fbbf24} .bcard.s4 .glyph{color:var(--neon-3)}
 :root[data-theme="light"] .bcard.s3 .glyph{color:#b45309}
@@ -1187,6 +1275,7 @@ textarea{font-size:13.5px;line-height:1.55}
 @media (prefers-reduced-motion:reduce){.tourring{transition:none}}
 /* weekly challenge + board */
 .bcard.challenge,.bcard.weekly{grid-column:span 6}
+.bcard.weekly.solo{grid-column:span 12}
 .bcard.challenge{background:linear-gradient(135deg,color-mix(in srgb,var(--neon-3) 12%,var(--card)),var(--card))}
 .bcard.challenge h2{font-size:19px;margin:2px 0}
 .bcard.challenge p{color:var(--fg-2);font-size:14px;margin-bottom:8px}
@@ -1321,7 +1410,7 @@ async function loadProfile() {
     ? { id: user.id, email: data.email, approved: data.approved, is_admin: data.is_admin,
         handle: data.handle || null, streak: data.streak || 0, reach: data.reach || {},
         points: data.points || 0, solved_count: data.solved_count || 0, best_streak: data.best_streak || 0,
-        reminders: data.reminders !== false }
+        reminders: data.reminders !== false, path: data.path || null }
     // the signup trigger may not have committed yet; everyone gets in by default
     : { id: user.id, email: user.email, approved: true, is_admin: false, handle: null, streak: 0, reach: {},
         points: 0, solved_count: 0, best_streak: 0 };
@@ -1731,7 +1820,7 @@ function onChanged(f) { changeSubs.add(f); return () => changeSubs.delete(f); }
 // Points: +5 per lesson or AI-90 day cleared, +2 per doubt solved. Always
 // recomputed from the facts (the database does the same in recalc_points).
 const SOLVE_POINTS = 2, LESSON_POINTS = 5;
-const POINT_LESSON = /^(d(0[1-9]|[1-8][0-9]|90)|py-0[1-8]|py-intro|py-what|ml-0[1-8]|ai-0[1-6])$/;
+const POINT_LESSON = /^(d(0[1-9]|[1-8][0-9]|90)|x(0[1-9]|1[0-3])|mc(0[1-9]|1[0-9]|2[0-8])|py-0[1-8]|py-intro|py-what|ml-0[1-8]|ai-0[1-6])$/;
 function demoPoints(u) {
   let p = {};
   try { p = JSON.parse(localStorage.getItem("pyml.progress." + u.email)) || {}; } catch (e) {}
@@ -1976,6 +2065,18 @@ async function setReminders(on) {
   return { ok: true };
 }
 
+// Digital or Biological path, remembered on the profile so it follows the learner across devices.
+async function setPathDb(p) {
+  if (!me) return { ok: false };
+  if (LIVE) {
+    const { error } = await sb.rpc("set_path", { p });
+    if (error) return { ok: false, error: error.message };
+  } else {
+    const s = demo.read(); if (s.users[me.id]) { s.users[me.id].path = p; demo.write(s); }
+  }
+  return { ok: true };
+}
+
 const api = { LIVE, DEMO_ACCOUNTS, init, session, signUp, verifyCode, resendCode, signIn, signOut,
               listUsers, setApproved, lessons, getProgress, setDone,
               touchStreak: touchStreakDb, saveReach, setHandle, HANDLE_RE,
@@ -1983,7 +2084,7 @@ const api = { LIVE, DEMO_ACCOUNTS, init, session, signUp, verifyCode, resendCode
               startPresence, onOnline, onChanged,
               acceptAnswer, logTime, myActivity, refreshMe, topSolvers, SOLVE_POINTS, LESSON_POINTS,
               weeklyBoard, challengeLesson, progressDetail, allProgress, videos, youtubeId, setVideo,
-              claimCertificate, myCertificates, verifyCertificate, setReminders };
+              claimCertificate, myCertificates, verifyCertificate, setReminders, setPath: setPathDb };
 
 
 
@@ -2018,20 +2119,66 @@ const TRACKS = [
     why: "A model is a function with numbers you can tune. AI-90 Days 31–60: build each algorithm in NumPy first — regression, trees, forests, boosting, PCA — then check it against scikit-learn on real data." },
   { id: "adv", title: "Advanced ML: beyond the basics", short: "Advanced ML",
     why: "13 lessons between classic ML and deep learning: lasso, calibration, SVMs and kernels, mixtures, DBSCAN, t-SNE, anomaly detection, recommenders, reinforcement learning, an autoencoder with hand-written backprop, drift and fairness." },
+  { id: "mcf", title: "Healthcare foundations", short: "Foundations",
+    why: "Medical Coding 1–7: what coders do, medical terminology, anatomy by body system, pathology and drugs, HIPAA and reading clinical notes." },
+  { id: "mcd", title: "Diagnosis coding: ICD-10-CM", short: "ICD-10-CM",
+    why: "Medical Coding 8–14: how codes are built, Index and Tabular, the general guidelines, diabetes / hypertension / CKD, neoplasms, injuries and poisonings, pregnancy and Z codes. FY2026 code set." },
+  { id: "mcp", title: "Procedure coding: CPT + HCPCS", short: "CPT + HCPCS",
+    why: "Medical Coding 15–21: the CPT book, E/M levels, surgery by body system, anaesthesia, radiology, lab, medicine, modifiers and HCPCS Level II." },
+  { id: "mcr", title: "Claims, compliance + CPC prep", short: "Claims + CPC prep",
+    why: "Medical Coding 22–28: NCCI edits, claim forms, payers and fees, denials and audits, inpatient basics, reviewing AI-suggested codes, and a timed CPC-style mock exam." },
   { id: "ai", title: "Build your own AI", short: "Build your own AI",
     why: "AI-90 Days 61–90: your own autograd engine, then a GPT trained on Shakespeare, then chat, retrieval, tools and a web server. NumPy only, every line yours." },
 ];
 
 // What each stage covers and roughly how long it takes (sum of lesson times, from content/ai90.json).
-const STAGE_SPAN = { python: "Days 1–30", ml: "Days 31–60", adv: "Advanced 1–13", ai: "Days 61–90" };
-const STAGE_HOURS = { python: 61, ml: 64, adv: 29, ai: 69 };
-const COURSE_LESSONS = 103, COURSE_TESTS = 355;
+const STAGE_SPAN = { python: "Days 1–30", ml: "Days 31–60", adv: "Advanced 1–13", ai: "Days 61–90",
+  mcf: "Lessons 1–7", mcd: "Lessons 8–14", mcp: "Lessons 15–21", mcr: "Lessons 22–28", medcode: "All 28 lessons" };
+const STAGE_HOURS = { python: 61, ml: 64, adv: 29, ai: 69, mcf: 15, mcd: 19, mcp: 19, mcr: 15 };
+// Two paths through AIM. Digital = build AI; Biological = US medical coding (CPC track).
+const PATHS = {
+  digital: { label: "Digital", kicker: "AIM · AI-90", sub: "Python → machine learning → advanced ML → your own AI",
+    tracks: ["python", "ml", "adv", "ai"] },
+  bio: { label: "Biological", kicker: "AIM · Medical Coding", sub: "Medical coding: ICD-10-CM, CPT and HCPCS, ready for the CPC exam",
+    tracks: ["mcf", "mcd", "mcp", "mcr"] },
+};
+const PATH_KEY = "aim.path";
+function currentPath() {
+  const me = typeof api !== "undefined" && api.session ? api.session() : null;
+  let p = me && me.path;
+  if (!PATHS[p]) { try { p = localStorage.getItem(PATH_KEY); } catch (e) { p = null; } }
+  return PATHS[p] ? p : "digital";
+}
+function setPath(p) {
+  if (!PATHS[p]) return;
+  try { localStorage.setItem(PATH_KEY, p); } catch (e) {}
+  const me = api.session();
+  if (me && me.path !== p) { me.path = p; api.setPath(p); }
+}
+function pathOf(trackId) { return PATHS.bio.tracks.includes(trackId) ? "bio" : "digital"; }
+function pathTracks(p = currentPath()) { return orderedTracks().filter((t) => pathOf(t) === p); }
+function pathLessons(p = currentPath()) { return LESSONS.filter((l) => pathOf(l.track) === p); }
+function pathSwitch(onChange, compact) {
+  const seg = el("div", "pathseg" + (compact ? " sm" : ""));
+  seg.setAttribute("role", "group");
+  seg.setAttribute("aria-label", "Choose your path");
+  Object.entries(PATHS).forEach(([k, v]) => {
+    const b = el("button", "pathbtn" + (currentPath() === k ? " on" : ""));
+    b.type = "button";
+    b.setAttribute("aria-pressed", currentPath() === k ? "true" : "false");
+    b.append(el("b", null, v.label), el("span", null, k === "digital" ? "Build AI" : "Medical coding"));
+    b.onclick = () => { if (currentPath() === k) return; setPath(k); onChange(k); };
+    seg.append(b);
+  });
+  return seg;
+}
+const COURSE_LESSONS = 103, COURSE_TESTS = 355, MED_LESSONS = 28, MED_CHECKS = 220;
 function stageHours(id) {
-  const ls = (AI90?.lessons || []).filter((l) => l.track === id);
+  const ls = (AI90?.lessons || []).concat(MEDCODE?.lessons || []).filter((l) => l.track === id);
   return ls.length ? Math.round(ls.reduce((a, l) => a + (l.minutes || 0), 0) / 60) : STAGE_HOURS[id];
 }
-function courseNo(l) { return l.day ? "Day " + l.day : l.adv ? "Advanced " + l.adv : "Lesson " + l.order; }
-function courseTag(l) { return l.day ? "D" + String(l.day).padStart(2, "0") : l.adv ? "A" + String(l.adv).padStart(2, "0") : null; }
+function courseNo(l) { return l.day ? "Day " + l.day : l.adv ? "Advanced " + l.adv : l.mc ? "Coding " + l.mc : "Lesson " + l.order; }
+function courseTag(l) { return l.day ? "D" + String(l.day).padStart(2, "0") : l.adv ? "A" + String(l.adv).padStart(2, "0") : l.mc ? "M" + String(l.mc).padStart(2, "0") : null; }
 
 function trackMeta(id) {
   return TRACKS.find((t) => t.id === id) || { id, title: id, why: "" };
@@ -2080,10 +2227,12 @@ function pitchColumn(hero = true) {
     tryIt.href = "#try-d01";
     const tryMore = el("a", "btn ghost", "See attention, visualised");
     tryMore.href = "#try-d76";
-    cta.append(tryIt, tryMore);
+    const tryMed = el("a", "btn ghost", "Try medical coding");
+    tryMed.href = "#try-mc11";
+    cta.append(tryIt, tryMore, tryMed);
     col.append(cta);
     const stats = mark(el("div", "herostats"));
-    [[String(COURSE_LESSONS), "lessons, one path"], [String(COURSE_TESTS), "tests you turn green"], ["0", "installs: Python runs in your browser"]].forEach(([n, t]) => {
+    [["2", "paths: Digital (build AI) and Biological (medical coding)"], [String(COURSE_LESSONS + MED_LESSONS), "lessons, " + (COURSE_TESTS + MED_CHECKS) + " graded tests and checks"], ["0", "installs: everything runs in your browser"]].forEach(([n, t]) => {
       const s = el("div", "hstat"); s.append(el("b", null, n), el("span", null, t)); stats.append(s);
     });
     col.append(stats);
@@ -2106,15 +2255,26 @@ function pitchColumn(hero = true) {
   col.append(why);
 
   const path = el("div", "path");
-  path.append(mark(el("h2", null, "One path, start to finish")));
-  TRACKS.forEach((t, i) => {
-    const step = mark(el("div", "step"));
-    step.append(el("span", "stepn", STAGE_SPAN[t.id] + " · ~" + STAGE_HOURS[t.id] + " h"));
-    const b = el("div");
-    b.append(el("h3", null, t.title), el("p", null, t.why));
-    step.append(b);
-    path.append(step);
-  });
+  path.append(mark(el("h2", null, "Pick your path")));
+  const steps = el("div", "pathsteps");
+  const drawSteps = () => {
+    steps.innerHTML = "";
+    const pth = PATHS[currentPath()];
+    steps.append(el("p", "pathsub", pth.sub));
+    TRACKS.filter((t) => pathOf(t.id) === currentPath()).forEach((t) => {
+      const step = el("div", "step");
+      step.append(el("span", "stepn", STAGE_SPAN[t.id] + " · ~" + STAGE_HOURS[t.id] + " h"));
+      const b = el("div");
+      b.append(el("h3", null, t.title), el("p", null, t.why));
+      step.append(b);
+      steps.append(step);
+    });
+  };
+  path.append(mark(pathSwitch(() => { path.querySelectorAll(".pathbtn").forEach((b) => {
+    const on = b.querySelector("b").textContent === PATHS[currentPath()].label;
+    b.classList.toggle("on", on); b.setAttribute("aria-pressed", on ? "true" : "false"); }); drawSteps(); })));
+  drawSteps();
+  path.append(steps);
   col.append(path);
 
   col.append(mark(el("p", "closer", "Let's learn together. Every lesson ends with code you write and tests that either pass or do not.")));
@@ -2523,7 +2683,7 @@ function profilePanel() {
 
   const here = location.hash.slice(1);
   const body = el("div", "mebody");
-  orderedTracks().forEach((tid, i) => {
+  pathTracks().forEach((tid, i) => {
     const meta = trackMeta(tid);
     const ls = LESSONS.filter((l) => l.track === tid);
     if (!ls.length) return;
@@ -2588,6 +2748,10 @@ const GLYPH = {
   "python": "<svg viewBox=\"0 0 32 32\" fill=\"none\" aria-hidden=\"true\"><path d=\"M11 8 5 16l6 8M21 8l6 8-6 8M18.5 6l-5 20\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>",
   "ml": "<svg viewBox=\"0 0 32 32\" fill=\"none\" aria-hidden=\"true\"><path d=\"M4 27h24M6 22l6-7 5 4 8-11\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><circle cx=\"12\" cy=\"15\" r=\"2.4\" fill=\"currentColor\"/><circle cx=\"17\" cy=\"19\" r=\"2.4\" fill=\"currentColor\"/><circle cx=\"25\" cy=\"8\" r=\"2.4\" fill=\"currentColor\"/></svg>",
   "adv": "<svg viewBox=\"0 0 32 32\" fill=\"none\" aria-hidden=\"true\"><path d=\"M16 4l10 6v12l-10 6-10-6V10z\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linejoin=\"round\"/><path d=\"M16 4v24M6 10l20 12M26 10 6 22\" stroke=\"currentColor\" stroke-width=\"1.4\" opacity=\".55\"/><circle cx=\"16\" cy=\"16\" r=\"3\" fill=\"currentColor\"/></svg>",
+  "mcf": "<svg viewBox=\"0 0 32 32\" fill=\"none\" aria-hidden=\"true\"><path d=\"M8 5v8a6 6 0 0 0 12 0V5\" stroke=\"currentColor\" stroke-width=\"2.3\" stroke-linecap=\"round\"/><path d=\"M14 19v3a5 5 0 0 0 10 0v-3\" stroke=\"currentColor\" stroke-width=\"2.3\" stroke-linecap=\"round\"/><circle cx=\"24\" cy=\"16\" r=\"3\" stroke=\"currentColor\" stroke-width=\"2.3\"/></svg>",
+  "mcd": "<svg viewBox=\"0 0 32 32\" fill=\"none\" aria-hidden=\"true\"><rect x=\"6\" y=\"4\" width=\"20\" height=\"24\" rx=\"3\" stroke=\"currentColor\" stroke-width=\"2.2\"/><path d=\"M11 11h10M11 16h10M11 21h6\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\"/></svg>",
+  "mcp": "<svg viewBox=\"0 0 32 32\" fill=\"none\" aria-hidden=\"true\"><path d=\"M5 27 21 11l4 4L9 27z\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linejoin=\"round\"/><path d=\"m21 11 4-6 3 3-6 4\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linejoin=\"round\"/></svg>",
+  "mcr": "<svg viewBox=\"0 0 32 32\" fill=\"none\" aria-hidden=\"true\"><path d=\"M7 4h13l5 5v19H7z\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linejoin=\"round\"/><path d=\"m11 18 4 4 7-8\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>",
   "ai": "<svg viewBox=\"0 0 32 32\" fill=\"none\" aria-hidden=\"true\"><path d=\"M8 9h7M8 23h7M22 16h-7M15 9v14\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\"/><circle cx=\"6\" cy=\"9\" r=\"3.2\" stroke=\"currentColor\" stroke-width=\"2.2\"/><circle cx=\"6\" cy=\"23\" r=\"3.2\" stroke=\"currentColor\" stroke-width=\"2.2\"/><circle cx=\"25\" cy=\"16\" r=\"3.2\" stroke=\"currentColor\" stroke-width=\"2.2\"/></svg>"
 };
 
@@ -2598,12 +2762,17 @@ function renderHub() {
   const me = api.session();
 
   const head = el("div", "head hubhead");
-  const k = el("span", "part", "AIM · AI-90"); k.dataset.reveal = "";
+  const bio = currentPath() === "bio";
+  const k = el("span", "part", PATHS[currentPath()].kicker); k.dataset.reveal = "";
   const h = el("h1"); h.dataset.reveal = "";
-  h.append(document.createTextNode("Build AI. "), el("span", "neontext", "Don't just vibe-code it."));
-  const p = el("p", null, "Four stages, " + COURSE_LESSONS + " lessons, one path. Python first, because everything after it is written in it.");
+  if (bio) h.append(document.createTextNode("Code it right. "), el("span", "neontext", "Get CPC ready."));
+  else h.append(document.createTextNode("Build AI. "), el("span", "neontext", "Don't just vibe-code it."));
+  const p = el("p", null, bio
+    ? "Four stages, " + MED_LESSONS + " lessons: healthcare basics, ICD-10-CM, CPT and HCPCS, then claims and a CPC-style mock exam. No programming needed."
+    : "Four stages, " + COURSE_LESSONS + " lessons, one path. Python first, because everything after it is written in it.");
   p.dataset.reveal = "";
-  head.append(k, h, p);
+  const sw = pathSwitch(() => renderHub(), true); sw.dataset.reveal = "";
+  head.append(k, h, p, sw);
   wrap.append(head);
 
   const bento = el("div", "bento");
@@ -2614,8 +2783,8 @@ function renderHub() {
     return c;
   };
 
-  // the three stages
-  orderedTracks().forEach((id, i) => {
+  // the path's four stages
+  pathTracks().forEach((id, i) => {
     const meta = trackMeta(id);
     const ls = LESSONS.filter((l) => l.track === id);
     const done = ls.filter((l) => PROGRESS[l.id]).length;
@@ -2632,7 +2801,7 @@ function renderHub() {
   });
 
   // next up
-  const next = LESSONS.find((l) => !PROGRESS[l.id]);
+  const next = pathLessons().find((l) => !PROGRESS[l.id]);
   const nc = card("next");
   nc.append(el("span", "blabel", "Next up"));
   if (next) {
@@ -2645,19 +2814,21 @@ function renderHub() {
   }
 
   // AI-90 journey: one cell per day
-  const days = LESSONS.filter((l) => l.day || l.adv);
+  const days = pathLessons().filter((l) => l.day || l.adv || l.mc);
   if (days.length) {
     const jc = card("journey");
     const cleared = days.filter((l) => PROGRESS[l.id]).length;
     const top = el("div", "jtop");
-    top.append(el("span", "blabel", "Your AI-90 journey"), el("b", "jcount", cleared + " / " + days.length));
+    top.append(el("span", "blabel", bio ? "Your coding journey" : "Your AI-90 journey"), el("b", "jcount", cleared + " / " + days.length));
     jc.append(top);
-    const g = el("div", "jgrid");
+    const g = el("div", "jgrid" + (bio ? " med" : ""));
     let prevBand = 0;
+    const tracks = pathTracks();
     days.forEach((l) => {
-      const band = l.adv ? 3 : l.day <= 30 ? 1 : l.day <= 60 ? 2 : 4;
+      const band = bio ? tracks.indexOf(l.track) + 1 : l.adv ? 3 : l.day <= 30 ? 1 : l.day <= 60 ? 2 : 4;
       const cell = el("button", "jc b" + band + (PROGRESS[l.id] ? " on" : "") + (next && next.id === l.id ? " now" : ""));
-      if (band !== prevBand) { cell.style.gridColumnStart = "1"; prevBand = band; }
+      if (band !== prevBand && !bio) { cell.style.gridColumnStart = "1"; }
+      prevBand = band;
       cell.title = courseNo(l) + " · " + l.title;
       cell.setAttribute("aria-label", cell.title + (PROGRESS[l.id] ? ", cleared" : ""));
       cell.onclick = () => { location.hash = l.id; };
@@ -2665,11 +2836,12 @@ function renderHub() {
     });
     jc.append(g);
     const leg = el("div", "jleg");
-    [["b1", "Python 1–30"], ["b2", "ML 31–60"], ["b3", "Advanced 1–13"], ["b4", "AI 61–90"]].forEach(([c, t]) => { const s = el("span"); s.append(el("i", c), document.createTextNode(t)); leg.append(s); });
+    (bio ? tracks.map((t, i) => ["b" + (i + 1), trackMeta(t).short + " " + STAGE_SPAN[t].replace("Lessons ", "")])
+      : [["b1", "Python 1–30"], ["b2", "ML 31–60"], ["b3", "Advanced 1–13"], ["b4", "AI 61–90"]]).forEach(([c, t]) => { const s = el("span"); s.append(el("i", c), document.createTextNode(t)); leg.append(s); });
     jc.append(leg);
   }
 
-  weeklyCards(bento, card);
+  weeklyCards(bento, card, bio);
 
   // level
   const lc = card("level", "button");
@@ -2942,7 +3114,7 @@ function renderTracks(trackId) {
   wrap.append(back);
 
   const head = el("div", "head");
-  head.append(el("span", "part", "Stage " + (orderedTracks().indexOf(id) + 1)));
+  head.append(el("span", "part", PATHS[pathOf(id)].label + " · Stage " + (pathTracks(pathOf(id)).indexOf(id) + 1)));
   head.append(el("h1", null, meta.title));
   head.append(el("p", null, meta.why || ""));
   const meter = el("div", "meter");
@@ -2955,12 +3127,12 @@ function renderTracks(trackId) {
   wrap.append(head);
 
   // the AI-90 block overview: how this stage's days fit together
-  const blk = (AI90?.blocks || []).find((b) => b.track === id);
+  const blk = (AI90?.blocks || []).concat(MEDCODE?.blocks || []).find((b) => b.track === id);
   if (blk && blk.sections.length) {
     const det = el("details", "blockintro spot");
     det.dataset.reveal = "";
     const sm = el("summary");
-    sm.append(el("span", "vizpill", "AI-90"), el("span", null, "How the " + (id === "adv" ? "13 lessons" : "30 days") + " in this stage fit together"));
+    sm.append(el("span", "vizpill", pathOf(id) === "bio" ? "Coding" : "AI-90"), el("span", null, "How the " + (pathOf(id) === "bio" ? "7 lessons" : id === "adv" ? "13 lessons" : "30 days") + " in this stage fit together"));
     det.append(sm);
     const body = el("div", "blockbody");
     blk.sections.forEach((s) => {
@@ -3076,7 +3248,7 @@ function renderTracks(trackId) {
 // The 90-day course lives in content/ai90.json (built from AI90_MASTER.md by
 // tools/build_ai90.py). Days 1-30 join the Python stage, 31-60 Machine
 // Learning, 61-90 Build your own AI.
-const ASSET_V = "20261117v6";
+const ASSET_V = "20261117v7";
 let AI90 = null;
 async function loadAI90() {
   if (AI90) return AI90;
@@ -3090,8 +3262,21 @@ async function loadAI90() {
   }
   return AI90;
 }
+let MEDCODE = null;
+async function loadMedcode() {
+  if (MEDCODE) return MEDCODE;
+  try {
+    const r = await fetch("content/medcode.json?v=" + ASSET_V);
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    MEDCODE = await r.json();
+  } catch (e) {
+    console.warn("Medical coding content did not load:", e);
+    MEDCODE = { lessons: [], blocks: [] };
+  }
+  return MEDCODE;
+}
 const AI90_MOD = () => Object.fromEntries((AI90?.lessons || []).map((l) => [l.exercise.module, l]));
-function lessonKey(l) { return l.day ? 100 + l.day : l.adv ? 100 + l.adv : l.order; }
+function lessonKey(l) { return l.day ? 100 + l.day : l.adv ? 100 + l.adv : l.mc ? 100 + l.mc : l.order; }
 
 // Earlier days a piece of code imports (and what they import), as reference solutions.
 function dayFiles(code, skip) {
@@ -3238,7 +3423,7 @@ const PY = (() => {
 })();
 
 // read-only handle for tests and the console
-window.__aim = { get ai90() { return AI90; }, loadMermaid: () => loadMermaid(), py: PY };
+window.__aim = { get medcode() { return MEDCODE; }, setPath, get ai90() { return AI90; }, loadMermaid: () => loadMermaid(), py: PY };
 
 // kept for older code paths: resolves once Python is up
 function bootPython() { return PY.start(); }
@@ -3291,7 +3476,7 @@ function loadViz() {
   });
   VIZ_READY = add("assets/viz-data.js").then(() => add("assets/viz-core.js"))
     .then(() => Promise.all([add("assets/viz-ml.js"), add("assets/viz-ai.js"),
-      add("assets/viz-adv-data.js").then(() => add("assets/viz-adv.js"))]));
+      add("assets/viz-adv-data.js").then(() => add("assets/viz-adv.js")), add("assets/viz-bio.js")]));
   return VIZ_READY;
 }
 function vizBlock(id, caption) {
@@ -3458,7 +3643,7 @@ function videoSlot(l, guest) {
 }
 
 /* ------------------------------------------------------ try before signup */
-const TRY_LESSONS = ["d01", "d33", "d76"];
+const TRY_LESSONS = ["d01", "d33", "d76", "mc11"];
 const GUEST_KEY = "aim.guest.passed";
 function guestPassed(id) {
   try { const a = JSON.parse(localStorage.getItem(GUEST_KEY)) || []; if (!a.includes(id)) a.push(id); localStorage.setItem(GUEST_KEY, JSON.stringify(a)); } catch (e) {}
@@ -3487,9 +3672,9 @@ function guestBar(l) {
   const others = el("nav", "trynav");
   others.setAttribute("aria-label", "Lessons you can try");
   TRY_LESSONS.forEach((id) => {
-    const x = (AI90?.lessons || []).find((y) => y.id === id);
+    const x = (AI90?.lessons || []).concat(MEDCODE?.lessons || []).find((y) => y.id === id);
     if (!x) return;
-    const b = el("a", x.id === l.id ? "on" : "", "Day " + x.day + " · " + x.title.split(":")[0].split(",")[0]);
+    const b = el("a", x.id === l.id ? "on" : "", courseNo(x) + " · " + x.title.split(":")[0].split(",")[0]);
     b.href = "#try-" + x.id;
     if (x.id === l.id) b.setAttribute("aria-current", "page");
     others.append(b);
@@ -3517,9 +3702,10 @@ function signupNudge(host, text) {
 async function renderTry(id) {
   renderBoot();
   const data = await loadAI90();
-  const l = data.lessons.find((x) => x.id === id) || data.lessons.find((x) => x.id === TRY_LESSONS[0]);
+  const all = data.lessons.concat((await loadMedcode()).lessons);
+  const l = all.find((x) => x.id === id) || all.find((x) => x.id === TRY_LESSONS[0]);
   if (!l) { location.hash = ""; return; }
-  if (!LESSONS.length || LESSONS_GUEST) { LESSONS = data.lessons.filter((x) => TRY_LESSONS.includes(x.id)); LESSONS_GUEST = true; }
+  if (!LESSONS.length || LESSONS_GUEST) { LESSONS = all.filter((x) => TRY_LESSONS.includes(x.id)); LESSONS_GUEST = true; }
   renderLesson(l, { guest: true });
 }
 
@@ -3580,10 +3766,10 @@ function maybeTour() {
 }
 
 /* ------------------------------------------------ weekly challenge + board */
-function weeklyCards(bento, card) {
+function weeklyCards(bento, card, bio) {
   const chId = api.challengeLesson();
   const ch = LESSONS.find((l) => l.id === chId);
-  if (ch) {
+  if (ch && !bio) {
     const c = card("challenge");
     const end = new Date(weekStart()); end.setDate(end.getDate() + 7);
     const days = Math.max(1, Math.ceil((end - Date.now()) / 864e5));
@@ -3596,7 +3782,7 @@ function weeklyCards(bento, card) {
     go.onclick = () => { location.hash = ch.id; };
     c.append(go);
   }
-  const wb = card("weekly");
+  const wb = card("weekly" + (ch && !bio ? "" : " solo"));
   wb.append(el("span", "blabel", "This week's board"));
   const list = el("ol", "wlist");
   list.append(el("li", "note", "Loading…"));
@@ -3614,11 +3800,13 @@ function weeklyCards(bento, card) {
 }
 
 /* ------------------------------------------------------------ certificates */
-const STAGE_NAME = { python: "Python, automation and real data", ml: "Machine learning from scratch", adv: "Advanced ML: beyond the basics", ai: "Build your own AI" };
+const STAGE_NAME = { python: "Python, automation and real data", ml: "Machine learning from scratch", adv: "Advanced ML: beyond the basics", ai: "Build your own AI",
+  medcode: "Medical Coding: ICD-10-CM, CPT + HCPCS (CPC track)" };
 // lesson ids that make up each certifiable stage (the database checks the same lists)
 const STAGE_IDS = (() => {
   const d = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => "d" + String(a + i).padStart(2, "0"));
-  return { python: d(1, 30), ml: d(31, 60), adv: Array.from({ length: 13 }, (_, i) => "x" + String(i + 1).padStart(2, "0")), ai: d(61, 90) };
+  return { python: d(1, 30), ml: d(31, 60), adv: Array.from({ length: 13 }, (_, i) => "x" + String(i + 1).padStart(2, "0")), ai: d(61, 90),
+    medcode: Array.from({ length: 28 }, (_, i) => "mc" + String(i + 1).padStart(2, "0")) };
 })();
 function certPanel() {
   const box = el("div", "panel certpanel");
@@ -3627,7 +3815,9 @@ function certPanel() {
   const grid = el("div", "certgrid");
   box.append(grid);
   api.myCertificates().then((certs) => {
-    ["python", "ml", "adv", "ai"].forEach((trk) => {
+    const mine = (currentPath() === "bio" ? ["medcode"] : ["python", "ml", "adv", "ai"])
+      .concat(certs.map((c) => c.track)).filter((t, i, a) => a.indexOf(t) === i && STAGE_IDS[t]);
+    mine.forEach((trk) => {
       const ids = STAGE_IDS[trk], N = ids.length;
       const n = ids.filter((x) => PROGRESS[x]).length;
       const have = certs.find((c) => c.track === trk);
@@ -3687,7 +3877,7 @@ async function renderCert(id) {
     '<div class="certfoot"><span>telugucoders.com</span><span class="certid"></span></div></div>';
   cert.querySelector(".certname").textContent = c.name;
   cert.querySelectorAll(".certpre")[1].textContent = "has completed all " + (STAGE_IDS[c.track] || []).length + " lessons of";
-  cert.querySelector(".certstage").textContent = "AI-90 · " + STAGE_NAME[c.track];
+  cert.querySelector(".certstage").textContent = (c.track === "medcode" ? "AIM Biological · " : "AI-90 · ") + STAGE_NAME[c.track];
   cert.querySelector(".certmeta").textContent = "Issued " + date + (c.handle ? " · " + c.handle : "") + " · every day graded by automated tests";
   cert.querySelector(".certid").textContent = "Verify: " + id.toUpperCase();
   wrap.append(cert);
@@ -3695,7 +3885,7 @@ async function renderCert(id) {
   const li = el("a", "btn", "Add to LinkedIn");
   li.target = "_blank"; li.rel = "noopener";
   li.href = "https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME" +
-    "&name=" + encodeURIComponent("AI-90: " + STAGE_NAME[c.track]) +
+    "&name=" + encodeURIComponent((c.track === "medcode" ? "AIM: " : "AI-90: ") + STAGE_NAME[c.track]) +
     "&organizationName=" + encodeURIComponent("AIM — AI & Machine Learning Institute") +
     "&issueYear=" + issued.getFullYear() + "&issueMonth=" + (issued.getMonth() + 1) +
     "&certUrl=" + encodeURIComponent(url) + "&certId=" + encodeURIComponent(id.toUpperCase());
@@ -3756,7 +3946,7 @@ function portfolioPanel() {
       const rows = await api.progressDetail();
       const by = Object.fromEntries(rows.map((r) => [r.lesson_id, r]));
       const files = [];
-      const days = data.lessons.filter((l) => by[l.id]);
+      const days = data.lessons.filter((l) => by[l.id] && l.exercise.kind === "pytest");
       const ORDER = { python: 0, ml: 1, adv: 2, ai: 3 };
       days.sort((a, b) => (ORDER[a.track] - ORDER[b.track]) || (lessonKey(a) - lessonKey(b)));
       days.forEach((l) => {
@@ -3828,7 +4018,8 @@ async function dropOffPanel() {
 // Spot check: re-run a learner's saved code against the real tests, here.
 async function verifyLearner(uid, out) {
   out.textContent = "Loading their saved code…";
-  const data = await loadAI90();
+  const data = { ...(await loadAI90()) };
+  data.lessons = data.lessons.concat((await loadMedcode()).lessons);
   const rows = (await api.progressDetail(uid)).filter((r) => r.code);
   if (!rows.length) { out.textContent = "No saved code yet (only lessons cleared after this update keep it)."; return; }
   let ok = 0; const bad = [];
@@ -3839,7 +4030,11 @@ async function verifyLearner(uid, out) {
     if (!l) continue;
     try {
       let pass;
-      if (l.exercise.kind === "pytest") {
+      if (l.exercise.kind === "check") {
+        let a = []; try { a = JSON.parse(r.code).a || []; } catch (e) {}
+        const n = l.exercise.items.filter((it, k) => gradeItem(it, a[k]).ok).length;
+        pass = n >= Math.ceil(l.exercise.items.length * (l.exercise.pass || 1) - 1e-9);
+      } else if (l.exercise.kind === "pytest") {
         const ex = l.exercise;
         const files = Object.assign(dayFiles(ex.tests_code + "\n" + r.code, ex.module), { [ex.module + ".py"]: r.code, ["test_" + ex.module + ".py"]: ex.tests_code });
         const res = await PY.call({ type: "pytest", files, test: "test_" + ex.module, harness: data.harness });
@@ -3867,6 +4062,148 @@ function reminderToggle() {
 
 /* ================================================================= lesson */
 const CODE_KEY = (id) => "aim.code." + id;
+
+/* ---------------------------------------------- graded checks (no Python)
+   Medical coding lessons end in questions instead of code: multiple choice,
+   type-the-codes (ICD-10-CM / HCPCS, optionally in order) and short answers.
+   Graded in the browser; answers save like code does. */
+function normCode(c) {
+  c = String(c).trim().toUpperCase().replace(/\s+/g, "");
+  if (/^[A-V]\d{4}$/.test(c)) return c;                       // HCPCS Level II
+  if (!c.includes(".") && /^[A-Z]\d[0-9A-Z][0-9A-Z]/.test(c)) c = c.slice(0, 3) + "." + c.slice(3);
+  return c;
+}
+function splitCodes(v) { return String(v || "").split(/[\s,;]+/).map(normCode).filter(Boolean); }
+function gradeItem(it, v) {
+  if (it.type === "mcq") {
+    if (v === "" || v == null) return { ok: false, blank: true };
+    return { ok: Number(v) === it.answer, msg: Number(v) === it.answer ? "" : "Not that one." };
+  }
+  if (it.type === "text") {
+    const t = String(v || "").trim().toLowerCase().replace(/[.\s]+$/, "").replace(/\s+/g, " ");
+    if (!t) return { ok: false, blank: true };
+    const num = (x) => (/^-?\d+(\.\d+)?( ?(cm|units?))?$/.test(x) ? parseFloat(x) : NaN);
+    const ok = it.answer.some((a) => a === t || (!isNaN(num(a)) && num(a) === num(t)));
+    return { ok, msg: ok ? "" : "Not quite." };
+  }
+  // E1122 could be HCPCS-shaped or ICD-10-CM without its dot: keep whichever form the answer key uses
+  const want = it.answer;
+  const got = String(v || "").split(/[\s,;]+/).filter(Boolean).map((t) => {
+    const u = t.trim().toUpperCase(), d = normCode(u.length > 3 && !u.includes(".") ? u.slice(0, 3) + "." + u.slice(3) : u);
+    return want.includes(u) ? u : want.includes(d) ? d : normCode(u);
+  });
+  if (!got.length) return { ok: false, blank: true };
+  const same = got.length === want.length && want.every((c) => got.includes(c));
+  if (same && (!it.order || got.every((c, i) => c === want[i]))) return { ok: true };
+  if (same) return { ok: false, msg: "Right codes, wrong order. Check which one is sequenced first." };
+  const missing = want.filter((c) => !got.includes(c)).length, extra = got.filter((c) => !want.includes(c));
+  const bad = extra.filter((c) => !/^[A-Z]\d[0-9A-Z](\.[0-9A-Z]{1,4})?$/.test(c) && !/^[A-V]\d{4}$/.test(c));
+  if (bad.length) return { ok: false, msg: "“" + bad[0] + "” isn't in code format (like E11.22)." };
+  return { ok: false, msg: (missing ? missing + " code" + (missing > 1 ? "s" : "") + " missing or wrong" : "") +
+    (extra.length && missing ? "; " : "") + (extra.length ? extra.length + " not needed or wrong" : "") + "." };
+}
+function checkQuiz(l, ex, opts) {
+  let saved = {};
+  try { saved = JSON.parse(opts.saved || "{}") || {}; } catch (e) { saved = {}; }
+  const vals = Array.isArray(saved.a) ? saved.a.slice() : ex.items.map(() => "");
+  const node = el("form", "quiz");
+  node.noValidate = true;
+  node.setAttribute("aria-label", "Practice questions");
+  const marks = [];
+  const save = () => opts.onSave(JSON.stringify({ a: vals }));
+  ex.items.forEach((it, i) => {
+    const q = el("fieldset", "qitem");
+    const lg = el("legend", "qhead");
+    lg.append(el("span", "qno", String(i + 1)));
+    const qt = el("span", "qtext"); qt.innerHTML = it.q_html; lg.append(qt);   // built from our syllabus
+    q.append(lg);
+    const id = "q-" + l.id + "-" + i;
+    if (it.type === "mcq") {
+      const opts2 = el("div", "qopts");
+      it.options.forEach((o, j) => {
+        const lab = el("label", "qopt");
+        const r = el("input"); r.type = "radio"; r.name = id; r.value = String(j);
+        if (String(vals[i]) === String(j)) r.checked = true;
+        r.onchange = () => { vals[i] = String(j); save(); };
+        lab.append(r, el("span", null, o));
+        opts2.append(lab);
+      });
+      q.append(opts2);
+    } else {
+      const inp = el("input", "qin" + (it.type === "codes" ? " codes" : ""));
+      inp.type = "text"; inp.id = id; inp.autocomplete = "off"; inp.spellcheck = false;
+      inp.value = vals[i] || "";
+      inp.placeholder = it.type === "codes" ? (it.answer.length > 1 ? "Codes, separated by commas" : "Code") : "Your answer";
+      inp.setAttribute("aria-label", "Answer to question " + (i + 1));
+      inp.oninput = () => { vals[i] = inp.value; save(); };
+      const row = el("div", "qrow"); row.append(inp);
+      if (it.type === "codes") row.append(el("span", "qhint", it.answer.length > 1 ? it.answer.length + " codes" + (it.order ? ", in order" : "") : "1 code"));
+      q.append(row);
+    }
+    const fb = el("div", "qfb"); fb.hidden = true; fb.setAttribute("aria-live", "polite");
+    q.append(fb);
+    marks.push({ q, fb, it });
+    node.append(q);
+  });
+  const bar = el("div", "erow quizbar");
+  const go = el("button", "btn"); go.type = "submit"; go.append(el("span", null, "Check answers"));
+  const reset = el("button", "btn ghost sm", "Reset"); reset.type = "button";
+  const show = el("button", "btn ghost sm", "Show answers"); show.type = "button";
+  bar.append(go, reset, show);
+  node.append(bar);
+
+  // optional exam timer (informational: the real CPC gives ~2.4 min a question)
+  if (ex.timer_minutes && opts.timerHost) {
+    const chip = el("span", "qtimer", ex.timer_minutes + ":00");
+    chip.setAttribute("aria-label", "Suggested time left");
+    opts.timerHost.append(chip);
+    let left = ex.timer_minutes * 60, tid = null;
+    const tick = () => { left--; chip.textContent = Math.floor(Math.max(left, 0) / 60) + ":" + String(Math.max(left, 0) % 60).padStart(2, "0");
+      if (left <= 0) { clearInterval(tid); chip.classList.add("over"); chip.textContent = "Time's up — finish anyway"; } };
+    node.addEventListener("input", () => { if (!tid) tid = setInterval(() => { if (!document.body.contains(chip)) return clearInterval(tid); tick(); }, 1000); }, { once: true });
+  }
+
+  const say = (m, r, reveal) => {
+    m.q.classList.remove("ok", "bad");
+    m.fb.hidden = false; m.fb.innerHTML = "";
+    if (r.ok) m.q.classList.add("ok"); else if (!r.blank) m.q.classList.add("bad");
+    const verdict = el("b", null, r.ok ? "Correct. " : r.blank ? "Not answered yet. " : (r.msg || "Not quite.") + " ");
+    m.fb.append(verdict);
+    if (r.ok || reveal) {
+      const w = el("span"); w.innerHTML = m.it.why_html; m.fb.append(w);
+      if (reveal && !r.ok) {
+        const a = m.it.type === "mcq" ? m.it.options[m.it.answer] : m.it.type === "codes" ? m.it.answer.join(", ") : m.it.answer[0];
+        m.fb.append(el("span", "qans", " Answer: " + a));
+      }
+    } else m.fb.append(el("span", "note", "Have another go: re-read the notes, or press Show answers."));
+  };
+  const grade = (reveal) => {
+    let n = 0; const wrong = [];
+    marks.forEach((m, i) => {
+      const r = gradeItem(m.it, vals[i]);
+      if (r.ok) n++; else wrong.push("Q" + (i + 1) + ": " + m.it.q.slice(0, 90) + (r.blank ? " (blank)" : ""));
+      say(m, r, reveal);
+    });
+    const need = Math.ceil(ex.items.length * (ex.pass || 1) - 1e-9);
+    const pass = n >= need;
+    opts.status(n + "/" + ex.items.length + " correct", pass ? "ready" : "fail");
+    return { n, total: ex.items.length, pass, wrong };
+  };
+  node.onsubmit = (e) => { e.preventDefault(); opts.onGraded(grade(false)); };
+  reset.onclick = () => {
+    vals.fill(""); save();
+    node.querySelectorAll("input").forEach((x) => { if (x.type === "radio") x.checked = false; else x.value = ""; });
+    marks.forEach((m) => { m.q.classList.remove("ok", "bad"); m.fb.hidden = true; });
+    opts.status("Ready", "ready");
+  };
+  show.onclick = () => {
+    if (!confirm("Show every answer with its explanation? Try first: getting it wrong and fixing it is how this sticks.")) return;
+    grade(true);
+  };
+  const readable = () => ex.items.map((it, i) => "Q" + (i + 1) + ": " +
+    (it.type === "mcq" ? (vals[i] !== "" && vals[i] != null ? it.options[Number(vals[i])] : "(blank)") : (vals[i] || "(blank)"))).join("\n");
+  return { node, grade, readable, answersText: () => JSON.stringify({ a: vals }) };
+}
 function savedCode(l) { try { return localStorage.getItem(CODE_KEY(l.id)); } catch (e) { return null; } }
 function saveCode(l, v) { try { v === l.exercise.starter ? localStorage.removeItem(CODE_KEY(l.id)) : localStorage.setItem(CODE_KEY(l.id), v); } catch (e) {} }
 
@@ -3876,13 +4213,15 @@ function renderLesson(l, opts = {}) {
   root.append(guest ? guestBar(l) : topBar());
   const grid = el("div", "grid");
   const ex = l.exercise;
-  const isDay = !!(l.day || l.adv);
+  const isDay = !!(l.day || l.adv || l.mc);
+  const isCheck = ex.kind === "check";
 
   /* ---- left: the teaching ---- */
   const left = el("div", "pane lesson");
   const kick = el("span", "kicker",
     l.day ? "Day " + String(l.day).padStart(2, "0") + " of 90 · " + trackMeta(l.track).short
     : l.adv ? "Advanced " + String(l.adv).padStart(2, "0") + " of 13 · ~" + Math.round((l.minutes || 120) / 60) + " h · " + trackMeta(l.track).short
+    : l.mc ? "Medical Coding " + String(l.mc).padStart(2, "0") + " of 28 · ~" + (Math.round((l.minutes || 120) / 30) / 2) + " h · " + trackMeta(l.track).short
           : "Lesson " + String(l.order).padStart(2, "0") + " · " + trackMeta(l.track).title);
   kick.dataset.reveal = "";
   left.append(kick);
@@ -3969,12 +4308,19 @@ function renderLesson(l, opts = {}) {
   const ptop = el("div", "ptop");
   ptop.append(el("span", "ptitle", "Practice"));
   const status = el("span", "status");
-  const stxt = el("span", null, "Starting Python");
+  const stxt = el("span", null, isCheck ? "Ready" : "Starting Python");
   status.append(spinner(), stxt); ptop.append(status);
   right.append(ptop);
 
   const brief = el("div", "brief");
-  if (ex.kind === "pytest") brief.innerHTML = ex.brief_html; else brief.textContent = ex.brief;
+  if (ex.kind === "pytest") brief.innerHTML = ex.brief_html;
+  else if (isCheck) {
+    const n = ex.items.length, need = Math.ceil(n * (ex.pass || 1) - 1e-9);
+    brief.innerHTML = "";
+    brief.append(el("p", null, n + " questions, graded right here in your browser. " +
+      (need >= n ? "Get all " + n + " right to clear the lesson." : "Get " + need + " of " + n + " right (" + Math.round((ex.pass || 1) * 100) + "%) to clear it.") +
+      " For code questions, type the codes separated by commas, in order when the question says so."));
+  } else brief.textContent = ex.brief;
   right.append(brief);
 
   const ed = el("div", "editor");
@@ -3985,7 +4331,7 @@ function renderLesson(l, opts = {}) {
   ta.value = savedCode(l) ?? ex.starter;
   if (ex.kind === "pytest") ta.rows = Math.min(28, Math.max(12, ex.starter.split("\n").length + 2));
   ed.append(ta);
-  loadEditor().then(() => {
+  if (!isCheck) loadEditor().then(() => {
     window.AIMEditor.create(ta, { onRun: () => { if (!run.disabled) runTests(); } });
   }).catch(() => { /* plain textarea still works */ });
   const erow = el("div", "erow");
@@ -4001,7 +4347,19 @@ function renderLesson(l, opts = {}) {
   const hint = el("span"); hint.style.marginLeft = "auto";
   hint.innerHTML = "<kbd>Ctrl</kbd> + <kbd>Enter</kbd>";
   erow.append(run, stop, reset, hintBtn, sol, hint);
-  ed.append(erow); right.append(ed);
+  ed.append(erow);
+  let quiz = null;
+  if (isCheck) {
+    quiz = checkQuiz(l, ex, {
+      saved: savedCode(l),
+      onSave: (txt) => { ta.value = txt; saveCode(l, txt); },
+      onGraded: (r) => gradedChecks(r),
+      status: (t, cls) => setStatus(t, cls),
+      timerHost: ptop,
+    });
+    ta.value = quiz.answersText();
+    right.append(quiz.node);
+  } else right.append(ed);
 
   // Hints: three steps, each gives away a little more than the last.
   const hintBox = el("div", "hintbox");
@@ -4032,11 +4390,12 @@ function renderLesson(l, opts = {}) {
   const out = el("div", "out");
   out.setAttribute("role", "status"); out.setAttribute("aria-live", "polite");
   right.append(out);
+  if (isCheck) out.hidden = true;
   const done = el("div", "done"); done.hidden = true;
-  done.innerHTML = "<b>All tests passed.</b> ";
+  done.innerHTML = isCheck ? "<b>Lesson cleared.</b> " : "<b>All tests passed.</b> ";
   done.append(document.createTextNode(isDay ? courseNo(l) + " marked complete." : "Marked complete."));
   right.append(done);
-  if (ex.kind === "pytest" && ex.done_html) {
+  if ((ex.kind === "pytest" || isCheck) && ex.done_html) {
     const dw = el("div", "donewhen");
     dw.append(el("b", null, "Done when "));
     const s = el("span"); s.innerHTML = ex.done_html.replace(/^<p>|<\/p>$/g, ""); dw.append(s);
@@ -4066,6 +4425,7 @@ function renderLesson(l, opts = {}) {
   }).catch(() => {});
 
   function codeBlock(code) {
+    if (isCheck) return "My answers:\n" + (quiz ? quiz.readable() : "") + "\n\n";
     code = code.length > 2600 ? code.slice(0, 2600) + "\n# …(cut)" : code;
     return "My code:\n\n" + code + "\n\n";
   }
@@ -4075,15 +4435,15 @@ function renderLesson(l, opts = {}) {
     if (guest) return;
     help.innerHTML = "";
     help.hidden = false;
-    help.append(el("h3", null, what.kind === "error" ? "Your code hit an error" : "Some tests are not passing yet"));
-    help.append(el("p", "note", "Not sure why? Ask the others. Your code and the " +
-      (what.kind === "error" ? "error" : "failing tests") + " go in for you. If nobody answers in 12 hours, it goes to the admin."));
+    help.append(el("h3", null, what.kind === "error" ? "Your code hit an error" : isCheck ? "Some answers aren't right yet" : "Some tests are not passing yet"));
+    help.append(el("p", "note", "Not sure why? Ask the others. Your " + (isCheck ? "answers" : "code") + " and the " +
+      (what.kind === "error" ? "error" : isCheck ? "questions you missed" : "failing tests") + " go in for you. If nobody answers in 12 hours, it goes to the admin."));
     const row = el("div", "askrow");
     const go = el("button", "btn sm", "Ask a doubt");
     go.type = "button";
     const problem = what.kind === "error"
       ? "The error:\n" + what.msg
-      : "Failing tests:\n" + what.fails.map((f) => "- " + f).join("\n");
+      : (isCheck ? "Questions I got wrong:\n" : "Failing tests:\n") + what.fails.map((f) => "- " + f).join("\n");
     const firstLine = what.kind === "error"
       ? (what.msg.trim().split("\n").pop() || "error")
       : what.fails[0];
@@ -4172,7 +4532,26 @@ function renderLesson(l, opts = {}) {
       tests.append(row);
     });
   }
-  paint(null);
+  if (!isCheck) paint(null);
+  else tests.hidden = true;
+
+  // graded checks (no Python): done banner, points, doubts — same flow as code lessons
+  async function gradedChecks(r) {
+    help.hidden = true;
+    done.hidden = !r.pass;
+    if (!r.pass) {
+      if (r.wrong.length) offerHelp({ kind: "fail", fails: r.wrong });
+      return;
+    }
+    if (guest) {
+      guestPassed(l.id);
+      signupNudge(help, "Nice — cleared. Sign up to save this: the lesson and your answers carry over, and you get +" + api.LESSON_POINTS + " points.");
+    } else if (!PROGRESS[l.id]) {
+      PROGRESS[l.id] = true;
+      await api.setDone(l.id, true, ta.value);
+      await api.refreshMe();
+    }
+  }
 
   ta.addEventListener("input", () => saveCode(l, ta.value));
   reset.onclick = () => { ta.value = ex.starter; ta.dispatchEvent(new Event("input")); paint(null); out.textContent = ""; done.hidden = true; };
@@ -4283,6 +4662,7 @@ function renderLesson(l, opts = {}) {
 
   grid.append(tabs, left, right); root.append(grid);
 
+  if (isCheck) { setStatus(PROGRESS[l.id] ? "Cleared" : "Ready", "ready"); return; }
   PY.start().then(
     () => { setStatus("Python ready", "ready"); run.disabled = false; },
     (e) => {
@@ -5179,7 +5559,7 @@ async function render() {
   const cm = /^cert-([A-Za-z0-9]{6,20})$/.exec(h0);
   if (cm) return renderCert(cm[1]);            // public: anyone can verify
   if (!me) {
-    const t = /^try(?:-(d\d\d))?$/.exec(h0);
+    const t = /^try(?:-(d\d\d|mc\d\d))?$/.exec(h0);
     if (t) return renderTry(t[1]);
     return renderAuth();
   }
@@ -5196,7 +5576,7 @@ async function render() {
       if (LESSONS.length) {
         const data = await loadAI90();
         LESSONS.forEach((l) => { if (!l.section) l.section = "Warm-up · the big picture"; });
-        LESSONS = LESSONS.concat(data.lessons);
+        LESSONS = LESSONS.concat(data.lessons, (await loadMedcode()).lessons);
       }
     } catch (e) {
       root.innerHTML = "";

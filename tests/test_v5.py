@@ -122,7 +122,7 @@ async def main():
         await axe(pg, "landing")
         await pg.click(".herocta a[href='#try-d01']")
         await pg.wait_for_selector(".guestbar")
-        check(await pg.locator(".trynav a").count() == 3, "guest bar offers 3 lessons to try")
+        check(await pg.locator(".trynav a").count() == 4, "guest bar offers 4 lessons to try (incl. medical coding)")
         await pg.wait_for_selector(".editor .cm-editor", timeout=15000)
         check(await pg.locator(".editor .cm-editor .cm-line").count() > 3, "CodeMirror editor shows the starter")
         check(await pg.locator(".lessondoubts").is_hidden(), "guests don't see doubts")

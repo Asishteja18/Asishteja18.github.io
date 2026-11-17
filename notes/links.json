@@ -1240,5 +1240,315 @@
    "time": "~2 h",
    "kb": 5.4
   }
+ ],
+ "medcode": [
+  {
+   "mc": 1,
+   "title": "What a medical coder does",
+   "file": "mc01-what-a-medical-coder-does.md",
+   "path": "notes/mc01-what-a-medical-coder-does.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/mc01-what-a-medical-coder-does.md",
+   "download": "https://telugucoders.com/notes/mc01-what-a-medical-coder-does.md",
+   "dataset": "a day in a US physician practice",
+   "time": "~1.5 h",
+   "kb": 4.0
+  },
+  {
+   "mc": 2,
+   "title": "Medical terminology I: roots, prefixes, suffixes",
+   "file": "mc02-medical-terminology-i-roots-prefixes-suffixes.md",
+   "path": "notes/mc02-medical-terminology-i-roots-prefixes-suffixes.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/mc02-medical-terminology-i-roots-prefixes-suffixes.md",
+   "download": "https://telugucoders.com/notes/mc02-medical-terminology-i-roots-prefixes-suffixes.md",
+   "dataset": "60 common word parts",
+   "time": "~2 h",
+   "kb": 3.9
+  },
+  {
+   "mc": 3,
+   "title": "Medical terminology II: directions, positions and abbreviations",
+   "file": "mc03-medical-terminology-ii-directions-positions-and.md",
+   "path": "notes/mc03-medical-terminology-ii-directions-positions-and.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/mc03-medical-terminology-ii-directions-positions-and.md",
+   "download": "https://telugucoders.com/notes/mc03-medical-terminology-ii-directions-positions-and.md",
+   "dataset": "anatomical position diagrams + 40 chart abbreviations",
+   "time": "~2 h",
+   "kb": 4.1
+  },
+  {
+   "mc": 4,
+   "title": "Anatomy I: skin, bones and muscles, heart, lungs, digestion",
+   "file": "mc04-anatomy-i-skin-bones-and-muscles-heart-lungs-dig.md",
+   "path": "notes/mc04-anatomy-i-skin-bones-and-muscles-heart-lungs-dig.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/mc04-anatomy-i-skin-bones-and-muscles-heart-lungs-dig.md",
+   "download": "https://telugucoders.com/notes/mc04-anatomy-i-skin-bones-and-muscles-heart-lungs-dig.md",
+   "dataset": "body-system map",
+   "time": "~2.5 h",
+   "kb": 4.3
+  },
+  {
+   "mc": 5,
+   "title": "Anatomy II: kidneys, reproduction, nerves, hormones, eyes and ears, blood",
+   "file": "mc05-anatomy-ii-kidneys-reproduction-nerves-hormones.md",
+   "path": "notes/mc05-anatomy-ii-kidneys-reproduction-nerves-hormones.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/mc05-anatomy-ii-kidneys-reproduction-nerves-hormones.md",
+   "download": "https://telugucoders.com/notes/mc05-anatomy-ii-kidneys-reproduction-nerves-hormones.md",
+   "dataset": "body-system map (part 2)",
+   "time": "~2.5 h",
+   "kb": 4.1
+  },
+  {
+   "mc": 6,
+   "title": "Pathology and pharmacology for coders",
+   "file": "mc06-pathology-and-pharmacology-for-coders.md",
+   "path": "notes/mc06-pathology-and-pharmacology-for-coders.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/mc06-pathology-and-pharmacology-for-coders.md",
+   "download": "https://telugucoders.com/notes/mc06-pathology-and-pharmacology-for-coders.md",
+   "dataset": "30 conditions + 25 drug classes",
+   "time": "~2 h",
+   "kb": 4.2
+  },
+  {
+   "mc": 7,
+   "title": "HIPAA, compliance and reading clinical documentation",
+   "file": "mc07-hipaa-compliance-and-reading-clinical-documentat.md",
+   "path": "notes/mc07-hipaa-compliance-and-reading-clinical-documentat.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/mc07-hipaa-compliance-and-reading-clinical-documentat.md",
+   "download": "https://telugucoders.com/notes/mc07-hipaa-compliance-and-reading-clinical-documentat.md",
+   "dataset": "a SOAP note and an operative report",
+   "time": "~2 h",
+   "kb": 4.0
+  },
+  {
+   "mc": 8,
+   "title": "How an ICD-10-CM code is built",
+   "file": "mc08-how-an-icd-10-cm-code-is-built.md",
+   "path": "notes/mc08-how-an-icd-10-cm-code-is-built.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/mc08-how-an-icd-10-cm-code-is-built.md",
+   "download": "https://telugucoders.com/notes/mc08-how-an-icd-10-cm-code-is-built.md",
+   "dataset": "the full FY2026 ICD-10-CM code set (about 74,700 billable codes)",
+   "time": "~2 h",
+   "kb": 4.2
+  },
+  {
+   "mc": 9,
+   "title": "Finding the code: Alphabetic Index, Tabular List and conventions",
+   "file": "mc09-finding-the-code-alphabetic-index-tabular-list-a.md",
+   "path": "notes/mc09-finding-the-code-alphabetic-index-tabular-list-a.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/mc09-finding-the-code-alphabetic-index-tabular-list-a.md",
+   "download": "https://telugucoders.com/notes/mc09-finding-the-code-alphabetic-index-tabular-list-a.md",
+   "dataset": "ICD-10-CM Index and Tabular conventions",
+   "time": "~2.5 h",
+   "kb": 4.6
+  },
+  {
+   "mc": 10,
+   "title": "General coding guidelines",
+   "file": "mc10-general-coding-guidelines.md",
+   "path": "notes/mc10-general-coding-guidelines.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/mc10-general-coding-guidelines.md",
+   "download": "https://telugucoders.com/notes/mc10-general-coding-guidelines.md",
+   "dataset": "ICD-10-CM Official Guidelines FY2026, Section I.B and Section IV (outpatient)",
+   "time": "~2.5 h",
+   "kb": 4.5
+  },
+  {
+   "mc": 11,
+   "title": "Diabetes, hypertension and chronic kidney disease",
+   "file": "mc11-diabetes-hypertension-and-chronic-kidney-disease.md",
+   "path": "notes/mc11-diabetes-hypertension-and-chronic-kidney-disease.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/mc11-diabetes-hypertension-and-chronic-kidney-disease.md",
+   "download": "https://telugucoders.com/notes/mc11-diabetes-hypertension-and-chronic-kidney-disease.md",
+   "dataset": "guideline sections I.C.4 (diabetes), I.C.9 (hypertension), I.C.14 (CKD)",
+   "time": "~3 h",
+   "kb": 4.1
+  },
+  {
+   "mc": 12,
+   "title": "Neoplasms and infections",
+   "file": "mc12-neoplasms-and-infections.md",
+   "path": "notes/mc12-neoplasms-and-infections.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/mc12-neoplasms-and-infections.md",
+   "download": "https://telugucoders.com/notes/mc12-neoplasms-and-infections.md",
+   "dataset": "Table of Neoplasms + guideline sections I.C.2 and I.C.1",
+   "time": "~3 h",
+   "kb": 4.2
+  },
+  {
+   "mc": 13,
+   "title": "Injuries, poisonings and external causes",
+   "file": "mc13-injuries-poisonings-and-external-causes.md",
+   "path": "notes/mc13-injuries-poisonings-and-external-causes.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/mc13-injuries-poisonings-and-external-causes.md",
+   "download": "https://telugucoders.com/notes/mc13-injuries-poisonings-and-external-causes.md",
+   "dataset": "chapters 19 (S–T) and 20 (V–Y)",
+   "time": "~3 h",
+   "kb": 4.0
+  },
+  {
+   "mc": 14,
+   "title": "Pregnancy, newborns and Z codes",
+   "file": "mc14-pregnancy-newborns-and-z-codes.md",
+   "path": "notes/mc14-pregnancy-newborns-and-z-codes.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/mc14-pregnancy-newborns-and-z-codes.md",
+   "download": "https://telugucoders.com/notes/mc14-pregnancy-newborns-and-z-codes.md",
+   "dataset": "chapters 15 (O), 16 (P) and 21 (Z)",
+   "time": "~2.5 h",
+   "kb": 4.5
+  },
+  {
+   "mc": 15,
+   "title": "How the CPT book works",
+   "file": "mc15-how-the-cpt-book-works.md",
+   "path": "notes/mc15-how-the-cpt-book-works.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/mc15-how-the-cpt-book-works.md",
+   "download": "https://telugucoders.com/notes/mc15-how-the-cpt-book-works.md",
+   "dataset": "CPT 2026 section structure (no descriptors reproduced)",
+   "time": "~2 h",
+   "kb": 4.2
+  },
+  {
+   "mc": 16,
+   "title": "Evaluation and Management I: office visits",
+   "file": "mc16-evaluation-and-management-i-office-visits.md",
+   "path": "notes/mc16-evaluation-and-management-i-office-visits.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/mc16-evaluation-and-management-i-office-visits.md",
+   "download": "https://telugucoders.com/notes/mc16-evaluation-and-management-i-office-visits.md",
+   "dataset": "2021+ office/outpatient E/M rules (CPT 2026)",
+   "time": "~3 h",
+   "kb": 4.9
+  },
+  {
+   "mc": 17,
+   "title": "Evaluation and Management II: hospital, ED, preventive, modifier 25",
+   "file": "mc17-evaluation-and-management-ii-hospital-ed-prevent.md",
+   "path": "notes/mc17-evaluation-and-management-ii-hospital-ed-prevent.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/mc17-evaluation-and-management-ii-hospital-ed-prevent.md",
+   "download": "https://telugucoders.com/notes/mc17-evaluation-and-management-ii-hospital-ed-prevent.md",
+   "dataset": "other E/M categories in CPT 2026",
+   "time": "~2.5 h",
+   "kb": 4.7
+  },
+  {
+   "mc": 18,
+   "title": "Surgery I: the surgical package and the skin",
+   "file": "mc18-surgery-i-the-surgical-package-and-the-skin.md",
+   "path": "notes/mc18-surgery-i-the-surgical-package-and-the-skin.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/mc18-surgery-i-the-surgical-package-and-the-skin.md",
+   "download": "https://telugucoders.com/notes/mc18-surgery-i-the-surgical-package-and-the-skin.md",
+   "dataset": "CPT surgery guidelines + Integumentary subsection rules",
+   "time": "~3 h",
+   "kb": 5.0
+  },
+  {
+   "mc": 19,
+   "title": "Surgery II: bones, heart and vessels, digestive scopes, other systems",
+   "file": "mc19-surgery-ii-bones-heart-and-vessels-digestive-sco.md",
+   "path": "notes/mc19-surgery-ii-bones-heart-and-vessels-digestive-sco.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/mc19-surgery-ii-bones-heart-and-vessels-digestive-sco.md",
+   "download": "https://telugucoders.com/notes/mc19-surgery-ii-bones-heart-and-vessels-digestive-sco.md",
+   "dataset": "CPT surgery subsection rules",
+   "time": "~3 h",
+   "kb": 4.9
+  },
+  {
+   "mc": 20,
+   "title": "Anesthesia, Radiology, Pathology/Lab and Medicine",
+   "file": "mc20-anesthesia-radiology-pathology-lab-and-medicine.md",
+   "path": "notes/mc20-anesthesia-radiology-pathology-lab-and-medicine.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/mc20-anesthesia-radiology-pathology-lab-and-medicine.md",
+   "download": "https://telugucoders.com/notes/mc20-anesthesia-radiology-pathology-lab-and-medicine.md",
+   "dataset": "CPT section guidelines + CY2026 anaesthesia conversion factor",
+   "time": "~2.5 h",
+   "kb": 4.7
+  },
+  {
+   "mc": 21,
+   "title": "Modifiers and HCPCS Level II",
+   "file": "mc21-modifiers-and-hcpcs-level-ii.md",
+   "path": "notes/mc21-modifiers-and-hcpcs-level-ii.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/mc21-modifiers-and-hcpcs-level-ii.md",
+   "download": "https://telugucoders.com/notes/mc21-modifiers-and-hcpcs-level-ii.md",
+   "dataset": "CPT and HCPCS Level II modifiers, HCPCS sections, drug units",
+   "time": "~3 h",
+   "kb": 4.6
+  },
+  {
+   "mc": 22,
+   "title": "NCCI edits, medical necessity and the ABN",
+   "file": "mc22-ncci-edits-medical-necessity-and-the-abn.md",
+   "path": "notes/mc22-ncci-edits-medical-necessity-and-the-abn.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/mc22-ncci-edits-medical-necessity-and-the-abn.md",
+   "download": "https://telugucoders.com/notes/mc22-ncci-edits-medical-necessity-and-the-abn.md",
+   "dataset": "CMS National Correct Coding Initiative (quarterly)",
+   "time": "~2 h",
+   "kb": 4.3
+  },
+  {
+   "mc": 23,
+   "title": "Claim forms: CMS-1500, UB-04 and place of service",
+   "file": "mc23-claim-forms-cms-1500-ub-04-and-place-of-service.md",
+   "path": "notes/mc23-claim-forms-cms-1500-ub-04-and-place-of-service.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/mc23-claim-forms-cms-1500-ub-04-and-place-of-service.md",
+   "download": "https://telugucoders.com/notes/mc23-claim-forms-cms-1500-ub-04-and-place-of-service.md",
+   "dataset": "CMS-1500 (02/12) form layout + CMS place-of-service codes",
+   "time": "~2 h",
+   "kb": 4.4
+  },
+  {
+   "mc": 24,
+   "title": "Payers and how payment is calculated",
+   "file": "mc24-payers-and-how-payment-is-calculated.md",
+   "path": "notes/mc24-payers-and-how-payment-is-calculated.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/mc24-payers-and-how-payment-is-calculated.md",
+   "download": "https://telugucoders.com/notes/mc24-payers-and-how-payment-is-calculated.md",
+   "dataset": "Medicare PFS CY2026 (conversion factor $33.4009 non-APM)",
+   "time": "~2 h",
+   "kb": 3.9
+  },
+  {
+   "mc": 25,
+   "title": "Denials, appeals, audits, fraud and abuse",
+   "file": "mc25-denials-appeals-audits-fraud-and-abuse.md",
+   "path": "notes/mc25-denials-appeals-audits-fraud-and-abuse.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/mc25-denials-appeals-audits-fraud-and-abuse.md",
+   "download": "https://telugucoders.com/notes/mc25-denials-appeals-audits-fraud-and-abuse.md",
+   "dataset": "CARC / group codes, Medicare appeal levels, federal fraud laws",
+   "time": "~2 h",
+   "kb": 4.5
+  },
+  {
+   "mc": 26,
+   "title": "The inpatient side: principal diagnosis, POA, MS-DRG and ICD-10-PCS",
+   "file": "mc26-the-inpatient-side-principal-diagnosis-poa-ms-dr.md",
+   "path": "notes/mc26-the-inpatient-side-principal-diagnosis-poa-ms-dr.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/mc26-the-inpatient-side-principal-diagnosis-poa-ms-dr.md",
+   "download": "https://telugucoders.com/notes/mc26-the-inpatient-side-principal-diagnosis-poa-ms-dr.md",
+   "dataset": "UHDDS definitions, POA indicators, ICD-10-PCS structure",
+   "time": "~3 h",
+   "kb": 4.6
+  },
+  {
+   "mc": 27,
+   "title": "AI in medical coding: reviewing machine-suggested codes",
+   "file": "mc27-ai-in-medical-coding-reviewing-machine-suggested.md",
+   "path": "notes/mc27-ai-in-medical-coding-reviewing-machine-suggested.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/mc27-ai-in-medical-coding-reviewing-machine-suggested.md",
+   "download": "https://telugucoders.com/notes/mc27-ai-in-medical-coding-reviewing-machine-suggested.md",
+   "dataset": "computer-assisted coding output vs real notes",
+   "time": "~2 h",
+   "kb": 4.5
+  },
+  {
+   "mc": 28,
+   "title": "CPC-style mock exam",
+   "file": "mc28-cpc-style-mock-exam.md",
+   "path": "notes/mc28-cpc-style-mock-exam.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/mc28-cpc-style-mock-exam.md",
+   "download": "https://telugucoders.com/notes/mc28-cpc-style-mock-exam.md",
+   "dataset": "25 mixed questions from all 27 lessons",
+   "time": "~1.5 h (aim for 60 minutes)",
+   "kb": 5.4
+  }
  ]
 }

@@ -127,3 +127,38 @@ One note per day: visual, notes, worked code, your task, tests and a reference s
 | 88 | Serving your AI: an API and a chat page | your chat model (Day 85) | [read](day88-serving-your-ai-an-api-and-a-chat-page.md) | [.md · 6.1 KB](https://telugucoders.com/notes/day88-serving-your-ai-an-api-and-a-chat-page.md) |
 | 89 | Evaluation and the model card | an eval set you write (30+ prompts with expected answers) | [read](day89-evaluation-and-the-model-card.md) | [.md · 4.6 KB](https://telugucoders.com/notes/day89-evaluation-and-the-model-card.md) |
 | 90 | Demo day: ship it | everything | [read](day90-demo-day-ship-it.md) | [.md · 5.5 KB](https://telugucoders.com/notes/day90-demo-day-ship-it.md) |
+
+## Biological path · Medical Coding (CPC track)
+
+ICD-10-CM FY2026, CPT and HCPCS for the AAPC CPC exam. Graded practice on the site.
+
+| # | Topic | Read | Download |
+| --- | --- | --- | --- |
+| M1 | What a medical coder does | [read](mc01-what-a-medical-coder-does.md) | [.md · 4.0 KB](https://telugucoders.com/notes/mc01-what-a-medical-coder-does.md) |
+| M2 | Medical terminology I: roots, prefixes, suffixes | [read](mc02-medical-terminology-i-roots-prefixes-suffixes.md) | [.md · 3.9 KB](https://telugucoders.com/notes/mc02-medical-terminology-i-roots-prefixes-suffixes.md) |
+| M3 | Medical terminology II: directions, positions and abbreviations | [read](mc03-medical-terminology-ii-directions-positions-and.md) | [.md · 4.1 KB](https://telugucoders.com/notes/mc03-medical-terminology-ii-directions-positions-and.md) |
+| M4 | Anatomy I: skin, bones and muscles, heart, lungs, digestion | [read](mc04-anatomy-i-skin-bones-and-muscles-heart-lungs-dig.md) | [.md · 4.3 KB](https://telugucoders.com/notes/mc04-anatomy-i-skin-bones-and-muscles-heart-lungs-dig.md) |
+| M5 | Anatomy II: kidneys, reproduction, nerves, hormones, eyes and ears, blood | [read](mc05-anatomy-ii-kidneys-reproduction-nerves-hormones.md) | [.md · 4.1 KB](https://telugucoders.com/notes/mc05-anatomy-ii-kidneys-reproduction-nerves-hormones.md) |
+| M6 | Pathology and pharmacology for coders | [read](mc06-pathology-and-pharmacology-for-coders.md) | [.md · 4.2 KB](https://telugucoders.com/notes/mc06-pathology-and-pharmacology-for-coders.md) |
+| M7 | HIPAA, compliance and reading clinical documentation | [read](mc07-hipaa-compliance-and-reading-clinical-documentat.md) | [.md · 4.0 KB](https://telugucoders.com/notes/mc07-hipaa-compliance-and-reading-clinical-documentat.md) |
+| M8 | How an ICD-10-CM code is built | [read](mc08-how-an-icd-10-cm-code-is-built.md) | [.md · 4.2 KB](https://telugucoders.com/notes/mc08-how-an-icd-10-cm-code-is-built.md) |
+| M9 | Finding the code: Alphabetic Index, Tabular List and conventions | [read](mc09-finding-the-code-alphabetic-index-tabular-list-a.md) | [.md · 4.6 KB](https://telugucoders.com/notes/mc09-finding-the-code-alphabetic-index-tabular-list-a.md) |
+| M10 | General coding guidelines | [read](mc10-general-coding-guidelines.md) | [.md · 4.5 KB](https://telugucoders.com/notes/mc10-general-coding-guidelines.md) |
+| M11 | Diabetes, hypertension and chronic kidney disease | [read](mc11-diabetes-hypertension-and-chronic-kidney-disease.md) | [.md · 4.1 KB](https://telugucoders.com/notes/mc11-diabetes-hypertension-and-chronic-kidney-disease.md) |
+| M12 | Neoplasms and infections | [read](mc12-neoplasms-and-infections.md) | [.md · 4.2 KB](https://telugucoders.com/notes/mc12-neoplasms-and-infections.md) |
+| M13 | Injuries, poisonings and external causes | [read](mc13-injuries-poisonings-and-external-causes.md) | [.md · 4.0 KB](https://telugucoders.com/notes/mc13-injuries-poisonings-and-external-causes.md) |
+| M14 | Pregnancy, newborns and Z codes | [read](mc14-pregnancy-newborns-and-z-codes.md) | [.md · 4.5 KB](https://telugucoders.com/notes/mc14-pregnancy-newborns-and-z-codes.md) |
+| M15 | How the CPT book works | [read](mc15-how-the-cpt-book-works.md) | [.md · 4.2 KB](https://telugucoders.com/notes/mc15-how-the-cpt-book-works.md) |
+| M16 | Evaluation and Management I: office visits | [read](mc16-evaluation-and-management-i-office-visits.md) | [.md · 4.9 KB](https://telugucoders.com/notes/mc16-evaluation-and-management-i-office-visits.md) |
+| M17 | Evaluation and Management II: hospital, ED, preventive, modifier 25 | [read](mc17-evaluation-and-management-ii-hospital-ed-prevent.md) | [.md · 4.7 KB](https://telugucoders.com/notes/mc17-evaluation-and-management-ii-hospital-ed-prevent.md) |
+| M18 | Surgery I: the surgical package and the skin | [read](mc18-surgery-i-the-surgical-package-and-the-skin.md) | [.md · 5.0 KB](https://telugucoders.com/notes/mc18-surgery-i-the-surgical-package-and-the-skin.md) |
+| M19 | Surgery II: bones, heart and vessels, digestive scopes, other systems | [read](mc19-surgery-ii-bones-heart-and-vessels-digestive-sco.md) | [.md · 4.9 KB](https://telugucoders.com/notes/mc19-surgery-ii-bones-heart-and-vessels-digestive-sco.md) |
+| M20 | Anesthesia, Radiology, Pathology/Lab and Medicine | [read](mc20-anesthesia-radiology-pathology-lab-and-medicine.md) | [.md · 4.7 KB](https://telugucoders.com/notes/mc20-anesthesia-radiology-pathology-lab-and-medicine.md) |
+| M21 | Modifiers and HCPCS Level II | [read](mc21-modifiers-and-hcpcs-level-ii.md) | [.md · 4.6 KB](https://telugucoders.com/notes/mc21-modifiers-and-hcpcs-level-ii.md) |
+| M22 | NCCI edits, medical necessity and the ABN | [read](mc22-ncci-edits-medical-necessity-and-the-abn.md) | [.md · 4.3 KB](https://telugucoders.com/notes/mc22-ncci-edits-medical-necessity-and-the-abn.md) |
+| M23 | Claim forms: CMS-1500, UB-04 and place of service | [read](mc23-claim-forms-cms-1500-ub-04-and-place-of-service.md) | [.md · 4.4 KB](https://telugucoders.com/notes/mc23-claim-forms-cms-1500-ub-04-and-place-of-service.md) |
+| M24 | Payers and how payment is calculated | [read](mc24-payers-and-how-payment-is-calculated.md) | [.md · 3.9 KB](https://telugucoders.com/notes/mc24-payers-and-how-payment-is-calculated.md) |
+| M25 | Denials, appeals, audits, fraud and abuse | [read](mc25-denials-appeals-audits-fraud-and-abuse.md) | [.md · 4.5 KB](https://telugucoders.com/notes/mc25-denials-appeals-audits-fraud-and-abuse.md) |
+| M26 | The inpatient side: principal diagnosis, POA, MS-DRG and ICD-10-PCS | [read](mc26-the-inpatient-side-principal-diagnosis-poa-ms-dr.md) | [.md · 4.6 KB](https://telugucoders.com/notes/mc26-the-inpatient-side-principal-diagnosis-poa-ms-dr.md) |
+| M27 | AI in medical coding: reviewing machine-suggested codes | [read](mc27-ai-in-medical-coding-reviewing-machine-suggested.md) | [.md · 4.5 KB](https://telugucoders.com/notes/mc27-ai-in-medical-coding-reviewing-machine-suggested.md) |
+| M28 | CPC-style mock exam | [read](mc28-cpc-style-mock-exam.md) | [.md · 5.4 KB](https://telugucoders.com/notes/mc28-cpc-style-mock-exam.md) |

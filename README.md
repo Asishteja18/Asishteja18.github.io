@@ -58,6 +58,20 @@ streak **reminder emails** (opt-out in the menu), an admin **drop-off chart**
 and **spot check** (re-runs a learner's saved code), an installable app with
 offline caching, and share previews.
 
+**Two paths.** The landing page and hub have a **Digital | Biological** switch (saved on the
+profile, `profiles.path`).
+
+- **Digital** = AI-90 (Python → ML → Advanced ML → AI, above).
+- **Biological** = **Medical Coding** for the AAPC CPC exam: 28 lessons
+  (`syllabus/MEDCODE_MASTER.md` → `tools/build_medcode.py` → `content/medcode.json`) in 4 stages —
+  healthcare foundations, ICD-10-CM, CPT + HCPCS, claims/compliance + a timed mock exam.
+  - No programming: each lesson ends in graded checks (MCQ, type-the-codes, short answers; 220 in total)
+    marked in the browser (exercise kind `check`).
+  - Every ICD-10-CM code is validated against the official FY2026 set (`pip install simple_icd_10_cm`).
+  - CPT descriptors are AMA copyright and never reproduced.
+  - Tools in `assets/viz-bio.js`, including a full ICD-10-CM FY2026 lookup (`content/icd10cm.json`, ~74,700 billable codes, lazy-loaded).
+  - +5 points per lesson; a Medical Coding certificate for all 28 (`supabase-v7.sql`, applied live).
+
 ## What's in this repo
 
 | File | What it is |
@@ -138,7 +152,7 @@ Edit `syllabus/AI90_MASTER.md` (Days) or `syllabus/AI90_PLUS.md` (Advanced ML) �
 keep each lesson's Visual · Notes · Task · Tests · Solution · Done when — then:
 
 ```bash
-python3 tools/build_notes.py && python3 tools/build_ai90.py
+python3 tools/build_notes.py && python3 tools/build_ai90.py && python3 tools/build_medcode.py
 node tests/ai90_pyodide.mjs /path/to/pyodide-0.29.5 solutions all   # must stay 355/355
 ```
 

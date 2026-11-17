@@ -399,7 +399,7 @@ begin
   update profiles p set points =
       5 * (select count(distinct g.lesson_id) from progress g
             where g.user_id = uid and g.completed
-              and g.lesson_id ~ '^(d(0[1-9]|[1-8][0-9]|90)|x(0[1-9]|1[0-3])|py-0[1-8]|py-intro|py-what|ml-0[1-8]|ai-0[1-6])$')
+              and g.lesson_id ~ '^(d(0[1-9]|[1-8][0-9]|90)|x(0[1-9]|1[0-3])|mc(0[1-9]|1[0-9]|2[0-8])|py-0[1-8]|py-intro|py-what|ml-0[1-8]|ai-0[1-6])$')
     + 2 * p.solved_count
    where p.id = uid;
 end $$;
@@ -467,7 +467,7 @@ begin
   update profiles p set points =
       5 * (select count(distinct g.lesson_id) from progress g
             where g.user_id = uid and g.completed
-              and g.lesson_id ~ '^(d(0[1-9]|[1-8][0-9]|90)|x(0[1-9]|1[0-3])|py-0[1-8]|py-intro|py-what|ml-0[1-8]|ai-0[1-6])$')
+              and g.lesson_id ~ '^(d(0[1-9]|[1-8][0-9]|90)|x(0[1-9]|1[0-3])|mc(0[1-9]|1[0-9]|2[0-8])|py-0[1-8]|py-intro|py-what|ml-0[1-8]|ai-0[1-6])$')
     + 10 * (select count(*) from progress g
              where g.user_id = uid and g.completed and g.completed_at is not null
                and g.lesson_id = challenge_lesson(g.completed_at::date))
@@ -508,7 +508,7 @@ language sql stable security definer set search_path = public as $$
   pts as (
     select p.id, p.handle,
       (5 * (select count(*) from progress g, wk where g.user_id = p.id and g.completed and g.completed_at >= wk.start
-             and g.lesson_id ~ '^(d(0[1-9]|[1-8][0-9]|90)|x(0[1-9]|1[0-3])|py-0[1-8]|py-intro|py-what|ml-0[1-8]|ai-0[1-6])$')
+             and g.lesson_id ~ '^(d(0[1-9]|[1-8][0-9]|90)|x(0[1-9]|1[0-3])|mc(0[1-9]|1[0-9]|2[0-8])|py-0[1-8]|py-intro|py-what|ml-0[1-8]|ai-0[1-6])$')
      + 10 * (select count(*) from progress g, wk where g.user_id = p.id and g.completed and g.completed_at >= wk.start
              and g.lesson_id = challenge_lesson(g.completed_at::date))
      + 2 * (select count(*) from doubts d join doubt_replies r on r.id = d.solved_reply_id, wk
@@ -532,7 +532,7 @@ create table if not exists certificates (
 );
 -- v6: the Advanced ML stage (x01–x13) can be certified too
 alter table certificates drop constraint if exists certificates_track_check;
-alter table certificates add constraint certificates_track_check check (track in ('python', 'ml', 'adv', 'ai'));
+alter table certificates add constraint certificates_track_check check (track in ('python', 'ml', 'adv', 'ai', 'medcode'));
 alter table certificates enable row level security;
 revoke insert, update, delete on certificates from anon, authenticated;
 drop policy if exists c_own on certificates;
@@ -548,6 +548,7 @@ begin
     when 'ml'     then array(select 'd' || lpad(i::text, 2, '0') from generate_series(31, 60) i)
     when 'adv'    then array(select 'x' || lpad(i::text, 2, '0') from generate_series(1, 13) i)
     when 'ai'     then array(select 'd' || lpad(i::text, 2, '0') from generate_series(61, 90) i)
+    when 'medcode' then array(select 'mc' || lpad(i::text, 2, '0') from generate_series(1, 28) i)
   end;
   if ids is null then raise exception 'Unknown stage.'; end if;
   select count(distinct lesson_id) into n from progress
@@ -595,3 +596,21 @@ $$;
 do $$ declare u uuid; begin
   for u in select id from profiles loop perform recalc_points(u); end loop;
 end $$;
+
+-- ================================================================== v7
+-- Two paths: Digital (AI-90) and Biological (medical coding, lessons mc01–mc28).
+-- The learner's choice lives on their profile so it follows them across devices.
+alter table profiles add column if not exists path text;
+alter table profiles drop constraint if exists profiles_path_check;
+alter table profiles add constraint profiles_path_check check (path is null or path in ('digital', 'bio'));
+
+create or replace function set_path(p text) returns text
+language plpgsql security definer set search_path = public as $$
+begin
+  if auth.uid() is null then raise exception 'Sign in first.'; end if;
+  if p not in ('digital', 'bio') then raise exception 'Unknown path.'; end if;
+  update profiles set path = p where id = auth.uid();
+  return p;
+end $$;
+revoke all on function set_path(text) from public, anon;
+grant execute on function set_path(text) to authenticated;

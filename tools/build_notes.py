@@ -66,6 +66,62 @@ def adv_note(n, adv):
         "<sub>Generated from `syllabus/AI90_PLUS.md` by `tools/build_notes.py`.</sub>", ""])
 
 
+MED_STAGES = [(1, 7, "Stage 1 · Healthcare foundations"), (8, 14, "Stage 2 · ICD-10-CM diagnosis coding"),
+              (15, 21, "Stage 3 · CPT + HCPCS procedure coding"), (22, 28, "Stage 4 · Claims, compliance + career")]
+
+
+def mc_filename(n, title):
+    return f"mc{n:02}-{slug(title)}.md"
+
+
+def parse_med(text):
+    heads = list(re.finditer(r"^### Lesson (\d+) — (.+)$", text, re.M))
+    out = {}
+    for k, h in enumerate(heads):
+        stop = heads[k + 1].start() if k + 1 < len(heads) else len(text)
+        stop2 = text.find("\n## ", h.end())
+        if 0 < stop2 < stop:
+            stop = stop2
+        out[int(h.group(1))] = (h.group(2).strip(), re.sub(r"\n---\s*$", "", text[h.end():stop].strip()).strip())
+    return out
+
+
+def practice_md(body):
+    """Swap the graded JSON for a readable question list (answers stay on the site)."""
+    m = re.search(r"#### Practice\n+```json\n(.*?)```", body, re.S)
+    if not m:
+        return body
+    items = json.loads(m.group(1))["items"]
+    lines = ["#### Practice", "", "Answer these, then check yourself with instant grading on "
+             f"[telugucoders.com]({SITE}) (choose the Biological path).", ""]
+    for i, it in enumerate(items, 1):
+        lines.append(f"{i}. {it['q']}")
+        if it["type"] == "mcq":
+            lines += [f"   - {chr(97 + j)}) {o}" for j, o in enumerate(it["options"])]
+        elif it["type"] == "codes":
+            lines.append("   - Your codes: ______________")
+    return body[:m.start()] + "\n".join(lines) + body[m.end():]
+
+
+def mc_note(n, med):
+    title, body = med[n]
+    stage = next(name for lo, hi, name in MED_STAGES if lo <= n <= hi)
+    nav = []
+    if n > 1:
+        nav.append(f"[← Lesson {n - 1}]({mc_filename(n - 1, med[n - 1][0])})")
+    nav.append("[All notes](README.md)")
+    if n < len(med):
+        nav.append(f"[Lesson {n + 1} →]({mc_filename(n + 1, med[n + 1][0])})")
+    nav = " · ".join(nav)
+    return "\n".join([
+        f"# Medical Coding {n} — {title}", "",
+        f"> **AIM Biological path** · {stage} · Lesson {n} of {len(med)}  ",
+        f"> ICD-10-CM FY2026 · CPT descriptions are AMA copyright: use your own CPT book · "
+        f"source: [MEDCODE_MASTER.md](../syllabus/MEDCODE_MASTER.md)", "",
+        nav, "", "---", "", practice_md(body), "", "---", "", nav, "",
+        "<sub>Generated from `syllabus/MEDCODE_MASTER.md` by `tools/build_notes.py`.</sub>", ""])
+
+
 def block_of(n):
     return next(name for lo, hi, name in BLOCKS if lo <= n <= hi)
 
@@ -118,8 +174,17 @@ def main():
     assert sorted(days) == list(range(1, 91)), sorted(days)[:5]
     out = ROOT / "notes"
     out.mkdir(exist_ok=True)
-    for old in list(out.glob("day*.md")) + list(out.glob("adv*.md")):
+    for old in list(out.glob("day*.md")) + list(out.glob("adv*.md")) + list(out.glob("mc*.md")):
         old.unlink()
+    med = parse_med((ROOT / "syllabus" / "MEDCODE_MASTER.md").read_text(encoding="utf-8"))
+    med_links = []
+    for n, (title, body) in sorted(med.items()):
+        fn = mc_filename(n, title)
+        (out / fn).write_text(mc_note(n, med), encoding="utf-8")
+        dataset, time = meta(body)
+        med_links.append({"mc": n, "title": title, "file": fn, "path": "notes/" + fn, "github": GH_VIEW + fn,
+                          "download": SITE + "notes/" + fn, "dataset": re.sub(r"[`*]", "", dataset), "time": time,
+                          "kb": round((out / fn).stat().st_size / 1024, 1)})
     adv = parse_plus((ROOT / "syllabus" / "AI90_PLUS.md").read_text(encoding="utf-8"))
     adv_links = []
     for n, (title, body) in sorted(adv.items()):
@@ -141,7 +206,7 @@ def main():
                       "dataset": re.sub(r"[`*]", "", dataset), "time": time,
                       "kb": round((out / fn).stat().st_size / 1024, 1)})
     (out / "links.json").write_text(json.dumps({"repo": REPO, "all_in_one": SITE + "syllabus/AI90_MASTER.md",
-                                                 "days": links, "advanced": adv_links}, indent=1, ensure_ascii=False), encoding="utf-8")
+                                                 "days": links, "advanced": adv_links, "medcode": med_links}, indent=1, ensure_ascii=False), encoding="utf-8")
     lines = ["# AI-90 notes — 90 days to build your own AI", "",
              "One note per day: visual, notes, worked code, your task, tests and a reference solution. "
              "Read them here on GitHub, or download any day as a Markdown file.", "",
@@ -165,8 +230,14 @@ def main():
                 lines.append(f"| A{L['adv']} | {L['title']} | {ds} | [read]({L['file']}) | "
                              f"[.md · {L['kb']} KB]({L['download']}) |")
             lines.append("")
+    lines += ["## Biological path · Medical Coding (CPC track)", "",
+              "ICD-10-CM FY2026, CPT and HCPCS for the AAPC CPC exam. Graded practice on the site.", "",
+              "| # | Topic | Read | Download |", "| --- | --- | --- | --- |"]
+    for L in med_links:
+        lines.append(f"| M{L['mc']} | {L['title']} | [read]({L['file']}) | [.md · {L['kb']} KB]({L['download']}) |")
+    lines.append("")
     (out / "README.md").write_text("\n".join(lines), encoding="utf-8")
-    print(f"wrote {len(links)} + {len(adv_links)} notes + README.md + links.json to {out}")
+    print(f"wrote {len(links)} + {len(adv_links)} + {len(med_links)} notes + README.md + links.json to {out}")
 
 
 if __name__ == "__main__":

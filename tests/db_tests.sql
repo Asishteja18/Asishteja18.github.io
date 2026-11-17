@@ -274,3 +274,47 @@ do $$ declare cid text; r record; begin
   if r.track <> 'adv' then raise exception 'T42 adv cert track %', r.track; end if;
 end $$;
 reset role;
+
+-- T43–T46 Biological path (v7)
+reset role;
+do $$ declare b int; begin
+  select points into b from profiles where id = current_setting('t.l')::uuid;
+  insert into progress (user_id, lesson_id, completed) values (current_setting('t.l')::uuid, 'mc11', true)
+    on conflict (user_id, lesson_id) do update set completed = true;
+  if (select points from profiles where id = current_setting('t.l')::uuid) <> b + 5 then raise exception 'T43 mc11 not worth 5 points'; end if;
+  insert into progress (user_id, lesson_id, completed) values (current_setting('t.l')::uuid, 'mc29', true)
+    on conflict (user_id, lesson_id) do update set completed = true;
+  if (select points from profiles where id = current_setting('t.l')::uuid) <> b + 5 then raise exception 'T43 mc29 should not score'; end if;
+end $$;
+set local role authenticated;
+select set_config('request.jwt.claims', json_build_object('sub', current_setting('t.l'), 'role', 'authenticated')::text, true);
+do $$ begin
+  if set_path('bio') <> 'bio' then raise exception 'T44 set_path'; end if;
+  begin
+    perform set_path('quantum');
+    raise exception 'T44 bad path accepted';
+  exception when raise_exception then
+    if sqlerrm like 'T44%' then raise; end if;
+  end;
+  begin
+    perform claim_certificate('medcode', 'Learner Name');
+    raise exception 'T45 medcode cert too early';
+  exception when raise_exception then
+    if sqlerrm not like '%1 of 28%' then raise; end if;
+  end;
+end $$;
+reset role;
+do $$ begin
+  if (select path from profiles where id = current_setting('t.l')::uuid) <> 'bio' then raise exception 'T44 path not saved'; end if;
+end $$;
+insert into progress (user_id, lesson_id, completed)
+  select current_setting('t.l')::uuid, 'mc' || lpad(i::text, 2, '0'), true from generate_series(1, 28) i
+  on conflict (user_id, lesson_id) do update set completed = true;
+set local role authenticated;
+select set_config('request.jwt.claims', json_build_object('sub', current_setting('t.l'), 'role', 'authenticated')::text, true);
+do $$ declare cid text; r record; begin
+  cid := claim_certificate('medcode', 'Learner Name');
+  select * into r from verify_certificate(cid);
+  if r.track <> 'medcode' then raise exception 'T46 medcode cert track %', r.track; end if;
+end $$;
+reset role;

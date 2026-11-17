@@ -468,3 +468,17 @@ Tests: `tests/test_ai90_site.py` (40 checks) + the old `test_v3.py` and
 - DB: `supabase-v6.sql` (points regex adds `x01–x13`, certificate track `adv` = all 13). Applied live.
 - Tests: Pyodide 355/355 (`node tests/ai90_pyodide.mjs <dist> solutions all`), site + v5 suites green,
   axe clean on Advanced pages, DB 42/42. `tests/test_v2.py` is obsolete (fails on HEAD too).
+
+## v7 (17 Nov 2026): two paths — Digital | Biological (Medical Coding)
+
+- Path switch on landing + hub (`PATHS`, `currentPath()`, `setPath()`; `profiles.path` + `set_path()` RPC; localStorage `aim.path`).
+  Hub, menu, journey, certificates follow the current path; Digital stays the default.
+- Biological = 28 Medical Coding lessons `mc01`–`mc28` (tracks `mcf`, `mcd`, `mcp`, `mcr`), US outpatient coding for the CPC exam.
+  Source `syllabus/MEDCODE_MASTER.md`; build `tools/build_medcode.py` validates every ICD-10-CM code against FY2026
+  (`simple_icd_10_cm`), HCPCS against a hand-checked list. CPT descriptors never stored (AMA copyright).
+- New exercise kind `check` (`checkQuiz`, `gradeItem` in index.html): MCQ / codes (order optional, dots optional) / text;
+  answers saved as JSON in `progress.code`; admin spot-check re-grades them.
+- 15 tools in `assets/viz-bio.js`, incl. ICD-10-CM lookup over `content/icd10cm.json` (FY2026, lazy-loaded, ~0.6 MB gzipped).
+- DB `supabase-v7.sql` applied live: points regex + `mc01–mc28`, certificate track `medcode`, `profiles.path`. DB tests 46/46.
+- Fixed: JS demo points regex was missing Advanced `x01–x13` (DB was right).
+- Tests: `tests/test_bio.py` (landing picker, hub, every lesson's answer key, tools, axe, phone) + all earlier suites green.
