@@ -49,3 +49,8 @@ The admin page (`#admin`) lets you block or restore any account.
 - Sending from a Gmail address works, but some messages may land in spam.
   Buying a domain and verifying it in Brevo fixes that.
 - Share `https://asishteja18.github.io/#signup` as your sign-up link.
+
+## Current production setup (Nov 2026)
+
+Domain telugucoders.com (registered and DNS at Wix), authenticated in Brevo;
+sender AIM <noreply@telugucoders.com>. See PYML-HANDOVER.md for the exact records.

@@ -1598,11 +1598,7 @@ function renderCodeStep(email, demoCodeShown) {
   const panel = el("div", "panel authcard");
   panel.append(el("h2", null, "Check your email"));
   panel.append(el("p", "sub", "Enter the 6-digit code we sent to " + email + "."));
-  if (api.LIVE) {
-    // shortcut: codes come from a Gmail sender until AIM has its own domain, so
-    // Gmail often files them as spam. Remove once the domain is verified in Brevo.
-    panel.append(el("p", "note", "Can't see it within a minute? Check your Spam or Promotions folder for \"Your AIM sign-up code\" and mark it \"Not spam\"."));
-  }
+  panel.append(el("p", "note", "It comes from AIM <noreply@telugucoders.com>. Not there within a minute? Check Spam or Promotions too."));
 
   const form = el("form");
   form.noValidate = true;

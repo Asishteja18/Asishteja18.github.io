@@ -176,9 +176,21 @@ purpose — learners build a perceptron and backprop by hand, and it avoids a
   no images/fonts, hidden preheader with the code, "why you got this" footer),
   subject "Your AIM sign-up code", saved in Supabase. Code screen shows a
   "check Spam / mark Not spam" hint in live mode (shortcut: remove after domain).
-- Waiting on Asish: buy a domain; then Brevo domain auth + DNS records, switch
-  Supabase sender email (needs SMTP key re-paste by Asish) and optionally point
-  GitHub Pages at the domain.
+- DONE 17 Nov: Asish bought **telugucoders.com** at **Wix** (DNS on Wix,
+  ns8/ns9.wixdns.net; domain not attached to any Wix site). Existing Google
+  Workspace MX + google-site-verification kept.
+- Wix DNS added: TXT @ brevo-code, CNAME brevo1/brevo2._domainkey →
+  b1/b2.telugucoders-com.dkim.brevo.com, TXT _dmarc "v=DMARC1; p=none;
+  rua=mailto:rua@dmarc.brevo.com", SPF merged to
+  "v=spf1 include:_spf.google.com include:spf.brevo.com ~all".
+- Brevo: domain authenticated; sender AIM <noreply@telugucoders.com> verified
+  (DKIM telugucoders.com, DMARC configured).
+- Supabase SMTP sender switched to noreply@telugucoders.com / "AIM". Leaving the
+  password box empty keeps the stored SMTP key (the form says so), so no re-paste.
+- Site: A @ → 185.199.108-111.153, CNAME www → asishteja18.github.io, repo
+  `CNAME` file = telugucoders.com. Live at https://telugucoders.com (old github.io
+  URL redirects). Moving origin means users sign in again once.
+- Later: tighten DMARC to p=quarantine after a few weeks of clean reports.
 
 ## How to run it
 
