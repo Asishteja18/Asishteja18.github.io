@@ -19,6 +19,9 @@ from pathlib import Path
 import markdown
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+from hints import make_hints  # noqa: E402
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 from build_notes import GH_VIEW, filename as note_filename  # noqa: E402
 
 FENCE = "`" * 3
@@ -360,6 +363,7 @@ def build_day(n, title, body, files):
             "done_html": md(done.group(1)) if done else "",
             "starter": make_starter(sol, hints),
             "solution": sol,
+            "hints": [markdown.markdown(h, extensions=["fenced_code"]) for h in make_hints(sol)],
             "tests_code": tests,
             "tests": [{"label": pretty(t), "name": t} for t in sorted(test_names)],
             "deps": deps,

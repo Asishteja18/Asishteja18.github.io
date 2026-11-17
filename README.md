@@ -44,6 +44,17 @@ frosted glass with an inner highlight, cursor-tracked spotlight borders on the
 bento cards, GSAP staggered entrances (CSS fallback; reduced-motion respected).
 "Frosted" light theme on the toggle.
 
+**Also in (v5):** a real code editor (CodeMirror, self-hosted), 3-step hints
+on every exercise (generated from the reference solutions), **try before you
+sign up** (`#try-d01`, `#try-d33`, `#try-d76`; passing as a guest carries over
+after sign-up), a first-visit tour, a **weekly challenge** (+10 bonus) and
+weekly leaderboard, **certificates** per stage that anyone can verify
+(`#cert-<code>`, Add to LinkedIn), a **portfolio export** (zip of your code +
+tests + README), Telugu explainer **videos** the admin pastes per lesson,
+streak **reminder emails** (opt-out in the menu), an admin **drop-off chart**
+and **spot check** (re-runs a learner's saved code), an installable app with
+offline caching, and share previews.
+
 ## What's in this repo
 
 | File | What it is |
@@ -58,7 +69,12 @@ bento cards, GSAP staggered entrances (CSS fallback; reduced-motion respected).
 | `assets/viz-*.js` | The interactive illustrations (core + Python, ML, AI) and their data. |
 | `tests/ai90_pyodide.mjs` | Runs all 90 days in real Pyodide: `node tests/ai90_pyodide.mjs <pyodide-dist> solutions` (307/307) or `starters` (no crashes). |
 | `tests/test_ai90_site.py` | Browser test of AI-90 + the redesign (40 checks: tests in the worker, plots, every illustration, phone layout). |
-| `supabase-schema.sql` | Database tables and access rules. Safe to re-run in Supabase. |
+| `supabase-schema.sql` | Database tables and access rules. Re-runnable top to bottom. |
+| `supabase-reminders.sql` | Daily streak reminder job (pg_cron + pg_net → Brevo). Needs the Brevo API key in Vault, see below. |
+| `sw.js`, `manifest.webmanifest` | Installable app + caching for fast return visits. |
+| `assets/editor.js` | The CodeMirror editor bundle (built from `/tmp/cmb`-style entry with esbuild). |
+| `tools/hints.py`, `tools/add_warmup_hints.py` | Generate the 3-step hints. |
+| `tests/test_v5.py` | Browser test for every v5 feature + an axe accessibility audit. |
 | `tests/test_v3.py` | Two-user browser test: chat, pins, solutions, points, levels, timer, calendar, roles. |
 | `tests/test_lesson_ask.py` | Asking a doubt from a failed run / code example, with real Python. |
 | `tests/db_tests.sql` | 25 permission checks; run inside `begin; … ` and abort, see the file. |
@@ -96,6 +112,22 @@ The anon key is public by design. The service_role key never goes in this repo.
 ## Email (free, via Brevo, 300/day)
 
 The only email is the 6-digit sign-up code, sent by Supabase through Brevo SMTP.
+
+## Streak reminder emails: one step left
+
+The job runs every day at 18:00 UTC but sends nothing until it has a Brevo API
+key (keys never go in this repo):
+
+1. Brevo → SMTP & API → **API Keys** → Generate a new key, name it "AIM reminders".
+2. Supabase → SQL editor, run (your key in place of the dots):
+   `select vault.create_secret('xkeysib-...', 'brevo_api_key');`
+
+That's it. Learners can turn reminders off from the menu.
+
+## Add a Telugu video to a lesson
+
+Sign in as the admin, open the lesson, paste the YouTube link in the box under
+the title, press Add. It shows as a click-to-play thumbnail for everyone.
 
 ## Change the AI-90 course
 

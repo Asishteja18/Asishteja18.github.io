@@ -419,3 +419,38 @@ Tests: `tests/test_ai90_site.py` (40 checks) + the old `test_v3.py` and
   cleanly re-runnable: `doubts_feed` changed return type in v3); everyone backfilled.
 - Tests: `tests/db_tests.sql` now 29 checks (all passed, rolled back), test_v3 and
   test_ai90_site updated and passing. Demo mode mirrors it in `demoPoints()`.
+
+## v5 (17 Nov 2026): "update all in one go"
+
+- [stated] Asish asked to ship every improvement from the list at once.
+- Editor: CodeMirror 6 bundle `assets/editor.js` (esbuild IIFE, `window.AIMEditor.create(textarea)`),
+  textarea stays the source of truth (synced both ways), plain textarea fallback.
+- Hints: `tools/hints.py` builds 3 steps per exercise from the solution (what to
+  reach for → skeleton → first line). Days via build_ai90, warm-ups via
+  `tools/add_warmup_hints.py`. "Show solution" warns if hints are left.
+- Guest mode: `#try-d01|d33|d76` (guest bar, no doubts); a pass is stored in
+  `aim.guest.passed` and claimed after sign-in (setDone with the saved code).
+- Tour: 5 steps on the hub, first visit only (`aim.toured.v1`), closes on Esc,
+  scrim click or navigation.
+- DB v5 (applied live, 39 DB checks pass on a fresh full-schema run):
+  `progress.code` (≤60k, kept for spot checks/portfolio), `progress.completed_at`
+  (server-stamped, can't be backdated), `doubts.solved_at`, `challenge_lesson(date)`
+  (week k → day (k·37 mod 90)+1, week of 16 Nov 2026 = d01), recalc_points adds +10
+  per challenge cleared in its week, `weekly_board()`, `certificates` +
+  `claim_certificate(track, name)` (server checks all 30 days) + public
+  `verify_certificate(code)`, `lesson_videos` (admin write, public read),
+  `profiles.reminders` + `set_reminders()`. Schema file now re-runnable
+  (drops doubts_feed/doubt_thread before redefining).
+- Reminders: `supabase-reminders.sql` applied (pg_net + pg_cron, job
+  `aim-streak-reminders` 18:00 UTC). Sends 0 until Asish adds the Brevo API
+  key to Vault as `brevo_api_key` (README has the 2 steps).
+- Certificates `#cert-<code>` (public), LinkedIn add-to-profile link, print CSS.
+- Portfolio: zip built in the browser (store-only ZIP writer), README with
+  progress bars, `ai-90/dayNN.py` + tests + conftest.
+- Admin: drop-off chart (cleared count per lesson, biggest drop flagged) and
+  "Re-run their code" spot check per learner.
+- PWA: `sw.js` (network-first page, SWR for assets/content, cache-first CDN),
+  manifest, icons; registered on https only. OG/Twitter tags + `assets/og.png`.
+- a11y: axe (WCAG A/AA) clean on landing, guest lesson, hub, progress, admin,
+  doubts. Scrollable boxes get tabindex; stagger capped at 0.9 s total.
+- Tests: tests/test_v5.py (44 checks), test_ai90_site, test_v3, test_lesson_ask all pass.

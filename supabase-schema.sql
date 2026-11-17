@@ -1,5 +1,6 @@
--- PyML: accounts, progress, and the admin block switch.
--- Run once in Supabase → SQL editor. Safe to re-run.
+-- AIM (was PyML): accounts, progress, doubts, points, certificates.
+-- Run in Supabase → SQL editor. Safe to re-run top to bottom.
+-- Streak reminder emails live in supabase-reminders.sql (needs pg_cron + pg_net).
 -- Everyone who verifies their email code gets in; admins can block accounts
 -- by setting approved = false.
 
@@ -200,6 +201,10 @@ create policy r_write  on doubt_replies for insert with check (user_id = auth.ui
 create policy r_delete on doubt_replies for delete using (user_id = auth.uid() or is_admin());
 
 -- A doubt goes to the admin when nobody but its author has replied for 12 hours.
+-- (Dropped first: later versions change the return columns, and Postgres won't
+-- replace a function whose result type changed. Keeps this file re-runnable.)
+drop function if exists doubts_feed();
+drop function if exists doubt_thread(bigint);
 create or replace function doubts_feed() returns table (
   id bigint, title text, body text, lesson_id text, resolved boolean, created_at timestamptz,
   user_id uuid, handle text, replies int, last_reply_at timestamptz,
@@ -419,6 +424,166 @@ language sql stable security definer set search_path = public as $$
 $$;
 
 -- backfill everyone onto the new scale
+do $$ declare u uuid; begin
+  for u in select id from profiles loop perform recalc_points(u); end loop;
+end $$;
+
+-- ===================================================================== v5
+-- Spot checks, weekly challenge + board, certificates, Telugu videos, reminders.
+
+-- Progress keeps the code that passed (admin spot checks, portfolio export) and
+-- when the lesson was first cleared (stamped by the server, never the browser).
+alter table progress add column if not exists code text;
+alter table progress drop constraint if exists progress_code_size;
+alter table progress add constraint progress_code_size check (code is null or char_length(code) <= 60000);
+alter table progress add column if not exists completed_at timestamptz;
+drop trigger if exists progress_stamp on progress;
+update progress set completed_at = updated_at where completed and completed_at is null;
+create or replace function progress_stamp() returns trigger
+language plpgsql security definer set search_path = public as $$
+begin
+  if tg_op = 'UPDATE' then new.completed_at := old.completed_at; else new.completed_at := null; end if;
+  if new.completed and new.completed_at is null then new.completed_at := now(); end if;
+  return new;
+end $$;
+create trigger progress_stamp before insert or update on progress
+  for each row execute function progress_stamp();
+
+-- When a doubt got its solution (weekly board counts this week's solves).
+alter table doubts add column if not exists solved_at timestamptz;
+update doubts set solved_at = created_at where solved_reply_id is not null and solved_at is null;
+
+-- Weekly challenge: one AI-90 day per week (Monday start), cycling through all
+-- 90 (37 is coprime with 90). Clearing it during its week is worth +10 extra.
+create or replace function challenge_lesson(d date) returns text
+language sql immutable as $$
+  select 'd' || lpad((((((d - date '2026-11-16') / 7) * 37) % 90 + 90) % 90 + 1)::text, 2, '0')
+$$;
+
+create or replace function recalc_points(uid uuid) returns void
+language plpgsql security definer set search_path = public as $$
+begin
+  if uid is null then return; end if;
+  update profiles p set points =
+      5 * (select count(distinct g.lesson_id) from progress g
+            where g.user_id = uid and g.completed
+              and g.lesson_id ~ '^(d(0[1-9]|[1-8][0-9]|90)|py-0[1-8]|py-intro|py-what|ml-0[1-8]|ai-0[1-6])$')
+    + 10 * (select count(*) from progress g
+             where g.user_id = uid and g.completed and g.completed_at is not null
+               and g.lesson_id = challenge_lesson(g.completed_at::date))
+    + 2 * p.solved_count
+   where p.id = uid;
+end $$;
+revoke all on function recalc_points(uuid) from public, anon, authenticated;
+
+create or replace function accept_answer(did bigint, rid bigint) returns void
+language plpgsql security definer set search_path = public as $$
+declare d doubts; r doubt_replies; prev uuid;
+begin
+  select * into d from doubts where id = did for update;
+  if d.id is null then raise exception 'Doubt not found.'; end if;
+  if d.user_id <> auth.uid() and not is_admin() then raise exception 'Only the person who asked can pick the solution.'; end if;
+  select * into r from doubt_replies where id = rid and doubt_id = did;
+  if r.id is null then raise exception 'That reply is not on this doubt.'; end if;
+  if r.user_id = d.user_id or r.user_id = auth.uid() then
+    raise exception 'You cannot mark your own reply as the solution.';
+  end if;
+  if d.solved_reply_id = rid then return; end if;
+  if d.solved_reply_id is not null then
+    select user_id into prev from doubt_replies where id = d.solved_reply_id;
+    update profiles set solved_count = greatest(solved_count - 1, 0) where id = prev;
+    perform recalc_points(prev);
+  end if;
+  update doubts set solved_reply_id = rid, resolved = true, solved_at = now() where id = did;
+  update profiles set solved_count = solved_count + 1 where id = r.user_id;
+  perform recalc_points(r.user_id);
+end $$;
+
+-- This week's board: 5 per lesson cleared + 10 for the challenge + 2 per solve,
+-- counting only what happened since Monday. Top 10, plus you if you're lower.
+create or replace function weekly_board() returns table (
+  user_id uuid, handle text, week_points int, rank int, is_me boolean, challenge text)
+language sql stable security definer set search_path = public as $$
+  with wk as (select date_trunc('week', now()) as start),
+  pts as (
+    select p.id, p.handle,
+      (5 * (select count(*) from progress g, wk where g.user_id = p.id and g.completed and g.completed_at >= wk.start
+             and g.lesson_id ~ '^(d(0[1-9]|[1-8][0-9]|90)|py-0[1-8]|py-intro|py-what|ml-0[1-8]|ai-0[1-6])$')
+     + 10 * (select count(*) from progress g, wk where g.user_id = p.id and g.completed and g.completed_at >= wk.start
+             and g.lesson_id = challenge_lesson(g.completed_at::date))
+     + 2 * (select count(*) from doubts d join doubt_replies r on r.id = d.solved_reply_id, wk
+             where r.user_id = p.id and d.solved_at >= wk.start))::int as week_points
+    from profiles p where p.approved and (p.handle is not null or p.id = auth.uid())),
+  ranked as (select id, handle, week_points, rank() over (order by week_points desc)::int as rnk from pts where week_points > 0)
+  select id, coalesce(handle, 'You'), week_points, rnk, id = auth.uid(), challenge_lesson(current_date)
+    from ranked
+   where is_active() and (rnk <= 10 or id = auth.uid())
+   order by rnk, handle
+$$;
+
+-- Certificates: issued by the server only when every day of the block is cleared.
+create table if not exists certificates (
+  id        text primary key default upper(substr(md5(gen_random_uuid()::text), 1, 10)),
+  user_id   uuid not null references profiles(id) on delete cascade,
+  track     text not null check (track in ('python', 'ml', 'ai')),
+  name      text not null check (char_length(name) between 2 and 60),
+  issued_at timestamptz not null default now(),
+  unique (user_id, track)
+);
+alter table certificates enable row level security;
+revoke insert, update, delete on certificates from anon, authenticated;
+drop policy if exists c_own on certificates;
+create policy c_own on certificates for select using (user_id = auth.uid() or is_admin());
+
+create or replace function claim_certificate(trk text, display_name text) returns text
+language plpgsql security definer set search_path = public as $$
+declare lo int; hi int; n int; cid text; nm text := btrim(regexp_replace(coalesce(display_name, ''), '[^[:alpha:][:digit:] .''-]', '', 'g'));
+begin
+  if auth.uid() is null or not is_active() then raise exception 'Sign in first.'; end if;
+  lo := case trk when 'python' then 1 when 'ml' then 31 when 'ai' then 61 end;
+  if lo is null then raise exception 'Unknown stage.'; end if;
+  hi := lo + 29;
+  select count(distinct lesson_id) into n from progress
+   where user_id = auth.uid() and completed
+     and lesson_id in (select 'd' || lpad(i::text, 2, '0') from generate_series(lo, hi) i);
+  if n < 30 then raise exception 'Clear all 30 days of this stage first (% of 30 done).', n; end if;
+  if char_length(nm) < 2 then raise exception 'Put the name you want on the certificate.'; end if;
+  select id into cid from certificates where user_id = auth.uid() and track = trk;
+  if cid is not null then return cid; end if;
+  insert into certificates (user_id, track, name) values (auth.uid(), trk, left(nm, 60)) returning id into cid;
+  return cid;
+end $$;
+
+-- Anyone with the code (an employer, LinkedIn) can check a certificate is real.
+create or replace function verify_certificate(cid text) returns table (name text, track text, issued_at timestamptz, handle text)
+language sql stable security definer set search_path = public as $$
+  select c.name, c.track, c.issued_at, p.handle from certificates c join profiles p on p.id = c.user_id
+   where c.id = upper(btrim(cid))
+$$;
+grant execute on function verify_certificate(text) to anon, authenticated;
+
+-- Telugu explainer videos: the admin pastes a YouTube link on any lesson.
+create table if not exists lesson_videos (
+  lesson_id  text primary key check (char_length(lesson_id) <= 40),
+  youtube_id text not null check (youtube_id ~ '^[A-Za-z0-9_-]{11}$'),
+  updated_at timestamptz not null default now()
+);
+alter table lesson_videos enable row level security;
+grant select on lesson_videos to anon, authenticated;
+grant insert, update, delete on lesson_videos to authenticated;
+drop policy if exists v_read on lesson_videos;
+drop policy if exists v_admin on lesson_videos;
+create policy v_read  on lesson_videos for select using (true);
+create policy v_admin on lesson_videos for all using (is_admin()) with check (is_admin());
+
+-- Streak reminder emails are opt-out; learners flip this from their menu.
+alter table profiles add column if not exists reminders boolean not null default true;
+create or replace function set_reminders(enabled boolean) returns boolean
+language sql security definer set search_path = public as $$
+  update profiles set reminders = coalesce(enabled, true) where id = auth.uid() returning reminders
+$$;
+
+-- backfill points with the challenge bonus
 do $$ declare u uuid; begin
   for u in select id from profiles loop perform recalc_points(u); end loop;
 end $$;

@@ -79,6 +79,7 @@ async def main():
         await ctx.route("https://fonts.googleapis.com/**", lambda r: r.abort())
         await ctx.route("http://localhost:8765/index.html*", demo_index)
         errs = []
+        await ctx.add_init_script("try { localStorage.setItem('aim.toured.v1', '1') } catch (e) {}")
         pg = await ctx.new_page()
         pg.on("pageerror", lambda e: errs.append(str(e)))
         pg.on("console", lambda m: m.type == "error" and errs.append("console: " + m.text))
@@ -153,14 +154,16 @@ async def main():
         check("5/5 passing" in st, "Day 1 reference solution passes 5/5 (%s)" % st)
         check(await pg.is_visible(".done"), "done banner shown")
         pts = await pg.evaluate("JSON.parse(localStorage.getItem('pyml.demo.v1')).users['learner@pyml.dev'].points")
-        check(pts == 5, "clearing Day 1 earns +5 points (got %s)" % pts)
+        ch = await pg.evaluate("document.querySelector('.bcard.challenge') ? 1 : 0") if False else None
+        want = 15 if await pg.evaluate("(() => { const d = new Date(); const day = Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()); const k = Math.floor(Math.round((day - Date.UTC(2026, 10, 16)) / 864e5) / 7); return (((k * 37) % 90) + 90) % 90 + 1; })()") == 1 else 5
+        check(pts == want, "clearing Day 1 earns +5 (+10 when it's the weekly challenge): got %s, want %s" % (pts, want))
         # a wrong answer shows a failure with a message
         await set_code(pg, "def c_to_f(c):\n    return 0\n")
         st = await run_tests(pg)
         check("passing" in st and await pg.locator(".t.fail").count() >= 1, "wrong code shows failing rows (%s)" % st)
         check(await pg.is_visible(".askhelp"), "failing run offers Ask a doubt")
         # code is saved per lesson
-        await pg.reload(); await pg.wait_for_selector(".editor textarea")
+        await pg.reload(); await pg.wait_for_selector(".editor .cm-editor")
         check("return 0" in await pg.input_value(".editor textarea"), "editor code survives a reload")
         # run a worked example
         await pg.locator(".snip .sniprun").first.click()
@@ -192,7 +195,7 @@ async def main():
         check(got_fig or n == 0, "a matplotlib example draws a real figure")
 
         # ---------------------------------------------------- old-style lesson still works
-        await go(pg, "py-01"); await pg.wait_for_selector(".editor textarea")
+        await go(pg, "py-01"); await pg.wait_for_selector(".editor textarea", state="attached")
         await pg.wait_for_function("document.querySelector('.status').textContent.includes('ready')", timeout=60000)
         await set_code(pg, "def to_fahrenheit(celsius_text):\n    return float(celsius_text) * 9 / 5 + 32\n")
         st = await run_tests(pg)
@@ -243,6 +246,7 @@ async def main():
         await ph.route("https://cdn.jsdelivr.net/**", cdn)
         await ph.route("https://fonts.googleapis.com/**", lambda r: r.abort())
         await ph.route("http://localhost:8765/index.html*", demo_index)
+        await ph.add_init_script("try { localStorage.setItem('aim.toured.v1', '1') } catch (e) {}")
         m = await ph.new_page()
         m.on("pageerror", lambda e: errs.append("phone " + str(e)))
         await m.goto(URL); await m.wait_for_selector("#em")

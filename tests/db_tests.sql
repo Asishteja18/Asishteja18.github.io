@@ -150,7 +150,7 @@ insert into progress (user_id, lesson_id, completed) values (auth.uid(), 'zz-far
 update profiles set points = 99999 where id = auth.uid();                              -- T28: must not stick
 do $$ begin
   -- T26 two real lessons cleared = 10; repeats and fake ids add nothing
-  if (select points from profiles where id = auth.uid()) <> 10 then raise exception 'T26 lesson points %', (select points from profiles where id = auth.uid()); end if;
+  if (select points from profiles where id = auth.uid()) <> (10 + (case when challenge_lesson(current_date) = 'd01' then 10 else 0 end)) then raise exception 'T26 lesson points %', (select points from profiles where id = auth.uid()); end if;
 end $$;
 delete from progress where user_id = auth.uid() and lesson_id = 'd01';
 do $$ begin
@@ -162,4 +162,80 @@ do $$ begin
   -- T28 a learner can't write points directly; T29 leaderboard ignores lesson-only points
   if (select points from profiles where id = current_setting('t.l')::uuid) <> 5 then raise exception 'T28 points written directly'; end if;
   if exists (select 1 from top_solvers() where user_id = current_setting('t.l')::uuid) then raise exception 'T29 non-solver on leaderboard'; end if;
+end $$;
+
+-- ================================================================== v5
+delete from progress where user_id = current_setting('t.l')::uuid;
+delete from certificates where user_id = current_setting('t.l')::uuid;
+update profiles set solved_count = 0, handle = coalesce(handle, 'AIM-ZZtest_l') where id = current_setting('t.l')::uuid;
+select recalc_points(current_setting('t.l')::uuid);
+set local role authenticated;
+select set_config('request.jwt.claims', json_build_object('sub', current_setting('t.l'), 'role', 'authenticated')::text, true);
+-- T30 the browser can't backdate a completion
+insert into progress (user_id, lesson_id, completed, completed_at, code)
+  values (auth.uid(), 'd02', true, '2000-01-01', 'def f(): pass');
+do $$ begin
+  if (select completed_at from progress where user_id = auth.uid() and lesson_id = 'd02') < now() - interval '1 minute'
+    then raise exception 'T30 backdated completion'; end if;
+  if (select code from progress where user_id = auth.uid() and lesson_id = 'd02') <> 'def f(): pass' then raise exception 'T30 code not kept'; end if;
+end $$;
+-- T31 this week's challenge pays +10 on top of the 5
+insert into progress (user_id, lesson_id, completed) values (auth.uid(), challenge_lesson(current_date), true)
+  on conflict (user_id, lesson_id) do update set completed = true;
+do $$ declare want int; begin
+  want := case when challenge_lesson(current_date) = 'd02' then 15 else 20 end;
+  if (select points from profiles where id = auth.uid()) <> want then
+    raise exception 'T31 challenge points % (want %)', (select points from profiles where id = auth.uid()), want; end if;
+  -- T32 the weekly board shows me with this week's points
+  if (select week_points from weekly_board() where is_me) <> want then raise exception 'T32 weekly board'; end if;
+  if (select challenge from weekly_board() limit 1) <> challenge_lesson(current_date) then raise exception 'T32 challenge id'; end if;
+end $$;
+-- T33 certificate only after all 30 days of the block
+do $$ begin
+  begin perform claim_certificate('python', 'Test Learner'); raise exception 'T33 cert issued early';
+  exception when raise_exception then if sqlerrm like 'T33%' then raise; end if; end;
+end $$;
+insert into progress (user_id, lesson_id, completed)
+  select auth.uid(), 'd' || lpad(i::text, 2, '0'), true from generate_series(1, 30) i
+  on conflict (user_id, lesson_id) do update set completed = true;
+select set_config('t.cert', claim_certificate('python', 'Test <b>Learner</b>'), true);
+do $$ begin
+  if claim_certificate('python', 'Other Name') <> current_setting('t.cert') then raise exception 'T33 second cert'; end if;
+  -- T34 code too long is refused
+  begin
+    insert into progress (user_id, lesson_id, completed, code) values (auth.uid(), 'd40', true, repeat('x', 60001));
+    raise exception 'T34 huge code accepted';
+  exception when check_violation then null; end;
+  -- T35 learners can't add lesson videos or write certificates
+  begin
+    insert into lesson_videos (lesson_id, youtube_id) values ('d01', 'dQw4w9WgXcQ');
+    raise exception 'T35 learner added a video';
+  exception when insufficient_privilege then null; end;
+  begin
+    insert into certificates (user_id, track, name) values (auth.uid(), 'ml', 'Fake');
+    raise exception 'T35 learner forged a certificate';
+  exception when insufficient_privilege then null; end;
+  -- T36 reminders toggle through the RPC only
+  if set_reminders(false) then raise exception 'T36 reminders still on'; end if;
+end $$;
+-- T37 anyone can verify a certificate (no login), and the name is sanitised
+set local role anon;
+select set_config('request.jwt.claims', '{}', true);
+do $$ declare r record; begin
+  select * into r from verify_certificate(lower(current_setting('t.cert')));
+  if r.name is null or r.track <> 'python' then raise exception 'T37 verify failed'; end if;
+  if r.name like '%<%' then raise exception 'T37 name not sanitised: %', r.name; end if;
+  if (select count(*) from lesson_videos) < 0 then raise exception 'T37 videos unreadable'; end if;
+end $$;
+-- T38 the admin can add a video
+reset role;
+set local role authenticated;
+select set_config('request.jwt.claims', json_build_object('sub', current_setting('t.a'), 'role', 'authenticated')::text, true);
+insert into lesson_videos (lesson_id, youtube_id) values ('zz-test', 'dQw4w9WgXcQ')
+  on conflict (lesson_id) do update set youtube_id = excluded.youtube_id;
+reset role;
+do $$ begin
+  if not exists (select 1 from lesson_videos where lesson_id = 'zz-test') then raise exception 'T38 admin video'; end if;
+  if (select reminders from profiles where id = current_setting('t.l')::uuid) then raise exception 'T36 reminders flag'; end if;
+  if challenge_lesson(date '2026-11-16') <> 'd01' or challenge_lesson(date '2026-11-23') <> 'd38' then raise exception 'T39 challenge rotation'; end if;
 end $$;
