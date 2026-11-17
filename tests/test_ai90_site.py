@@ -17,6 +17,7 @@ MAP = [
     ("https://cdn.jsdelivr.net/npm/pyodide@0.29.5/", PYO + "/"),
     ("https://cdn.jsdelivr.net/npm/gsap@3.12.7/", CDN + "/gsap-3.12.7/package/"),
     ("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/", CDN + "/mermaid-11.4.1/package/"),
+    ("https://cdn.jsdelivr.net/npm/three@0.170.0/", CDN + "/three-0.170.0/package/"),
 ]
 fails = []
 

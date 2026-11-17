@@ -974,6 +974,70 @@ button.bcard:active{transform:translateY(-1px) scale(.995)}
 .qtimer{margin-left:auto;font-family:var(--mono);font-size:12.5px;padding:4px 10px;border-radius:999px;border:1px solid var(--edge);color:var(--fg-2)}
 .qtimer.over{color:var(--bad);border-color:var(--bad)}
 @media (max-width:560px){.qopts,.qrow,.qfb{margin-left:0}}
+.gotoprac{display:none;width:100%;margin-top:22px;min-height:48px}
+/* phones: tools, readouts and quizzes */
+.vizkv{max-width:100%;min-width:0}
+.vizkv code{white-space:normal;overflow-wrap:anywhere;min-width:0}
+.vizsel{max-width:100%}
+@media (max-width:900px){.gotoprac{display:block}}
+@media (max-width:640px){
+  .vizctl{gap:10px 12px}
+  .vizsl{width:100%;flex-wrap:wrap;row-gap:6px}
+  .vizsl .vizsel,.vizsl .vizin{flex:1 1 0;min-width:0;width:0;min-height:44px;font-size:14px}
+  .vizwrap,.vizstage{min-width:0;max-width:100%}
+  .reprow .vizsel{width:100%;min-width:0}
+  .vizsl input[type=range]{flex:1 1 120px;width:auto;min-height:36px}
+  .vizread{display:grid;grid-template-columns:1fr;gap:6px}
+  .vizkv{display:flex;flex-direction:column;align-items:flex-start;gap:2px;font-size:12.5px;padding:7px 10px}
+  .vizkv code{font-size:13px}
+  .vizbtn{min-height:44px}
+  .asciivis pre{font-size:10.5px;line-height:1.4}
+  .asciivis.scrolls figcaption::after{content:"swipe to see more →";margin-left:auto;text-transform:none;letter-spacing:0;color:var(--fg-3);font-size:11px}
+  .quiz{gap:10px}
+  .qitem{padding:12px}
+  .qhead{font-size:15.5px}
+  .qopt{padding:10px 8px;font-size:15px;min-height:44px;align-items:center}
+  .qopt input{margin-top:0;width:20px;height:20px}
+  .qin{font-size:16px}
+  .quizbar{flex-wrap:nowrap;gap:6px;padding:8px;bottom:calc(8px + env(safe-area-inset-bottom))}
+  .quizbar .btn{min-height:46px;padding:0 14px;font-size:14px;white-space:nowrap}
+  .quizbar .btn.ghost.sm{padding:0 10px}
+  .qtimer{font-size:12px}
+  .biogrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .biocell{min-width:44px;padding:6px 4px}.biocell b{font-size:18px}.biocell small{font-size:9.5px}
+  .reprow .vizsel{flex:1 1 100%}
+  .bcard.stage{grid-column:span 1;min-height:150px;padding:16px}
+  .bcard.stage .glyph{width:30px;height:30px;padding-bottom:10px}
+  .bcard.stage .cubetitle{font-size:18px;line-height:1.2}
+  .bcard.stage .cubetag{top:14px;right:14px;font-size:11px;padding:3px 8px}
+  .bcard.stage .cubenum,.bcard.stage .cubehours{font-size:10.5px}
+  .claimrow{flex-direction:column;align-items:flex-start}
+  .lkres li{flex-direction:column;gap:4px}
+  .termeq{font-size:19px}
+  .pathbtn{padding:10px 12px}
+}
+/* 3D scenes (assets/viz-3d.js) */
+.s3d{position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--edge);
+  background:radial-gradient(120% 90% at 50% 0%,color-mix(in srgb,var(--gold) 9%,transparent),transparent 60%),color-mix(in srgb,var(--code-bg) 60%,transparent)}
+:root[data-theme="light"] .s3d{background:radial-gradient(120% 90% at 50% 0%,rgba(14,116,144,.10),transparent 60%),#f3f6fb}
+.s3dbox{position:relative;width:100%;min-height:230px}
+.s3dcv{display:block;touch-action:pan-y;cursor:grab;outline:none}
+.s3dcv:active{cursor:grabbing}
+.s3dcv:focus-visible{box-shadow:inset 0 0 0 2px var(--gold-strong)}
+.s3dload{position:absolute;inset:0;display:grid;place-items:center;margin:0;color:var(--fg-3);font-size:13px}
+.s3dlabels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.s3dlab{position:absolute;left:0;top:0;white-space:nowrap;font-size:12px;font-weight:600;padding:2px 7px;border-radius:7px;
+  background:rgba(7,11,20,.72);color:#e6edf7;border:1px solid rgba(255,255,255,.12);transition:opacity .2s}
+.s3dlab.big{font-family:var(--mono);font-size:13.5px;color:#67e8f9;border-color:rgba(34,211,238,.4)}
+.s3dlab.dim{font-weight:500;color:#b6c3d6;background:rgba(7,11,20,.55)}
+.s3dlab.warn{color:#fecdd3;border-color:rgba(251,113,133,.5)}
+.s3dctl{margin-top:2px}
+.s3dstep.on{background:var(--gold-soft);border-color:var(--gold-line);color:var(--fg)}
+@media (max-width:640px){
+  .s3dlab{font-size:10.5px;padding:2px 5px}.s3dlab.big{font-size:12px}
+  .vizctl.s3dctl{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  .vizctl.s3dctl .s3dstep{width:100%;justify-content:center;text-align:center;white-space:normal;line-height:1.2;font-size:13px}
+}
 /* medical coding tools (assets/viz-bio.js) */
 .biobox{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:4px 0}
 .biochip{display:inline-flex;align-items:center;padding:5px 10px;border-radius:999px;border:1px solid var(--edge);font-family:var(--mono);font-size:13px;color:var(--fg)}
@@ -1061,7 +1125,7 @@ button.bcard:active{transform:translateY(-1px) scale(.995)}
   .bcard.doubts{grid-column:span 2}
   .bcard.stage{min-height:170px}
 }
-@media (max-width:560px){.bcard.stage,.bcard.level,.bcard.streak{grid-column:span 2}.jgrid{grid-template-columns:repeat(15,minmax(0,1fr))}}
+@media (max-width:560px){.bcard.level,.bcard.streak{grid-column:span 2}.jgrid{grid-template-columns:repeat(15,minmax(0,1fr))}}
 
 /* ------------------------------------------------------- track pages */
 .blockintro{border-radius:20px;margin:6px 0 22px;padding:0}
@@ -1286,7 +1350,7 @@ textarea{font-size:13.5px;line-height:1.55}
 .wlist li.me{color:var(--gold-strong);font-weight:600}
 :root[data-theme="light"] .wlist li.me{color:var(--gold)}
 .wlist .rk,.wlist .pts{font-family:var(--mono);font-size:12.5px;color:var(--fg-3)}
-@media (max-width:960px){.bcard.challenge,.bcard.weekly{grid-column:span 2}}
+@media (max-width:960px){.bcard.challenge,.bcard.weekly,.bcard.weekly.solo{grid-column:span 2}}
 /* certificates */
 .certpanel,.portpanel,.dropoff{margin-top:16px}
 .certgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:12px}
@@ -3248,7 +3312,7 @@ function renderTracks(trackId) {
 // The 90-day course lives in content/ai90.json (built from AI90_MASTER.md by
 // tools/build_ai90.py). Days 1-30 join the Python stage, 31-60 Machine
 // Learning, 61-90 Build your own AI.
-const ASSET_V = "20261117v7";
+const ASSET_V = "20261117v8";
 let AI90 = null;
 async function loadAI90() {
   if (AI90) return AI90;
@@ -3462,7 +3526,12 @@ function mermaidBlock(code) {
 function asciiVisual(text) {
   const f = el("figure", "asciivis");
   const pre = el("pre"); pre.textContent = text;
+  pre.tabIndex = 0;
+  pre.setAttribute("aria-label", "Text diagram");
   f.append(el("figcaption", null, "Visual"), pre);
+  const fit = () => f.classList.toggle("scrolls", pre.scrollWidth > pre.clientWidth + 2);
+  requestAnimationFrame(() => requestAnimationFrame(fit));
+  if ("ResizeObserver" in window) new ResizeObserver(fit).observe(pre);
   return f;
 }
 
@@ -3476,7 +3545,7 @@ function loadViz() {
   });
   VIZ_READY = add("assets/viz-data.js").then(() => add("assets/viz-core.js"))
     .then(() => Promise.all([add("assets/viz-ml.js"), add("assets/viz-ai.js"),
-      add("assets/viz-adv-data.js").then(() => add("assets/viz-adv.js")), add("assets/viz-bio.js")]));
+      add("assets/viz-adv-data.js").then(() => add("assets/viz-adv.js")), add("assets/viz-bio.js"), add("assets/viz-3d.js")]));
   return VIZ_READY;
 }
 function vizBlock(id, caption) {
@@ -4300,6 +4369,15 @@ function renderLesson(l, opts = {}) {
     const b = el("button", "btn ghost sm", LESSONS[i + 1].title + " →");
     b.onclick = () => { location.hash = LESSONS[i + 1].id; };
     nav.append(b);
+  }
+  if (isCheck) {
+    const go = el("button", "btn gotoprac", "Answer the " + ex.items.length + " practice questions →");
+    go.type = "button";
+    go.onclick = () => {
+      if (matchMedia("(max-width: 900px)").matches) { const t = document.querySelector(".ltab:nth-child(2)"); if (t) t.click(); }
+      else document.querySelector(".practice").scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+    left.append(go);
   }
   left.append(nav);
 

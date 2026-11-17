@@ -3,7 +3,7 @@
    - our assets + course content: served from cache, refreshed in the background
    - Pyodide, GSAP, Mermaid, fonts (versioned CDN files): cache first, kept
    - Supabase, YouTube and everything else: never touched */
-const VERSION = "aim-20261117e";
+const VERSION = "aim-20261117f";
 const SHELL = ["./", "index.html", "manifest.webmanifest", "assets/icon-192.png"];
 
 self.addEventListener("install", (e) => {

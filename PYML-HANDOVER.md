@@ -482,3 +482,13 @@ Tests: `tests/test_ai90_site.py` (40 checks) + the old `test_v3.py` and
 - DB `supabase-v7.sql` applied live: points regex + `mc01–mc28`, certificate track `medcode`, `profiles.path`. DB tests 46/46.
 - Fixed: JS demo points regex was missing Advanced `x01–x13` (DB was right).
 - Tests: `tests/test_bio.py` (landing picker, hub, every lesson's answer key, tools, axe, phone) + all earlier suites green.
+
+## v8 (17 Nov 2026): Biological path on phones + a 3D scene per coding lesson
+
+- Phones: hub stages 2 × 2 (fixed a 12-column span that crushed the hub when the weekly board was alone),
+  widgets no longer overflow (selects had intrinsic widths), readouts stack, quiz bar is one compact row,
+  ASCII visuals say "swipe to see more", a "practice questions →" button ends each coding lesson.
+- `assets/viz-3d.js`: 28 Three.js scenes (`s3d-<name>`, one per mc lesson, listed in `S3D` in tools/build_medcode.py).
+  Three.js 0.170 lazy-loads from jsDelivr when a scene scrolls into view; HTML labels; drag sideways to turn
+  (vertical swipes still scroll); step buttons; reduced-motion aware; GPU context freed on navigation.
+- Tests map three@0.170.0 to a local copy (`npm pack three@0.170.0` into the cdn dir) and run Chromium with SwiftShader.

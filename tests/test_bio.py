@@ -13,7 +13,8 @@ SHOTS = sys.argv[4] if len(sys.argv) > 4 else None
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MAP = [("https://cdn.jsdelivr.net/npm/pyodide@0.29.5/", PYO + "/"),
        ("https://cdn.jsdelivr.net/npm/gsap@3.12.7/", CDN + "/gsap-3.12.7/package/"),
-       ("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/", CDN + "/mermaid-11.4.1/package/")]
+       ("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/", CDN + "/mermaid-11.4.1/package/"),
+       ("https://cdn.jsdelivr.net/npm/three@0.170.0/", CDN + "/three-0.170.0/package/")]
 fails = []
 
 
@@ -76,7 +77,7 @@ async def answer(pg, lid, items, right=True):
 
 async def main():
     async with async_playwright() as p:
-        b = await p.chromium.launch()
+        b = await p.chromium.launch(args=["--enable-unsafe-swiftshader", "--use-angle=swiftshader"])
         ctx = await b.new_context(viewport={"width": 1360, "height": 900})
         await ctx.route("https://cdn.jsdelivr.net/**", cdn)
         await ctx.route("https://fonts.googleapis.com/**", lambda r: r.abort())
@@ -209,6 +210,19 @@ async def main():
         check("99214" in await pg.inner_text(".viz-emlevel .vizread"), "E/M helper: moderate/low/moderate established → 99214")
         await axe(pg, "E/M lesson with tools")
 
+        # ---------------------------------------------------- 3D scene in every lesson
+        s3d = [s["viz"] for l in data["lessons"] for s in l["sections"] if s["type"] == "viz" and s["viz"].startswith("s3d-")]
+        check(len(s3d) == 28 and len(set(s3d)) == 28, "every coding lesson has its own 3D scene (%d)" % len(s3d))
+        await go(pg, "mc04", 600)
+        await pg.locator(".s3d").first.scroll_into_view_if_needed()
+        await pg.wait_for_selector(".s3d canvas", timeout=30000)
+        await pg.wait_for_timeout(1500)
+        check(await pg.locator(".s3d .s3dlab").count() >= 4, "3D heart has HTML labels")
+        await pg.click(".s3dstep >> nth=2"); await pg.wait_for_timeout(300)
+        check("MI" in await pg.inner_text(".viz-s3d-heart .vizread"), "3D steps explain each part (coronary → MI)")
+        await go(pg, "mc05", 800); await pg.wait_for_timeout(500)
+        check(await pg.locator(".viz-s3d-heart").count() == 0, "leaving a lesson removes its 3D scene")
+
         # ---------------------------------------------------- certificate + progress
         await go(pg, "me", 1200); await pg.wait_for_selector(".certcard")
         check(await pg.locator(".certcard").count() == 1 and "Medical Coding" in await pg.inner_text(".certcard"), "Biological path shows the Medical Coding certificate")
@@ -222,11 +236,31 @@ async def main():
         await m.goto(URL + "#try-mc16"); await m.wait_for_selector(".quiz", state="attached"); await m.wait_for_timeout(1200)
         sw = await m.evaluate("document.documentElement.scrollWidth")
         check(sw <= 390, "coding lesson fits a phone (scrollWidth %d)" % sw)
+        await m.goto(URL + "#try-mc11"); await m.wait_for_selector(".s3d", state="attached")
+        await m.locator(".s3d").first.scroll_into_view_if_needed(); await m.wait_for_selector(".s3d canvas", timeout=30000)
+        cw = await m.evaluate("document.querySelector('.s3d canvas').getBoundingClientRect().width")
+        check(cw <= 390 and cw > 280, "3D scene fits the phone width (%d px)" % cw)
+        cols = await m.evaluate("getComputedStyle(document.querySelector('.s3dctl')).gridTemplateColumns.split(' ').length")
+        check(cols == 2, "3D step buttons sit in two columns on a phone")
+        await m.click(".ltab:has-text('Practice')"); await m.wait_for_timeout(400)
+        qb = await m.evaluate("(() => { const b = document.querySelector('.quizbar').getBoundingClientRect(); return [b.height, b.right]; })()")
+        check(qb[0] < 80 and qb[1] <= 390, "quiz action bar is one compact row on a phone (%s)" % qb)
         await m.goto(URL); await m.wait_for_selector(".path"); await m.wait_for_timeout(900)
         sw = await m.evaluate("document.documentElement.scrollWidth")
         check(sw <= 390, "landing with picker fits a phone (scrollWidth %d)" % sw)
         if SHOTS:
             await m.screenshot(path=f"{SHOTS}/bio-04-phone-landing.png", full_page=True)
+
+        # phone hub: four stage cards in a 2 × 2 grid
+        await m.fill("#em", "learner@pyml.dev"); await m.fill("#pw", "demo1234")
+        await m.click(".authcard form button[type=submit]"); await m.wait_for_selector(".bento"); await m.wait_for_timeout(1200)
+        xs = await m.evaluate("[...document.querySelectorAll('.bcard.stage')].map(c => Math.round(c.getBoundingClientRect().left))")
+        check(len(set(xs)) == 2 and len(xs) == 4, "phone hub shows stages 2 × 2 (%s)" % xs)
+        sw = await m.evaluate("document.documentElement.scrollWidth")
+        wk = await m.evaluate("Math.round(document.querySelector('.bcard.weekly').getBoundingClientRect().width)")
+        check(sw <= 390 and wk > 300, "phone hub: no overflow, weekly board full width (%d)" % wk)
+        if SHOTS:
+            await m.screenshot(path=f"{SHOTS}/bio-05-phone-hub.png", full_page=True)
 
         check(not errs, "no page errors (%s)" % errs[:3])
         await b.close()

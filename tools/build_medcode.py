@@ -57,6 +57,40 @@ VIZ = {
     24: [("rvu", "Medicare physician fee: RVUs × GPCIs × the CY2026 conversion factor.")],
 }
 
+# one interactive 3D scene per lesson (assets/viz-3d.js), shown first
+S3D = ["cycle", "words", "planes", "heart", "kidney", "tumour", "soap", "codeparts", "books", "funnel", "htn", "neotable", "fracture",
+       "pregnancy", "cptbook", "mdm", "settings", "skin", "colon", "units", "mods", "ncci", "claim", "rvu", "denial", "pcs", "ai", "exam"]
+S3D_CAP = {
+    "cycle": "3D: follow a claim round the revenue cycle, and see where a denial sends it back.",
+    "words": "3D: prefix, root and suffix blocks snap together into real medical words.",
+    "planes": "3D: the body's planes, and why the patient's right is on your left.",
+    "heart": "3D: a beating four-chamber heart, the arteries that feed it, and where I11 and I21 come from.",
+    "kidney": "3D: kidneys, ureters and bladder as CKD moves from stage 3 to ESRD.",
+    "tumour": "3D: benign vs malignant, primary vs secondary, and when it becomes history (Z85).",
+    "soap": "3D: the four parts of a SOAP note; diagnosis codes lift out of the Assessment.",
+    "codeparts": "3D: S52.501A pulled apart, character by character.",
+    "books": "3D: Index → Tabular, an Excludes1 wall and a 'use additional code' partner.",
+    "funnel": "3D: what gets coded in the office and what bounces off (rule out, integral symptoms).",
+    "htn": "3D: heart, kidneys and blood pressure: how I10 becomes I11, I12 or I13.",
+    "neotable": "3D: the Table of Neoplasms: pick the row, then the column.",
+    "fracture": "3D: one broken radius through three visits: A, D, then S.",
+    "pregnancy": "3D: 40 weeks as three trimesters, with the matching codes.",
+    "cptbook": "3D: the CPT book's six sections, the surgery fan, and Category II / III codes.",
+    "mdm": "3D: problems, data and risk bars; the two-of-three plane picks the E/M level.",
+    "settings": "3D: office, ED and hospital, each with its own E/M codes.",
+    "skin": "3D: skin layers, an excision margin, and simple vs intermediate stitches.",
+    "colon": "3D: a colonoscope travels to the cecum and removes a polyp.",
+    "units": "3D: anaesthesia units stacking up, and an X-ray split into 26 + TC.",
+    "mods": "3D: bilateral knees (RT, LT, 50) and drug vials counted as units.",
+    "ncci": "3D: column 1 and column 2 locked by an edit, or unlocked by a valid modifier.",
+    "claim": "3D: a CMS-1500 with diagnosis pointers beaming to each service line.",
+    "rvu": "3D: RVUs merge and turn into the Medicare fee.",
+    "denial": "3D: rejected, denied, appealed: where a claim can go.",
+    "pcs": "3D: the seven characters of an ICD-10-PCS code.",
+    "ai": "3D: AI suggests codes, the coder corrects them.",
+    "exam": "3D: 100 questions, 4 hours, 70 to pass.",
+}
+
 HCPCS_OK = {"J3420", "A4253", "G0121", "G0105"}
 ICD_RE = re.compile(r"^[A-TV-Z][0-9][0-9A-Z](\.[0-9A-Z]{1,4})?$|^U07\.1$")
 
@@ -119,7 +153,8 @@ def build_lesson(n, title, body):
     scan_text_codes(vis.group(1) + notes.group(1), where)
 
     sections = [dict(s, role="visual") for s in to_sections(vis.group(1))]
-    for vid, cap in VIZ.get(n, []):
+    s3d = S3D[n - 1]
+    for vid, cap in [("s3d-" + s3d, S3D_CAP[s3d])] + VIZ.get(n, []):
         sections.append({"type": "viz", "viz": vid, "caption": cap})
     sections += to_sections(notes.group(1))
 
