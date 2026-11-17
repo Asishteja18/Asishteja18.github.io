@@ -160,7 +160,9 @@ purpose — learners build a perceptron and backprop by hand, and it avoids a
   Don't just vibe-code it."; "The mission" (basics before vibe coding, build the
   AI, all in one place, learn together and have fun); closer "కలిసి నేర్చుకుందాం —
   let's learn together". Noto Sans Telugu loaded from Google Fonts.
-- Supabase sign-up email: subject "Your AIM code", sender name AIM.
+- Supabase sign-up email: subject "Your AIM code" + AIM welcome line (done). Sender
+  name is still "PyML": the SMTP form loads with an empty password box, so saving
+  it needs the Brevo SMTP key re-pasted by Asish (Claude must not paste keys).
 
 ## How to run it
 
