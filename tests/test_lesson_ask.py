@@ -104,9 +104,9 @@ async def main():
         await pg.evaluate("location.hash = 'py-02'"); await pg.wait_for_selector(".snipask")
         await pg.evaluate(f"location.hash = '{LESSON}'"); await pg.wait_for_selector(".lessondoubts")
         await pg.wait_for_selector(".lessondoubts >> text=on this lesson")
-        await pg.click(".lessondoubts >> text=on this lesson"); await pg.wait_for_selector(".dcard")
+        await pg.click(".lessondoubts >> text=on this lesson"); await pg.wait_for_selector(".stream .msg")
         pressed = await pg.inner_text(".fchip[aria-pressed=true]")
-        cards = await pg.locator(".dcard").count()
+        cards = await pg.locator(".stream .msg").count()
         check(cards == 1 and "n" in pressed.lower(), "doubts page opens filtered to this lesson (%d card, chip '%s')" % (cards, pressed.strip()))
 
         # 6) phone: asking from the Lesson tab jumps to Practice

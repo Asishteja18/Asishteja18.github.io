@@ -697,6 +697,116 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
 .askhelp textarea{min-height:170px;font-family:var(--mono);font-size:12.5px}
 .lessondoubts{margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;
   font-size:13.5px;color:var(--fg-2)}
+
+/* ------------------------------------------------------------ v3: chat */
+.chathead{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.chathead h1{font-size:26px;letter-spacing:-.02em}
+.chathead p{color:var(--fg-2);font-size:14px;max-width:62ch;margin-top:4px}
+.livepill{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:999px;
+  padding:6px 12px;font-size:13px;color:var(--fg-2);background:var(--card)}
+.chatcol{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);
+  border-radius:20px;overflow:hidden;height:calc(100dvh - 210px);min-height:560px}
+.pins{border-bottom:1px solid var(--line);background:var(--gold-soft);flex:none;max-height:38%;overflow:auto}
+.pinhead{display:flex;align-items:center;gap:8px;width:100%;background:none;border:0;color:var(--fg);
+  font:inherit;font-weight:650;font-size:13.5px;padding:11px 16px;cursor:pointer;text-align:left}
+.pinhead svg{width:15px;height:15px;color:var(--gold);flex:none}
+.pinhead .n{font-family:var(--mono);font-size:11.5px;color:var(--fg-3);font-weight:500}
+.pinhead .car{margin-left:auto;transition:transform .2s}
+.pins.closed .car{transform:rotate(-90deg)}
+.pins.closed .pinlist{display:none}
+.pinlist{display:grid;gap:6px;padding:0 12px 12px}
+.pin{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:var(--card);
+  border:1px solid var(--line);border-radius:12px;padding:9px 12px;cursor:pointer;color:inherit;font:inherit}
+.pin:hover{border-color:var(--gold-line)}
+.pin .pt{flex:1;min-width:0;font-weight:600;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pin .pm{color:var(--fg-3);font-size:12px;white-space:nowrap}
+.chatbar{display:flex;gap:6px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid var(--line);flex:none}
+.chatbar .fchip{min-height:30px;padding:4px 11px;font-size:12.5px}
+.stream{flex:1;overflow-y:auto;padding:16px 14px 8px;display:flex;flex-direction:column;gap:12px;
+  overscroll-behavior:contain}
+.daysep{align-self:center;font-size:11.5px;color:var(--fg-3);font-family:var(--mono);letter-spacing:.06em;
+  text-transform:uppercase;border:1px solid var(--line);border-radius:999px;padding:3px 10px;margin:4px 0}
+.msg{display:flex;gap:9px;align-items:flex-end;max-width:min(640px,88%)}
+.msg.me{align-self:flex-end;flex-direction:row-reverse}
+.av{width:34px;height:34px;border-radius:50%;flex:none;display:grid;place-items:center;font-weight:700;
+  font-size:13.5px;background:var(--muted);color:var(--fg);border:2px solid var(--tier,var(--line));position:relative}
+.av .odot{position:absolute;right:-2px;bottom:-2px;width:10px;height:10px;border:2px solid var(--card)}
+.bubble{background:var(--bg-2,var(--muted));border:1px solid var(--line);border-radius:18px 18px 18px 6px;
+  padding:10px 13px;min-width:0;text-align:left;color:inherit;font:inherit}
+.msg.me .bubble{border-radius:18px 18px 6px 18px;background:var(--gold-soft);border-color:var(--gold-line)}
+button.bubble{cursor:pointer;width:100%}
+button.bubble:hover{border-color:var(--gold-line)}
+button.bubble:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.bhead{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:12.5px;color:var(--fg-3);margin-bottom:4px}
+.bhead b{color:var(--fg-2);font-size:13px}
+.btitle{font-weight:650;font-size:14.5px;overflow-wrap:anywhere;margin-bottom:2px}
+.bbody{white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px;line-height:1.55;color:var(--fg)}
+.clamp{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.bfoot{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px;font-size:12px;color:var(--fg-3)}
+.bubble.solution{border-color:var(--ok);box-shadow:0 0 0 3px var(--ok-soft)}
+.soltag{display:inline-flex;align-items:center;gap:5px;color:var(--ok);font-weight:700;font-size:12px}
+.composer{display:flex;gap:8px;align-items:flex-end;padding:10px 12px;border-top:1px solid var(--line);
+  flex:none;background:var(--card)}
+.composer textarea{flex:1;resize:none;min-height:44px;max-height:180px;background:var(--muted);border:1px solid var(--line);
+  color:var(--fg);border-radius:14px;padding:11px 13px;font:inherit;font-size:14.5px;line-height:1.4}
+.composer textarea:focus{outline:0;border-color:var(--gold)}
+.composer select{max-width:150px;background:var(--muted);border:1px solid var(--line);color:var(--fg-2);
+  border-radius:12px;padding:0 8px;height:44px;font:inherit;font-size:12.5px}
+.sendbtn{width:44px;height:44px;border-radius:14px;flex:none;display:grid;place-items:center;padding:0}
+.sendbtn svg{width:18px;height:18px}
+.composer-note{font-size:11.5px;color:var(--fg-3);padding:0 14px 10px;flex:none}
+.composer-err{color:var(--bad);font-size:12.5px;padding:0 14px 8px;flex:none}
+.composer-err:empty{display:none}
+.threadhead{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line);flex:none;flex-wrap:wrap}
+.threadhead h1{font-size:17px;flex:1;min-width:180px;overflow-wrap:anywhere}
+.qlabel{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
+.markbtn{margin-top:8px}
+/* ------------------------------------------------------------ v3: levels */
+.tierbadge{display:inline-grid;place-items:center;flex:none;vertical-align:middle}
+.tierbadge svg{display:block}
+.tiername{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--fg-3)}
+.levelcard{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center}
+.levelcard h3{font-size:20px;letter-spacing:-.01em}
+.bar2{height:9px;border-radius:9px;background:var(--muted);overflow:hidden;margin:10px 0 6px;border:1px solid var(--line)}
+.bar2 i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-strong,var(--gold)));border-radius:9px}
+.solvers{display:grid;gap:8px;margin-top:12px}
+.solver{display:flex;align-items:center;gap:9px;font-size:13.5px}
+.solver .rk{width:18px;color:var(--fg-3);font-family:var(--mono);font-size:12px}
+.solver .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;color:var(--fg-2)}
+.solver .pts{font-family:var(--mono);font-size:12px;color:var(--fg-3)}
+.dside .panel{margin-bottom:14px}
+/* ------------------------------------------------------------ v3: progress */
+.statgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.stat b{display:block;font-size:24px;letter-spacing:-.02em}
+.stat span{color:var(--fg-3);font-size:12.5px}
+.calcard h2,.laddercard h2{font-size:16px}
+.calsum{display:flex;gap:16px;flex-wrap:wrap;color:var(--fg-2);font-size:13.5px;margin:4px 0 12px}
+.calwrap{overflow-x:auto;padding-bottom:6px}
+.cal{display:grid;grid-auto-flow:column;grid-auto-columns:14px;grid-template-rows:16px repeat(7,14px);gap:3px;width:max-content}
+.cal .mo{font-size:10.5px;color:var(--fg-3);grid-row:1;white-space:nowrap;overflow:visible;width:14px}
+.cal .c{width:14px;height:14px;border-radius:3px;background:var(--muted);border:1px solid var(--line)}
+.cal .c.l1,.legend .c.l1{background:rgba(201,146,26,.22);border-color:transparent}
+.cal .c.l2,.legend .c.l2{background:rgba(201,146,26,.45);border-color:transparent}
+.cal .c.l3,.legend .c.l3{background:rgba(201,146,26,.7);border-color:transparent}
+.cal .c.l4,.legend .c.l4{background:var(--gold);border-color:transparent}
+.cal .c.out{visibility:hidden}
+.legend{display:flex;align-items:center;gap:4px;font-size:11.5px;color:var(--fg-3);margin-top:8px;justify-content:flex-end}
+.legend .c{width:11px;height:11px;border-radius:3px;border:1px solid var(--line);background:var(--muted)}
+.ladder{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px;margin-top:12px}
+.rung{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 8px;border:1px solid var(--line);
+  border-radius:14px;text-align:center;font-size:12.5px;color:var(--fg-2)}
+.rung.now{border-color:var(--gold);background:var(--gold-soft);color:var(--fg)}
+.rung.locked{opacity:.45}
+.rung small{color:var(--fg-3);font-family:var(--mono);font-size:11px}
+.progrid{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+@media (max-width:900px){
+  .chatcol{height:calc(100dvh - 150px);min-height:460px}
+  .dgrid .dside{order:1}
+  .chathead p{display:none}
+  .msg{max-width:94%}
+  .composer select{display:none}
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/pyodide@0.29.5/pyodide.js"></script>
 </head>
@@ -777,9 +887,11 @@ async function loadProfile() {
   const { data } = await sb.from("profiles").select("*").eq("id", user.id).single();
   me = data
     ? { id: user.id, email: data.email, approved: data.approved, is_admin: data.is_admin,
-        handle: data.handle || null, streak: data.streak || 0, reach: data.reach || {} }
+        handle: data.handle || null, streak: data.streak || 0, reach: data.reach || {},
+        points: data.points || 0, solved_count: data.solved_count || 0, best_streak: data.best_streak || 0 }
     // the signup trigger may not have committed yet; everyone gets in by default
-    : { id: user.id, email: user.email, approved: true, is_admin: false, handle: null, streak: 0, reach: {} };
+    : { id: user.id, email: user.email, approved: true, is_admin: false, handle: null, streak: 0, reach: {},
+        points: 0, solved_count: 0, best_streak: 0 };
 }
 
 function session() { return me; }
@@ -866,13 +978,15 @@ async function signOut() {
 async function listUsers() {
   if (!me?.is_admin) return [];
   if (LIVE) {
-    const [{ data }, { data: prog }] = await Promise.all([
+    const [{ data }, { data: prog }, { data: act }] = await Promise.all([
       sb.from("profiles").select("*").order("created_at", { ascending: false }),
       sb.from("progress").select("user_id").eq("completed", true),
+      sb.from("activity").select("user_id,seconds"),
     ]);
-    const cleared = {};
+    const cleared = {}, secs = {};
     (prog || []).forEach((r) => { cleared[r.user_id] = (cleared[r.user_id] || 0) + 1; });
-    return (data || []).map((u) => ({ ...u, cleared: cleared[u.id] || 0 }));
+    (act || []).forEach((r) => { secs[r.user_id] = (secs[r.user_id] || 0) + r.seconds; });
+    return (data || []).map((u) => ({ ...u, cleared: cleared[u.id] || 0, seconds: secs[u.id] || 0 }));
   }
   return Object.values(demo.read().users).map((u) => {
     let p = {};
@@ -880,7 +994,8 @@ async function listUsers() {
     return {
       id: u.email, email: u.email, approved: u.approved, is_admin: u.is_admin,
       handle: u.handle || null, streak: u.streak || 0, last_seen: u.last_seen || null,
-      cleared: Object.values(p).filter(Boolean).length,
+      cleared: Object.values(p).filter(Boolean).length, points: u.points || 0,
+      seconds: Object.values(u.activity || {}).reduce((a, b) => a + b, 0),
     };
   });
 }
@@ -953,6 +1068,9 @@ async function touchStreakDb(today) {
       u.streak = u.streak_day === prev ? (u.streak || 0) + 1 : 1;
       u.streak_day = today;
     }
+    u.best_streak = Math.max(u.best_streak || 0, u.streak);
+    u.activity = u.activity || {};
+    if (!(today in u.activity)) u.activity[today] = 0;
     u.last_seen = new Date().toISOString();
   });
   return me.streak || 0;
@@ -1015,6 +1133,7 @@ async function doubtsFeed() {
       needs_admin: !d.resolved && Date.now() - Date.parse(d.created_at) > ESCALATE_MS &&
         !rs.some((r) => r.user_id !== d.user_id),
       admin_replied: rs.some((r) => (s.users[r.user_id] || {}).is_admin),
+      points: u.points || 0, solved_reply_id: d.solved_reply_id || null,
     };
   });
 }
@@ -1028,7 +1147,7 @@ async function doubtThread(id) {
   const s = demoDoubts();
   return s.replies.filter((r) => r.doubt_id === id).map((r) => {
     const u = s.users[r.user_id] || {};
-    return { ...r, handle: u.handle || null, is_admin: !!u.is_admin };
+    return { ...r, handle: u.handle || null, is_admin: !!u.is_admin, points: u.points || 0 };
   });
 }
 
@@ -1087,6 +1206,11 @@ async function deleteDoubt(id) {
   } else {
     const s = demoDoubts(), d = s.doubts.find((x) => x.id === id);
     if (!d || (d.user_id !== me.id && !me.is_admin)) return { ok: false, error: "Not yours to delete." };
+    if (d.solved_reply_id) {
+      const prev = s.replies.find((r) => r.id === d.solved_reply_id);
+      const pu = prev && s.users[prev.user_id];
+      if (pu) { pu.points = Math.max((pu.points || 0) - 20, 0); pu.solved_count = Math.max((pu.solved_count || 0) - 1, 0); }
+    }
     s.doubts = s.doubts.filter((x) => x.id !== id);
     s.replies = s.replies.filter((r) => r.doubt_id !== id);
     demo.write(s);
@@ -1163,11 +1287,85 @@ function announceChange() {
 function onOnline(f) { onlineSubs.add(f); f(online); return () => onlineSubs.delete(f); }
 function onChanged(f) { changeSubs.add(f); return () => changeSubs.delete(f); }
 
+/* ---------------------------------------------------- points & activity */
+const SOLVE_POINTS = 20;
+
+async function acceptAnswer(did, rid) {
+  if (LIVE) {
+    const { error } = await sb.rpc("accept_answer", { did, rid });
+    if (error) return { ok: false, error: error.message };
+  } else {
+    const s = demoDoubts();
+    const d = s.doubts.find((x) => x.id === did), r = s.replies.find((x) => x.id === rid && x.doubt_id === did);
+    if (!d) return { ok: false, error: "Doubt not found." };
+    if (d.user_id !== me.id && !me.is_admin) return { ok: false, error: "Only the person who asked can pick the solution." };
+    if (!r) return { ok: false, error: "That reply is not on this doubt." };
+    if (r.user_id === d.user_id || r.user_id === me.id) return { ok: false, error: "You cannot mark your own reply as the solution." };
+    if (d.solved_reply_id !== rid) {
+      if (d.solved_reply_id) {
+        const prev = s.replies.find((x) => x.id === d.solved_reply_id), pu = prev && s.users[prev.user_id];
+        if (pu) { pu.points = Math.max((pu.points || 0) - SOLVE_POINTS, 0); pu.solved_count = Math.max((pu.solved_count || 0) - 1, 0); }
+      }
+      const u = s.users[r.user_id];
+      u.points = (u.points || 0) + SOLVE_POINTS;
+      u.solved_count = (u.solved_count || 0) + 1;
+      d.solved_reply_id = rid;
+      d.resolved = true;
+      demo.write(s);
+    }
+  }
+  announceChange();
+  return { ok: true };
+}
+
+// Learning time arrives in chunks of at most 2 minutes (the database caps it too).
+async function logTime(today, secs) {
+  if (!me || secs < 1) return;
+  secs = Math.min(secs, 120);
+  if (LIVE) { await sb.rpc("log_time", { today, secs }); return; }
+  demoMe((u) => {
+    u.activity = u.activity || {};
+    u.activity[today] = Math.min((u.activity[today] || 0) + secs, 57600);
+  });
+}
+
+// Days of the last year with learning seconds, oldest first.
+async function myActivity() {
+  if (!me) return [];
+  const since = new Date(Date.now() - 371 * 864e5).toISOString().slice(0, 10);
+  if (LIVE) {
+    const { data } = await sb.from("activity").select("day,seconds").eq("user_id", me.id).gte("day", since).order("day");
+    return data || [];
+  }
+  const u = demo.read().users[me.id] || {};
+  return Object.entries(u.activity || {}).filter(([d]) => d >= since).sort()
+    .map(([day, seconds]) => ({ day, seconds }));
+}
+
+async function refreshMe() {
+  if (!me) return me;
+  if (LIVE) await loadProfile();
+  else { const u = demo.read().users[me.id]; if (u) Object.assign(me, u); }
+  return me;
+}
+
+async function topSolvers() {
+  if (LIVE) {
+    const { data } = await sb.rpc("top_solvers");
+    return data || [];
+  }
+  return Object.values(demo.read().users)
+    .filter((u) => u.handle && (u.points || 0) > 0 && u.approved)
+    .sort((a, b) => (b.points || 0) - (a.points || 0)).slice(0, 10)
+    .map((u) => ({ user_id: u.email, handle: u.handle, points: u.points || 0, solved_count: u.solved_count || 0 }));
+}
+
 const api = { LIVE, DEMO_ACCOUNTS, init, session, signUp, verifyCode, resendCode, signIn, signOut,
               listUsers, setApproved, lessons, getProgress, setDone,
               touchStreak: touchStreakDb, saveReach, setHandle, HANDLE_RE,
               doubtsFeed, doubtThread, askDoubt, replyDoubt, setResolved, deleteDoubt,
-              startPresence, onOnline, onChanged };
+              startPresence, onOnline, onChanged,
+              acceptAnswer, logTime, myActivity, refreshMe, topSolvers, SOLVE_POINTS };
 
 
 
@@ -1627,7 +1825,9 @@ function youButton(me) {
   const b = el("button", "whobtn");
   b.append(el("span", "meav", initial(me.email)));
   const t = el("span", "whotext");
-  t.append(el("span", "whoname", meName(me)));
+  const wn = el("span", "whoname", meName(me));
+  t.append(wn);
+  if (me.handle) b.insertBefore(tierBadge(me.points || 0, 18), b.firstChild.nextSibling);
   const st = el("span", "who", streakLabel());
   st.dataset.streak = "1";
   t.append(st);
@@ -1728,7 +1928,9 @@ function profilePanel() {
   const foot = el("div", "mefoot");
   const db = el("button", "btn ghost sm", "Doubts");
   db.onclick = () => { togglePanel(false); location.hash = "doubts"; };
-  foot.append(db);
+  const pr = el("button", "btn ghost sm", "Your progress");
+  pr.onclick = () => { togglePanel(false); location.hash = "me"; };
+  foot.append(pr, db);
   if (me.is_admin) {
     const a = el("button", "btn ghost sm", "Admin");
     a.onclick = () => { togglePanel(false); location.hash = "admin"; };
@@ -2514,7 +2716,7 @@ async function renderAdmin() {
     box.append(el("p", "empty", "No accounts yet."));
   } else {
     const table = el("table");
-    table.innerHTML = "<thead><tr><th>Person</th><th>Cleared</th><th>Streak</th><th>Last seen</th><th>Status</th><th>Role</th><th></th></tr></thead>";
+    table.innerHTML = "<thead><tr><th>Person</th><th>Level</th><th>Cleared</th><th>Time</th><th>Streak</th><th>Last seen</th><th>Status</th><th>Role</th><th></th></tr></thead>";
     const tb = el("tbody");
     users.forEach((u) => {
       const tr = el("tr");
@@ -2522,7 +2724,13 @@ async function renderAdmin() {
       who.append(el("div", null, u.handle || "No code name yet"));
       who.append(el("div", "email note", u.email));
       tr.append(who);
+      const lvTd = el("td");
+      const lvW = el("span", "whochip");
+      lvW.append(tierBadge(u.points || 0, 18), el("span", null, tierOf(u.points || 0).name + " · " + (u.points || 0)));
+      lvTd.append(lvW);
+      tr.append(lvTd);
       tr.append(el("td", null, String(u.cleared || 0)));
+      tr.append(el("td", null, fmtHours(u.seconds || 0)));
       tr.append(el("td", null, (u.streak || 0) + "d"));
       tr.append(el("td", "note", u.last_seen ? timeAgo(u.last_seen) : "—"));
       const st = el("td");
@@ -2716,47 +2924,194 @@ function doubtTags(d) {
   return t;
 }
 
+
+const PIN_SVG = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10.5 1.5l4 4-2.2.9-2.7 2.7.3 3.4-1.4 1.4-3-3-3.5 3.5-.9-.9 3.5-3.5-3-3 1.4-1.4 3.4.3 2.7-2.7z" fill="currentColor"/></svg>';
+const SEND_SVG = '<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 10l14-7-5 15-2.5-6.5z" fill="currentColor"/></svg>';
+
+function avatar(handle, uid, points) {
+  const a = el("span", "av", (handle || "?").replace(/^AIM-/, "").charAt(0).toUpperCase());
+  a.style.setProperty("--tier", tierOf(points).c2);
+  a.dataset.uid = uid;
+  a.append(el("span", "odot" + (ONLINE.has(uid) ? " on" : "")));
+  a.setAttribute("aria-hidden", "true");
+  return a;
+}
+function nameRow(handle, uid, points, isAdmin, when) {
+  const h = el("div", "bhead");
+  h.append(el("b", null, handle || "New member"), tierBadge(points, 15));
+  if (isAdmin) h.append(el("span", "tag ok", "Admin"));
+  h.append(el("span", null, when));
+  return h;
+}
+function dayLabel(iso) {
+  const d = new Date(iso), t = new Date();
+  const k = dayKey(d);
+  if (k === dayKey(t)) return "Today";
+  if (k === dayKey(new Date(Date.now() - 864e5))) return "Yesterday";
+  return d.toLocaleDateString(undefined, { day: "numeric", month: "short", year: d.getFullYear() === t.getFullYear() ? undefined : "numeric" });
+}
+function clock(iso) { return new Date(iso).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" }); }
+
+function paintDotsAll() {
+  paintDots();
+  document.querySelectorAll(".av[data-uid]").forEach((a) =>
+    a.querySelector(".odot").classList.toggle("on", ONLINE.has(a.dataset.uid)));
+}
+
+function sidePanels(side) {
+  const me = api.session();
+  side.append(onlinePanel());
+  // your level
+  const lv = el("div", "panel");
+  const t = tierOf(me.points || 0);
+  const card = el("div", "levelcard");
+  const info = el("div");
+  info.append(el("span", "tiername", "Your level"), el("h3", null, t.name));
+  const bar = el("div", "bar2"); const fill = el("i"); fill.style.width = t.pct + "%"; bar.append(fill);
+  bar.setAttribute("role", "progressbar"); bar.setAttribute("aria-valuenow", String(t.pct));
+  bar.setAttribute("aria-valuemin", "0"); bar.setAttribute("aria-valuemax", "100");
+  bar.setAttribute("aria-label", "Progress to " + (t.next ? t.next.name : "max level"));
+  info.append(bar, el("p", "note", (me.points || 0) + " pts · " +
+    (t.next ? (t.next.min - (me.points || 0)) + " to " + t.next.name : "Top level reached")));
+  card.append(tierBadge(me.points || 0, 52), info);
+  lv.append(card);
+  const how = el("p", "note", "Solve doubts to level up: +" + api.SOLVE_POINTS + " when your reply is marked as the solution.");
+  how.style.marginTop = "10px";
+  const more = el("button", "linkbtn", "Your progress");
+  more.onclick = () => { location.hash = "me"; };
+  lv.append(how, more);
+  side.append(lv);
+  // leaderboard
+  const lb = el("div", "panel");
+  lb.append(el("h2", null, "Top solvers"));
+  const list = el("div", "solvers");
+  lb.append(list);
+  side.append(lb);
+  api.topSolvers().then((rows) => {
+    list.innerHTML = "";
+    if (!rows.length) { list.append(el("p", "note", "Nobody yet. Answer a doubt and be first.")); return; }
+    rows.forEach((r, i) => {
+      const row = el("div", "solver");
+      row.append(el("span", "rk", String(i + 1)), tierBadge(r.points, 20), el("span", "nm", r.handle),
+        el("span", "pts", r.points + " pts"));
+      list.append(row);
+    });
+  }).catch(() => {});
+}
+
+function chatComposer(placeholder, onSend, withLesson) {
+  const wrap = document.createDocumentFragment();
+  const bar = el("form", "composer");
+  bar.noValidate = true;
+  const ta = el("textarea");
+  ta.rows = 1;
+  ta.placeholder = placeholder;
+  ta.setAttribute("aria-label", placeholder);
+  ta.maxLength = 4140;
+  const grow = () => { ta.style.height = "auto"; ta.style.height = Math.min(ta.scrollHeight, 180) + "px"; };
+  ta.addEventListener("input", grow);
+  bar.append(ta);
+  let sel = null;
+  if (withLesson) {
+    sel = el("select");
+    sel.setAttribute("aria-label", "Which lesson (optional)");
+    sel.append(new Option("Any lesson", ""));
+    LESSONS.filter((l) => !trackMeta(l.track).locked).forEach((l) => sel.append(new Option(l.title, l.id)));
+    if (LAST_LESSON) sel.value = LAST_LESSON;
+    bar.append(sel);
+  }
+  const send = el("button", "btn sendbtn");
+  send.type = "submit";
+  send.innerHTML = SEND_SVG;
+  send.setAttribute("aria-label", "Send");
+  bar.append(send);
+  const err = el("div", "composer-err");
+  err.setAttribute("role", "alert");
+  const note = el("div", "composer-note", "Enter to send · Shift+Enter for a new line");
+  ta.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); bar.requestSubmit(); }
+  });
+  bar.onsubmit = async (e) => {
+    e.preventDefault();
+    err.textContent = "";
+    if (!ta.value.trim()) return;
+    send.disabled = true;
+    const r = await onSend(ta.value, sel ? sel.value : null);
+    send.disabled = false;
+    if (!r.ok) { err.textContent = r.error; return; }
+    ta.value = ""; grow(); ta.focus();
+  };
+  wrap.append(bar, err, note);
+  return wrap;
+}
+
+function stickToBottom(stream, fn) {
+  const near = stream.scrollHeight - stream.scrollTop - stream.clientHeight < 80;
+  fn();
+  if (near || !stream.dataset.loaded) stream.scrollTop = stream.scrollHeight;
+  stream.dataset.loaded = "1";
+}
+
 async function renderDoubts() {
   const me = api.session();
+  await api.refreshMe();
   root.innerHTML = "";
   root.append(topBar());
   const wrap = el("div", "wrap");
-  const head = el("div", "head");
-  head.append(el("h1", null, "Doubts"));
-  head.append(el("p", null,
-    "Stuck? Ask here and anyone on PyML can answer. If nobody replies within 12 hours, your doubt goes straight to the admin."));
+  const head = el("div", "chathead");
+  const ht = el("div");
+  ht.append(el("h1", null, "Doubts"),
+    el("p", null, "The PyML group chat for questions. Unsolved doubts stay pinned on top. Get your reply marked as the solution to earn +" + api.SOLVE_POINTS + " points."));
+  const live = el("span", "livepill");
+  live.append(el("span", "odot on"), el("span", null, "…"));
+  head.append(ht, live);
   wrap.append(head);
 
   const grid = el("div", "dgrid");
-  const main = el("div", "dmain");
+  const col = el("section", "chatcol");
+  col.setAttribute("aria-label", "Doubts chat");
   const side = el("aside", "dside");
-  side.setAttribute("aria-label", "Who is online");
-  grid.append(main, side);
+  side.setAttribute("aria-label", "Online, levels and top solvers");
+  grid.append(col, side);
   wrap.append(grid);
   root.append(wrap);
-  side.append(onlinePanel());
+  sidePanels(side);
+  PAGE_SUBS.push(api.onOnline((m) => {
+    live.lastChild.textContent = m.size === 1 ? "Just you online" : m.size + " online";
+    paintDotsAll();
+  }));
+
+  const pins = el("div", "pins");
+  const bar = el("div", "chatbar");
+  bar.setAttribute("role", "group");
+  bar.setAttribute("aria-label", "Filter doubts");
+  const stream = el("div", "stream");
+  stream.setAttribute("role", "log");
+  stream.setAttribute("aria-label", "Doubts");
+  stream.setAttribute("aria-live", "polite");
+  col.append(pins, bar, stream);
 
   if (!me.handle) {
-    main.append(handleCard(() => renderDoubts()));
+    const gate = el("div");
+    gate.style.padding = "12px";
+    gate.append(handleCard(() => renderDoubts()));
+    col.append(gate);
   } else {
-    const you = el("div", "youare");
-    you.append(document.createTextNode("You post as "), whoChip(me.handle, me.id, me.is_admin));
-    const ch = el("button", "linkbtn", "Change");
-    ch.onclick = () => { you.replaceWith(handleCard(() => renderDoubts(), me.handle)); };
-    you.append(ch);
-    main.append(you, askCard());
+    col.append(chatComposer("Ask a doubt… first line is the title", async (text, lesson) => {
+      const lines = text.trim().split("\n");
+      const title = lines.shift().trim().slice(0, 140);
+      if (title.length < 5) return { ok: false, error: "Make the first line (the title) at least 5 characters." };
+      const r = await api.askDoubt({ title, body: lines.join("\n").trim(), lesson_id: lesson });
+      if (r.ok) await load();
+      return r;
+    }, true));
   }
-
-  const chips = el("div", "fchips");
-  chips.setAttribute("role", "group");
-  chips.setAttribute("aria-label", "Filter doubts");
-  const list = el("div", "dlist");
-  main.append(chips, list);
 
   let feed = [];
   const filters = [
     ["all", "All", () => true],
-    ["open", "Unanswered", (d) => !d.resolved && d.replies === 0],
+    ["open", "Unsolved", (d) => !d.resolved],
+    ["solved", "Solved", (d) => d.resolved],
     ["mine", "Mine", (d) => d.user_id === me.id],
   ];
   if (me.is_admin) filters.push(["admin", "Waiting on you", (d) => d.needs_admin]);
@@ -2765,43 +3120,84 @@ async function renderDoubts() {
     filters.push([DOUBT_FILTER, ls ? ls.title : "This lesson", (d) => d.lesson_id === lid]);
   }
   if (!filters.some((f) => f[0] === DOUBT_FILTER)) DOUBT_FILTER = "all";
+  let pinsOpen = true;
 
   const paint = () => {
-    chips.innerHTML = "";
+    // pinned: every unsolved doubt, the ones waiting on the admin first, then oldest
+    const open = feed.filter((d) => !d.resolved)
+      .sort((a, b) => (b.needs_admin - a.needs_admin) || a.created_at.localeCompare(b.created_at));
+    pins.innerHTML = "";
+    pins.hidden = !open.length;
+    pins.classList.toggle("closed", !pinsOpen);
+    const ph = el("button", "pinhead");
+    ph.type = "button";
+    ph.setAttribute("aria-expanded", pinsOpen ? "true" : "false");
+    ph.innerHTML = PIN_SVG;
+    ph.append(el("span", null, "Pinned · unsolved"), el("span", "n", String(open.length)));
+    const car = caretIcon(); car.classList.add("car"); ph.append(car);
+    ph.onclick = () => { pinsOpen = !pinsOpen; paint(); };
+    const pl = el("div", "pinlist");
+    open.forEach((d) => {
+      const p = el("button", "pin");
+      p.type = "button";
+      p.onclick = () => { location.hash = "doubt-" + d.id; };
+      p.append(tierBadge(d.points, 16), el("span", "pt", d.title),
+        el("span", "pm", (d.handle || "") + " · " + timeAgo(d.created_at) + " · " + d.replies + (d.replies === 1 ? " reply" : " replies")));
+      if (d.needs_admin) p.append(el("span", "tag demo", "With admin"));
+      pl.append(p);
+    });
+    pins.append(ph, pl);
+
+    bar.innerHTML = "";
     filters.forEach(([key, label, fn]) => {
       const b = el("button", "fchip");
       b.type = "button";
       b.setAttribute("aria-pressed", DOUBT_FILTER === key ? "true" : "false");
       b.append(document.createTextNode(label), el("span", "n", String(feed.filter(fn).length)));
-      b.onclick = () => { DOUBT_FILTER = key; paint(); };
-      chips.append(b);
+      b.onclick = () => { DOUBT_FILTER = key; stream.dataset.loaded = ""; paint(); };
+      bar.append(b);
     });
+
     const fn = filters.find((f) => f[0] === DOUBT_FILTER)[2];
-    const shown = feed.filter(fn);
-    list.innerHTML = "";
-    if (!shown.length) {
-      list.append(el("p", "empty", feed.length ? "Nothing in this filter." : "No doubts yet. Be the first to ask."));
-      return;
-    }
-    shown.forEach((d) => {
-      const c = el("button", "dcard");
-      c.type = "button";
-      c.onclick = () => { location.hash = "doubt-" + d.id; };
-      c.append(el("h3", null, d.title));
-      const meta = el("div", "dmeta");
-      meta.append(whoChip(d.handle, d.user_id, false), el("span", null, timeAgo(d.created_at)),
-        el("span", null, d.replies === 1 ? "1 reply" : d.replies + " replies"), ...doubtTags(d));
-      c.append(meta);
-      list.append(c);
+    const shown = feed.filter(fn).slice().sort((a, b) => a.created_at.localeCompare(b.created_at));
+    stickToBottom(stream, () => {
+      stream.innerHTML = "";
+      if (!shown.length) {
+        stream.append(el("p", "empty", feed.length ? "Nothing in this filter." : "No doubts yet. Ask the first one below."));
+        return;
+      }
+      let lastDay = "";
+      shown.forEach((d) => {
+        const dl = dayLabel(d.created_at);
+        if (dl !== lastDay) { stream.append(el("div", "daysep", dl)); lastDay = dl; }
+        const mine = d.user_id === me.id;
+        const m = el("div", "msg" + (mine ? " me" : ""));
+        const b = el("button", "bubble");
+        b.type = "button";
+        b.onclick = () => { location.hash = "doubt-" + d.id; };
+        b.append(nameRow(mine ? "You" : d.handle, d.user_id, d.points, false, clock(d.created_at)),
+          el("div", "btitle", d.title));
+        if (d.body) b.append(el("div", "bbody clamp", d.body));
+        const f = el("div", "bfoot");
+        f.append(el("span", null, d.replies === 1 ? "1 reply" : d.replies + " replies"));
+        if (d.resolved) { const st = el("span", "soltag", "✓ Solved"); f.append(st); }
+        else if (d.needs_admin) f.append(el("span", "tag demo", "Sent to admin"));
+        else f.append(el("span", "tag", "Unsolved"));
+        if (d.admin_replied) f.append(el("span", "tag ok", "Admin replied"));
+        b.append(f);
+        m.append(avatar(d.handle, d.user_id, d.points), b);
+        stream.append(m);
+      });
     });
+    paintDotsAll();
   };
 
   const load = async () => {
     try { feed = await api.doubtsFeed(); }
-    catch (e) { list.innerHTML = ""; list.append(el("p", "empty", "Could not load doubts: " + e.message)); return; }
+    catch (e) { stream.innerHTML = ""; stream.append(el("p", "empty", "Could not load doubts: " + e.message)); return; }
     paint();
   };
-  list.append(el("p", "empty", "Loading doubts…"));
+  stream.append(el("p", "empty", "Loading doubts…"));
   await load();
   PAGE_SUBS.push(api.onChanged(load));
 }
@@ -2812,51 +3208,61 @@ async function renderThread(id) {
   root.append(topBar());
   const wrap = el("div", "wrap");
   const grid = el("div", "dgrid");
-  const main = el("div", "dmain dthread");
+  const col = el("section", "chatcol");
   const side = el("aside", "dside");
-  grid.append(main, side);
+  grid.append(col, side);
   wrap.append(grid);
   root.append(wrap);
-  side.append(onlinePanel());
+  sidePanels(side);
+  PAGE_SUBS.push(api.onOnline(() => paintDotsAll()));
 
-  const back = el("button", "backlink", "← All doubts");
-  back.onclick = () => { location.hash = "doubts"; };
-  main.append(back);
+  const head = el("div", "threadhead");
+  const stream = el("div", "stream");
+  stream.setAttribute("role", "log");
+  stream.setAttribute("aria-label", "Replies");
+  stream.setAttribute("aria-live", "polite");
+  col.append(head, stream);
+  if (me.handle) {
+    col.append(chatComposer("Reply…", async (text) => {
+      const r = await api.replyDoubt(id, text);
+      if (r.ok) await load();
+      return r;
+    }, false));
+  } else {
+    const gate = el("div");
+    gate.style.padding = "12px";
+    gate.append(handleCard(() => renderThread(id)));
+    col.append(gate);
+  }
 
-  const top = el("div", "panel");
-  const replies = el("div", "panel");
-  replies.setAttribute("aria-label", "Replies");
-  main.append(top, replies);
-
-  const paintTop = (d) => {
-    top.innerHTML = "";
-    top.append(el("h1", null, d.title));
-    const meta = el("div", "dmeta");
-    meta.append(whoChip(d.handle, d.user_id, false), el("span", null, timeAgo(d.created_at)), ...doubtTags(d));
-    const l = d.lesson_id && LESSONS.find((x) => x.id === d.lesson_id);
-    if (l) {
-      const a = el("button", "linkbtn", "Lesson: " + l.title);
-      a.onclick = () => { location.hash = l.id; };
-      meta.append(a);
+  const load = async () => {
+    let feed, rs;
+    try { [feed, rs] = await Promise.all([api.doubtsFeed(), api.doubtThread(id)]); }
+    catch (e) { stream.innerHTML = ""; stream.append(el("p", "empty", "Could not load: " + e.message)); return; }
+    const d = feed.find((x) => x.id === id);
+    head.innerHTML = "";
+    const back = el("button", "backlink", "←");
+    back.setAttribute("aria-label", "Back to all doubts");
+    back.onclick = () => { location.hash = "doubts"; };
+    head.append(back);
+    if (!d) {
+      head.append(el("h1", null, "Doubt not found"));
+      stream.innerHTML = "";
+      stream.append(el("p", "empty", "This doubt was deleted or does not exist."));
+      return;
     }
-    top.append(meta);
-    if (d.body) { const b = el("p", "dbody", d.body); b.style.marginTop = "14px"; top.append(b); }
-    if (d.needs_admin) {
-      top.append(el("div", "esc", me.is_admin
-        ? "Nobody has answered this for 12 hours. It is waiting on you."
-        : "Nobody answered within 12 hours, so this has gone to the admin."));
-    }
-    const mine = d.user_id === me.id;
-    if (mine || me.is_admin) {
-      const acts = el("div", "dactions");
-      const res = el("button", "btn ghost sm", d.resolved ? "Reopen" : "Mark resolved");
+    head.append(el("h1", null, d.title));
+    head.append(d.resolved ? el("span", "soltag", "✓ Solved") :
+      d.needs_admin ? el("span", "tag demo", "Sent to admin") : el("span", "tag", "Unsolved"));
+    const mine = d.user_id === me.id, canPick = mine || me.is_admin;
+    if (canPick) {
+      const res = el("button", "btn ghost sm", d.resolved ? "Reopen" : "Mark solved");
       res.onclick = async () => {
         res.disabled = true;
         const r = await api.setResolved(d.id, !d.resolved);
         if (!r.ok) { res.disabled = false; res.textContent = r.error; return; }
         load();
       };
-      // two-step delete instead of a confirm() dialog
       const del = el("button", "btn danger sm", "Delete");
       let armed = null;
       del.onclick = async () => {
@@ -2871,68 +3277,245 @@ async function renderThread(id) {
         if (!r.ok) { del.disabled = false; del.textContent = r.error; return; }
         location.hash = "doubts";
       };
-      acts.append(res, del);
-      top.append(acts);
+      head.append(res, del);
     }
-  };
 
-  const list = el("div");
-  replies.append(el("h2", null, "Replies"), list);
-  const form = el("form");
-  form.noValidate = true;
-  form.style.marginTop = "16px";
-  if (me.handle) {
-    const f = el("div", "field");
-    const lab = el("label", null, "Your reply");
-    lab.htmlFor = "r-body";
-    const ta = el("textarea");
-    ta.id = "r-body"; ta.maxLength = 4000;
-    f.append(lab, ta);
-    const btn = el("button", "btn", "Post reply");
-    btn.type = "submit";
-    const err = el("p", "err"); err.setAttribute("role", "alert");
-    form.append(f, btn, err);
-    form.onsubmit = async (e) => {
-      e.preventDefault();
-      err.textContent = "";
-      if (!ta.value.trim()) { err.textContent = "Write a reply first."; ta.focus(); return; }
-      busyButton(btn, "Posting");
-      const r = await api.replyDoubt(id, ta.value);
-      btn.disabled = false; btn.textContent = "Post reply";
-      if (!r.ok) { err.textContent = r.error; return; }
-      ta.value = "";
-      load();
-    };
-    replies.append(form);
-  } else {
-    replies.append(handleCard(() => renderThread(id)));
-  }
+    stickToBottom(stream, () => {
+      stream.innerHTML = "";
+      if (d.needs_admin) {
+        stream.append(el("div", "esc", me.is_admin
+          ? "Nobody has answered this for 12 hours. It is waiting on you."
+          : "Nobody answered within 12 hours, so this has gone to the admin."));
+      }
+      stream.append(el("div", "daysep", dayLabel(d.created_at)));
+      // the question itself, as the first message
+      const q = el("div", "msg" + (mine ? " me" : ""));
+      const qb = el("div", "bubble");
+      qb.append(nameRow(mine ? "You" : d.handle, d.user_id, d.points, false, clock(d.created_at)),
+        el("div", "qlabel", "Question"), el("div", "btitle", d.title));
+      if (d.body) qb.append(el("div", "bbody", d.body));
+      const l = d.lesson_id && LESSONS.find((x) => x.id === d.lesson_id);
+      if (l) {
+        const a = el("button", "linkbtn", "Lesson: " + l.title);
+        a.onclick = () => { location.hash = l.id; };
+        const f = el("div", "bfoot"); f.append(a); qb.append(f);
+      }
+      q.append(avatar(d.handle, d.user_id, d.points), qb);
+      stream.append(q);
 
-  const load = async () => {
-    let feed, rs;
-    try { [feed, rs] = await Promise.all([api.doubtsFeed(), api.doubtThread(id)]); }
-    catch (e) { list.innerHTML = ""; list.append(el("p", "empty", "Could not load: " + e.message)); return; }
-    const d = feed.find((x) => x.id === id);
-    if (!d) {
-      top.innerHTML = "";
-      top.append(el("p", "empty", "This doubt was deleted or does not exist."));
-      replies.remove();
-      return;
-    }
-    paintTop(d);
-    list.innerHTML = "";
-    if (!rs.length) list.append(el("p", "note", "No replies yet. Know the answer? Help them out."));
-    rs.forEach((r) => {
-      const item = el("div", "reply");
-      const meta = el("div", "dmeta");
-      meta.append(whoChip(r.handle, r.user_id, r.is_admin), el("span", null, timeAgo(r.created_at)));
-      item.append(meta, el("p", "dbody", r.body));
-      list.append(item);
+      if (!rs.length) stream.append(el("p", "note", "No replies yet. Know the answer? Reply below, and if it solves it you earn +" + api.SOLVE_POINTS + " points."));
+      let lastDay = dayLabel(d.created_at);
+      rs.forEach((r) => {
+        const dl = dayLabel(r.created_at);
+        if (dl !== lastDay) { stream.append(el("div", "daysep", dl)); lastDay = dl; }
+        const isMe = r.user_id === me.id, isSol = d.solved_reply_id === r.id;
+        const m = el("div", "msg" + (isMe ? " me" : ""));
+        const b = el("div", "bubble" + (isSol ? " solution" : ""));
+        b.append(nameRow(isMe ? "You" : r.handle, r.user_id, r.points, r.is_admin, clock(r.created_at)),
+          el("div", "bbody", r.body));
+        if (isSol) {
+          const f = el("div", "bfoot");
+          f.append(el("span", "soltag", "✓ Solution · +" + api.SOLVE_POINTS + " pts to " + (isMe ? "you" : r.handle)));
+          b.append(f);
+        } else if (canPick && r.user_id !== d.user_id && !isMe) {
+          const mk = el("button", "btn ghost sm markbtn", "✓ Mark as solution");
+          mk.setAttribute("aria-label", "Mark " + (r.handle || "this") + "'s reply as the solution");
+          mk.onclick = async () => {
+            mk.disabled = true;
+            const x = await api.acceptAnswer(d.id, r.id);
+            if (!x.ok) { mk.disabled = false; mk.textContent = x.error; return; }
+            load();
+          };
+          b.append(mk);
+        }
+        m.append(avatar(r.handle, r.user_id, r.points), b);
+        stream.append(m);
+      });
     });
-    paintDots();
+    paintDotsAll();
   };
+  stream.append(el("p", "empty", "Loading…"));
   await load();
   PAGE_SUBS.push(api.onChanged(load));
+}
+
+/* ============================================================ progress */
+async function renderProgress() {
+  const me = await api.refreshMe();
+  root.innerHTML = "";
+  root.append(topBar());
+  const wrap = el("div", "wrap");
+  const head = el("div", "head");
+  head.append(el("h1", null, "Your progress"),
+    el("p", null, "Your streak counts the days you show up. Your level counts the doubts you solve for others. They are separate on purpose."));
+  wrap.append(head);
+  root.append(wrap);
+
+  const acts = await api.myActivity();
+  const byDay = Object.fromEntries(acts.map((a) => [a.day, a.seconds]));
+  const total = acts.reduce((a, b) => a + b.seconds, 0);
+  const weekAgo = dayKey(new Date(Date.now() - 6 * 864e5));
+  const week = acts.filter((a) => a.day >= weekAgo).reduce((a, b) => a + b.seconds, 0);
+  const cleared = LESSONS.filter((l) => PROGRESS[l.id]).length;
+
+  // level
+  const t = tierOf(me.points || 0);
+  const lv = el("div", "panel");
+  const card = el("div", "levelcard");
+  const info = el("div");
+  info.append(el("span", "tiername", "Level"), el("h3", null, t.name));
+  const bar = el("div", "bar2"); const fill = el("i"); fill.style.width = t.pct + "%"; bar.append(fill);
+  bar.setAttribute("role", "progressbar"); bar.setAttribute("aria-valuenow", String(t.pct));
+  bar.setAttribute("aria-valuemin", "0"); bar.setAttribute("aria-valuemax", "100");
+  bar.setAttribute("aria-label", "Progress to " + (t.next ? t.next.name : "max level"));
+  info.append(bar, el("p", "note", (me.points || 0) + " points · " + (me.solved_count || 0) + " doubts solved · " +
+    (t.next ? (t.next.min - (me.points || 0)) + " more to reach " + t.next.name : "you are at the top")));
+  card.append(tierBadge(me.points || 0, 84), info);
+  lv.append(card);
+  wrap.append(lv);
+
+  const stats = el("div", "statgrid");
+  const st = (v, l) => { const d = el("div", "stat"); d.append(el("b", null, String(v)), el("span", null, l)); return d; };
+  stats.append(st((me.streak || 0) + "d", "current streak"), st((me.best_streak || me.streak || 0) + "d", "best streak"),
+    st(fmtHours(total), "time learning"), st(fmtHours(week), "this week"),
+    st(cleared + "/" + LESSONS.filter((l) => !trackMeta(l.track).locked).length, "lessons cleared"),
+    st(me.solved_count || 0, "doubts solved"));
+  wrap.append(stats);
+
+  // calendar heatmap: 53 weeks, Sunday-first columns like LeetCode / GitHub
+  const cal = el("div", "panel calcard");
+  cal.append(el("h2", null, "Your year"));
+  const today = new Date(); today.setHours(12, 0, 0, 0);
+  const start = new Date(today); start.setDate(start.getDate() - 364 - start.getDay());
+  const activeDays = Object.keys(byDay).filter((k) => k >= dayKey(start)).length;
+  const sum = el("div", "calsum");
+  sum.append(el("span", null, activeDays + " active days in the past year"),
+    el("span", null, "Best streak " + (me.best_streak || me.streak || 0) + " days"));
+  cal.append(sum);
+  const cw = el("div", "calwrap");
+  const g = el("div", "cal");
+  g.setAttribute("role", "img");
+  g.setAttribute("aria-label", activeDays + " active days in the past year");
+  const level = (secs) => secs == null ? 0 : secs < 60 ? 1 : secs < 900 ? 2 : secs < 2700 ? 3 : 4;
+  let col = 0, lastMonth = -1;
+  for (let d = new Date(start); d <= today || d.getDay() !== 0; col++) {
+    const mo = el("span", "mo");
+    if (d.getMonth() !== lastMonth && d.getDate() <= 7) {
+      mo.textContent = d.toLocaleDateString(undefined, { month: "short" });
+      lastMonth = d.getMonth();
+    }
+    mo.style.gridColumn = String(col + 1);
+    g.append(mo);
+    for (let r = 0; r < 7; r++) {
+      const k = dayKey(d);
+      const c = el("span", "c");
+      c.style.gridColumn = String(col + 1);
+      c.style.gridRow = String(r + 2);
+      if (d > today) c.classList.add("out");
+      else {
+        const lvl = level(byDay[k]);
+        if (lvl) c.classList.add("l" + lvl);
+        c.title = d.toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short", year: "numeric" }) +
+          " · " + (k in byDay ? (byDay[k] >= 60 ? fmtHours(byDay[k]) + " learning" : "visited") : "no activity");
+      }
+      g.append(c);
+      d.setDate(d.getDate() + 1);
+    }
+    if (col > 60) break;
+  }
+  cw.append(g);
+  cal.append(cw);
+  const lg = el("div", "legend");
+  lg.append(el("span", null, "Less"));
+  ["", "l1", "l2", "l3", "l4"].forEach((k) => lg.append(el("span", "c " + k)));
+  lg.append(el("span", null, "More"));
+  cal.append(lg);
+  wrap.append(cal);
+  requestAnimationFrame(() => { cw.scrollLeft = cw.scrollWidth; });
+
+  // ladder
+  const lad = el("div", "panel laddercard");
+  lad.style.marginTop = "16px";
+  lad.append(el("h2", null, "Levels"), el("p", "note", "Every solved doubt is +" + api.SOLVE_POINTS + " points."));
+  const ll = el("div", "ladder");
+  TIERS.forEach((tt, i) => {
+    const r = el("div", "rung" + (i === t.idx ? " now" : i > t.idx ? " locked" : ""));
+    r.append(tierBadge(0, 40, i), el("b", null, tt.name), el("small", null, tt.min ? tt.min.toLocaleString() + " pts" : "start"));
+    ll.append(r);
+  });
+  lad.append(ll);
+  wrap.append(lad);
+}
+
+/* ================================================================ levels */
+// Points come only from solving doubts (+20 each); the streak is separate.
+const TIERS = [
+  { name: "Newbie",      min: 0,     c1: "#B9AFA4", c2: "#6E655C" },
+  { name: "Bronze",      min: 100,   c1: "#F0B27A", c2: "#9A5B2A" },
+  { name: "Silver",      min: 500,   c1: "#F4F7FA", c2: "#8D9AA6" },
+  { name: "Gold",        min: 1500,  c1: "#FFE27A", c2: "#C8921A" },
+  { name: "Platinum",    min: 3000,  c1: "#C9F5EF", c2: "#3E9D93" },
+  { name: "Diamond",     min: 6000,  c1: "#CDE8FF", c2: "#3D82D6" },
+  { name: "Master",      min: 10000, c1: "#E6D2FF", c2: "#7B4BD0" },
+  { name: "Grandmaster", min: 16000, c1: "#FFC4C4", c2: "#C93A3A" },
+  { name: "God tier",    min: 25000, c1: "#FFF6C2", c2: "#E09A00", god: true },
+];
+function tierOf(points) {
+  let i = 0;
+  while (i + 1 < TIERS.length && (points || 0) >= TIERS[i + 1].min) i++;
+  const t = TIERS[i], next = TIERS[i + 1] || null;
+  const pct = next ? Math.min(100, Math.round(((points - t.min) / (next.min - t.min)) * 100)) : 100;
+  return { ...t, idx: i, next, pct };
+}
+let BADGE_SEQ = 0;
+function tierBadge(points, size, tierIdx) {
+  const t = tierIdx != null ? TIERS[tierIdx] : tierOf(points);
+  const id = "tg" + (++BADGE_SEQ);
+  const wrap = el("span", "tierbadge");
+  wrap.title = t.name;
+  wrap.setAttribute("role", "img");
+  wrap.setAttribute("aria-label", t.name + " level");
+  const star = t.name === "Newbie" ? "" :
+    '<path d="M16 9.6l1.9 3.9 4.3.6-3.1 3 .7 4.3-3.8-2-3.8 2 .7-4.3-3.1-3 4.3-.6z" fill="rgba(255,255,255,.92)"/>';
+  const crown = t.god
+    ? '<path d="M8.5 3.2l2.6 2.6L16 1.6l4.9 4.2 2.6-2.6-.9 5.4H9.4z" fill="#FFE27A" stroke="#B87800" stroke-width=".8"/>' : "";
+  const glow = t.god ? ' filter="drop-shadow(0 0 3px #FFD24A)"' : "";
+  wrap.innerHTML = '<svg width="' + size + '" height="' + size + '" viewBox="0 0 32 32" aria-hidden="true"' + glow + '>' +
+    '<defs><linearGradient id="' + id + '" x1="0" y1="0" x2="1" y2="1">' +
+    '<stop offset="0" stop-color="' + t.c1 + '"/><stop offset="1" stop-color="' + t.c2 + '"/></linearGradient></defs>' +
+    '<path d="M16 3.5l10.5 4.2v8.1c0 6.3-4.4 10.6-10.5 12.7C9.9 26.4 5.5 22.1 5.5 15.8V7.7z" fill="url(#' + id + ')" ' +
+    'stroke="' + t.c2 + '" stroke-width="1.2"/>' + star + crown + '</svg>';
+  return wrap;
+}
+
+/* ------------------------------------------------------- learning time */
+// Counts time on lesson and track pages while the tab is visible and the
+// learner did something in the last 2 minutes. Sent to the database each minute.
+const TIMER = { acc: 0, last: Date.now() };
+function learningRoute() {
+  const id = location.hash.slice(1);
+  return LESSONS.some((l) => l.id === id) || TRACKS.some((t) => t.id === id && !t.locked);
+}
+["pointerdown", "keydown", "scroll", "input"].forEach((ev) =>
+  addEventListener(ev, () => { TIMER.last = Date.now(); }, { passive: true, capture: true }));
+function flushTime() {
+  const secs = TIMER.acc;
+  if (!secs || !api.session()) return;
+  TIMER.acc = 0;
+  api.logTime(dayKey(new Date()), secs);
+}
+setInterval(() => {
+  if (!api.session() || document.visibilityState !== "visible" || !learningRoute()) return;
+  if (Date.now() - TIMER.last > 120000) return;
+  TIMER.acc += 15;
+  if (TIMER.acc >= 60) flushTime();
+}, 15000);
+addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") flushTime(); });
+addEventListener("hashchange", () => { if (!learningRoute()) flushTime(); });
+
+function fmtHours(secs) {
+  const m = Math.round((secs || 0) / 60);
+  return m < 60 ? m + "m" : (m / 60).toFixed(m < 600 ? 1 : 0) + "h";
 }
 
 /* =================================================================== main */
@@ -2964,6 +3547,7 @@ async function render() {
   const id = location.hash.slice(1);
   if (id === "admin") return renderAdmin();
   if (id === "doubts") return renderDoubts();
+  if (id === "me") return renderProgress();
   const dm = /^doubt-(\d+)$/.exec(id);
   if (dm) return renderThread(Number(dm[1]));
   if (TRACKS.some((t) => t.id === id && !t.locked)) { courseDark(); return renderTracks(id); }

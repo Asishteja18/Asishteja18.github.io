@@ -9,8 +9,15 @@ People sign up with email + password, verify a 6-digit emailed code, and go
 straight into the lessons. One admin (asishtejavinnakota@gmail.com, enforced by
 the database) can see every learner's stats and block accounts.
 
-**Doubts** (`#doubts`): learners pick a code name (`AIM-` + their choice), ask
-questions, reply to each other, and see who is online. A doubt nobody else
+**Doubts** (`#doubts`): a group chat. Learners pick a code name (`AIM-` + their
+choice), ask (first line = title, Enter to send), reply, and see who is online.
+Unsolved doubts stay pinned on top. The asker marks a reply as the solution and
+its author earns +20 points; points set the level (Bronze 100, Silver 500,
+Gold 1,500, Platinum 3,000, Diamond 6,000, Master 10,000, Grandmaster 16,000,
+God tier 25,000).
+
+**Your progress** (`#me`): level badge, current/best streak, hours learned
+(active time on lesson pages), lessons cleared, and a year calendar of active days. A doubt nobody else
 answers within 12 hours is flagged to the admin (badge + "Waiting on you").
 Inside a lesson, a failed run offers to ask a doubt with the code and error
 already filled in; code examples have "Ask about this".
@@ -21,9 +28,9 @@ already filled in; code examples have "Ask about this".
 |---|---|
 | `index.html` | **The whole site in one file**: styles, app code and all 22 lessons inlined. This is what GitHub Pages serves and what you edit. |
 | `supabase-schema.sql` | Database tables and access rules. Safe to re-run in Supabase. |
-| `tests/test_v2.py` | Two-user browser test of doubts, presence, code names, roles (demo mode). |
+| `tests/test_v3.py` | Two-user browser test: chat, pins, solutions, points, levels, timer, calendar, roles. |
 | `tests/test_lesson_ask.py` | Asking a doubt from a failed run / code example, with real Python. |
-| `tests/db_tests.sql` | 17 permission checks; run inside `begin; … ` and abort, see the file. |
+| `tests/db_tests.sql` | 25 permission checks; run inside `begin; … ` and abort, see the file. |
 | `SETUP-EMAIL.md` | Step-by-step for going live with real accounts and free email (Supabase + Brevo). |
 | `admin.html` | Redirects to `index.html#admin`. |
 | `glimpse-lesson.html` | Standalone preview of one lesson. |

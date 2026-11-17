@@ -77,3 +77,61 @@ do $$ begin
   exception when insufficient_privilege then null; end;
 end $$;
 reset role;
+
+-- ================================================================== v3 checks
+-- learner asks, admin answers, learner marks the solution
+update profiles set approved = true where id = current_setting('t.l')::uuid;
+update profiles set points = 0, solved_count = 0 where id in (current_setting('t.a')::uuid, current_setting('t.l')::uuid);
+set local role authenticated;
+select set_config('request.jwt.claims', json_build_object('sub', current_setting('t.l'), 'role', 'authenticated')::text, true);
+insert into doubts (title) values ('ZZ v3 doubt');
+insert into doubt_replies (doubt_id, body) select id, 'learner own reply' from doubts where title = 'ZZ v3 doubt';
+select set_config('request.jwt.claims', json_build_object('sub', current_setting('t.a'), 'role', 'authenticated')::text, true);
+insert into doubt_replies (doubt_id, body) select id, 'admin answer' from doubts where title = 'ZZ v3 doubt';
+do $$ declare did bigint; rid bigint; begin
+  -- T18 the admin cannot award their own reply
+  select id into did from doubts where title = 'ZZ v3 doubt';
+  select id into rid from doubt_replies where doubt_id = did and body = 'admin answer';
+  begin perform accept_answer(did, rid); raise exception 'T18 admin awarded own reply';
+  exception when raise_exception then if sqlerrm like 'T18%' then raise; end if; end;
+end $$;
+select set_config('request.jwt.claims', json_build_object('sub', current_setting('t.l'), 'role', 'authenticated')::text, true);
+do $$ declare did bigint; rid bigint; own bigint; begin
+  select id into did from doubts where title = 'ZZ v3 doubt';
+  select id into rid from doubt_replies where doubt_id = did and body = 'admin answer';
+  select id into own from doubt_replies where doubt_id = did and body = 'learner own reply';
+  -- T19 the asker cannot mark their own reply
+  begin perform accept_answer(did, own); raise exception 'T19 own reply accepted';
+  exception when raise_exception then if sqlerrm like 'T19%' then raise; end if; end;
+  -- T20 the asker marks the admin's reply: +20 to the admin, doubt resolved
+  perform accept_answer(did, rid);
+  perform accept_answer(did, rid);   -- twice is a no-op
+  -- T21 learners cannot write points or activity directly
+  begin
+    insert into activity (user_id, day, seconds) values (auth.uid(), current_date, 99999);
+    raise exception 'T21 wrote activity directly';
+  exception when insufficient_privilege then null; end;
+  -- T22 learning time is capped at 120 s per call
+  perform log_time(current_date, 5000);
+  if (select seconds from activity where user_id = auth.uid() and day = current_date) > 120 then
+    raise exception 'T22 log_time not capped';
+  end if;
+end $$;
+reset role;
+do $$ begin
+  if (select points from profiles where id = current_setting('t.a')::uuid) <> 20 then raise exception 'T20 solver points %', (select points from profiles where id = current_setting('t.a')::uuid); end if;
+  if (select points from profiles where id = current_setting('t.l')::uuid) <> 0 then raise exception 'T20 asker got points'; end if;
+  if not (select resolved from doubts where title = 'ZZ v3 doubt') then raise exception 'T20 not resolved'; end if;
+  if (select best_streak from profiles where id = current_setting('t.l')::uuid) < 1 then raise exception 'T23 best streak'; end if;
+end $$;
+-- T24 deleting the solved doubt takes the points back
+set local role authenticated;
+select set_config('request.jwt.claims', json_build_object('sub', current_setting('t.l'), 'role', 'authenticated')::text, true);
+do $$ begin
+  if (select count(*) from top_solvers() where points = 20) <> 1 then raise exception 'T25 leaderboard'; end if;
+end $$;
+delete from doubts where title = 'ZZ v3 doubt';
+reset role;
+do $$ begin
+  if (select points from profiles where id = current_setting('t.a')::uuid) <> 0 then raise exception 'T24 points not revoked'; end if;
+end $$;

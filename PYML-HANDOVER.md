@@ -117,6 +117,36 @@ purpose — learners build a perceptron and backprop by hand, and it avoids a
   `npm pack pyodide@0.29.5`, routed locally because the CDN is unreachable from
   the test box).
 
+## v3 (17 Nov 2026): group chat, points, levels, progress page
+
+- [stated] Doubts as a group-chat UI with unsolved doubts pinned on top; whoever
+  solves a doubt gets points; points (separate from the streak) set a level with
+  badges: Bronze 100, Silver 500, Gold 1500 … up to God tier; show hours spent
+  learning and a LeetCode-style calendar streak.
+- Chat: `#doubts` is one stream of doubts as bubbles (own on the right), day
+  separators, filters All/Unsolved/Solved/Mine(/Waiting on you/lesson), pinned
+  bar of every unsolved doubt (admin-waiting first, then oldest), composer at the
+  bottom: first line = title, Enter sends, Shift+Enter newline. Thread = chat
+  with the question as the first bubble. Sidebar: online, your level, top solvers.
+- Points: only via RPC `accept_answer(did, rid)` — asker or admin picks; never
+  your own reply (admin included); +20 to the reply's author, moved if the
+  solution changes, revoked if the solved doubt or reply is deleted.
+  `profiles.points/solved_count/best_streak`, `doubts.solved_reply_id`.
+- Tiers: Newbie 0, Bronze 100, Silver 500, Gold 1500, Platinum 3000, Diamond
+  6000, Master 10000, Grandmaster 16000, God tier 25000 (crowned). Shield SVG
+  badges with the tier name as text/label (not colour alone).
+- Time: active time on lesson/track pages only (tab visible, input in the last
+  2 min), 15 s ticks, sent each minute via `log_time(today, secs)` (≤120 s per
+  call, ≤16 h/day) into `activity(user_id, day, seconds)`; `touch_streak` also
+  inserts the day's row so visit-only days show on the calendar.
+- `#me` Your progress: level + bar to next tier, current/best streak, total and
+  7-day time, lessons cleared, doubts solved, 53-week Sunday-first heatmap
+  (visit / <15 min / <45 min / 45+), ladder of all 9 levels.
+- Tests: `tests/test_v3.py` 37 checks (2 users; fake clock for the timer),
+  `tests/test_lesson_ask.py` 15, `tests/db_tests.sql` 25 (rolled back on live).
+  Found and fixed before deploy: the admin could mark their own reply as the
+  solution.
+
 ## How to run it
 
 ```bash
