@@ -454,3 +454,17 @@ Tests: `tests/test_ai90_site.py` (40 checks) + the old `test_v3.py` and
 - a11y: axe (WCAG A/AA) clean on landing, guest lesson, hub, progress, admin,
   doubts. Scrollable boxes get tabindex; stagger capped at 0.9 s total.
 - Tests: tests/test_v5.py (44 checks), test_ai90_site, test_v3, test_lesson_ask all pass.
+
+## v6 (17 Nov 2026): Advanced ML stage between ML and AI
+
+- New stage `adv` ("Advanced ML: beyond the basics"), 13 lessons `x01`–`x13` from
+  `syllabus/AI90_PLUS.md`: lasso, calibration, SVM, kernels, GMM/EM, DBSCAN +
+  agglomerative, t-SNE, anomaly detection, matrix factorisation, bandits + Q-learning,
+  NumPy autoencoder, drift (PSI/KS) + run tracking, fairness. 48 tests.
+- Timing: Python ~61 h, ML ~64 h, Advanced ~29 h, AI ~69 h → 103 lessons, ~223 h,
+  about 15–16 weeks at 2 h a day. `STAGE_HOURS` / `STAGE_SPAN` in index.html.
+- Illustrations `assets/viz-adv.js` (+ `viz-adv-data.js`: lasso path, 90 digits, trained AE outputs).
+- Notes `notes/advNN-*.md`; `tools/build_notes.py` + `tools/build_ai90.py` read the plus file.
+- DB: `supabase-v6.sql` (points regex adds `x01–x13`, certificate track `adv` = all 13). Applied live.
+- Tests: Pyodide 355/355 (`node tests/ai90_pyodide.mjs <dist> solutions all`), site + v5 suites green,
+  axe clean on Advanced pages, DB 42/42. `tests/test_v2.py` is obsolete (fails on HEAD too).
