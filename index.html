@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AIM — AI &amp; Machine Learning Institute</title>
-<meta name="description" content="Learn to build AI, not just vibe-code it. 90 days from your first line of Python to your own GPT, with tests that run in your browser. For the Telugu coders community.">
+<meta name="description" content="Learn to build AI, not just vibe-code it. 103 lessons (about 15 weeks) from your first line of Python to your own GPT, with tests that run in your browser. For the Telugu coders community.">
 <meta name="theme-color" content="#070B14">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
@@ -12,15 +12,15 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="AIM — AI &amp; Machine Learning Institute">
 <meta property="og:title" content="AIM — Build AI. Don't just vibe-code it.">
-<meta property="og:description" content="90 days from your first line of Python to your own GPT. Interactive lessons, real tests, all in your browser. Free.">
+<meta property="og:description" content="103 lessons from your first line of Python to your own GPT. Interactive lessons, real tests, all in your browser. Free.">
 <meta property="og:url" content="https://telugucoders.com/">
 <meta property="og:image" content="https://telugucoders.com/assets/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="AIM: Build AI. Don't just vibe-code it. 90 days, Python to your own GPT.">
+<meta property="og:image:alt" content="AIM: Build AI. Don't just vibe-code it. 103 lessons, Python to your own GPT.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="AIM — Build AI. Don't just vibe-code it.">
-<meta name="twitter:description" content="90 days from your first line of Python to your own GPT. Free, in your browser.">
+<meta name="twitter:description" content="103 lessons from your first line of Python to your own GPT. Free, in your browser.">
 <meta name="twitter:image" content="https://telugucoders.com/assets/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -920,17 +920,19 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--gold-lin
 /* ---------------------------------------------------------- hub bento */
 .hubhead{margin-bottom:22px}
 .hubhead h1{font-size:clamp(30px,4.4vw,48px);line-height:1.08;letter-spacing:-.03em;max-width:20ch}
-.bento{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}
+.bento{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:14px}
 .bcard{border-radius:24px;padding:20px 22px;text-align:left;display:flex;flex-direction:column;gap:6px;
   min-width:0;color:var(--fg);transition:transform .3s cubic-bezier(.22,1,.36,1),border-color .3s}
 button.bcard{cursor:pointer}
 button.bcard:hover{transform:translateY(-3px)}
 button.bcard:active{transform:translateY(-1px) scale(.995)}
-.bcard.stage{grid-column:span 2;min-height:210px;justify-content:flex-end}
-.bcard.next,.bcard.journey{grid-column:span 3}
-.bcard.level,.bcard.streak,.bcard.doubts{grid-column:span 2}
+.bcard.stage{grid-column:span 3;min-height:210px;justify-content:flex-end}
+.bcard.next,.bcard.journey{grid-column:span 6}
+.bcard.level,.bcard.streak,.bcard.doubts{grid-column:span 4}
+.bcard .cubehours{font-family:var(--mono);font-size:11.5px;color:var(--fg-2)}
 .bcard .glyph{position:static;display:block;width:38px;height:38px;color:var(--gold);margin-bottom:auto;padding-bottom:14px;box-sizing:content-box}
-.bcard.s2 .glyph{color:var(--brown)} .bcard.s3 .glyph{color:var(--neon-3)}
+.bcard.s2 .glyph{color:var(--brown)} .bcard.s3 .glyph{color:#fbbf24} .bcard.s4 .glyph{color:var(--neon-3)}
+:root[data-theme="light"] .bcard.s3 .glyph{color:#b45309}
 .bcard .cubenum{font-family:var(--mono);font-size:11.5px;color:var(--fg-3);letter-spacing:.04em}
 .bcard .cubetitle{font-family:var(--display);font-size:22px;font-weight:650;letter-spacing:-.02em}
 .bcard .cubemeta{font-size:13px;color:var(--fg-2)}
@@ -950,13 +952,14 @@ button.bcard:active{transform:translateY(-1px) scale(.995)}
 .jc:hover{transform:scale(1.5);position:relative;z-index:3}
 .jc.on.b1{background:var(--gold);box-shadow:0 0 8px var(--glow)}
 .jc.on.b2{background:var(--brown);box-shadow:0 0 8px var(--glow-2)}
-.jc.on.b3{background:var(--neon-3)}
+.jc.on.b3{background:#fbbf24;box-shadow:0 0 8px rgba(251,191,36,.45)}
+.jc.on.b4{background:var(--neon-3)}
 .jc.now{outline:2px solid var(--gold-strong);outline-offset:1px;animation:pulse 1.8s ease-in-out infinite}
 @keyframes pulse{50%{outline-color:transparent}}
 .jleg{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--fg-3)}
 .jleg span{display:inline-flex;align-items:center;gap:6px}
 .jleg i{width:9px;height:9px;border-radius:2px;display:inline-block}
-.jleg i.b1{background:var(--gold)} .jleg i.b2{background:var(--brown)} .jleg i.b3{background:var(--neon-3)}
+.jleg i.b1{background:var(--gold)} .jleg i.b2{background:var(--brown)} .jleg i.b3{background:#fbbf24} .jleg i.b4{background:var(--neon-3)}
 .lrow{display:flex;align-items:center;gap:12px;margin:4px 0}
 .lrow b{display:block;font-family:var(--display);font-size:18px}
 .lrow span{font-size:13px;color:var(--fg-2)}
@@ -965,12 +968,12 @@ button.bcard:active{transform:translateY(-1px) scale(.995)}
 .btitle2{font-family:var(--display);font-size:18px}
 @media (max-width:960px){
   .bento{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .bcard.stage,.bcard.next,.bcard.journey{grid-column:span 2}
-  .bcard.level,.bcard.streak{grid-column:span 1}
+  .bcard.next,.bcard.journey{grid-column:span 2}
+  .bcard.stage,.bcard.level,.bcard.streak{grid-column:span 1}
   .bcard.doubts{grid-column:span 2}
   .bcard.stage{min-height:170px}
 }
-@media (max-width:560px){.bcard.level,.bcard.streak{grid-column:span 2}.jgrid{grid-template-columns:repeat(15,minmax(0,1fr))}}
+@media (max-width:560px){.bcard.stage,.bcard.level,.bcard.streak{grid-column:span 2}.jgrid{grid-template-columns:repeat(15,minmax(0,1fr))}}
 
 /* ------------------------------------------------------- track pages */
 .blockintro{border-radius:20px;margin:6px 0 22px;padding:0}
@@ -1183,13 +1186,14 @@ textarea{font-size:13.5px;line-height:1.55}
 .tourtip p{color:var(--fg-2);font-size:14px}
 @media (prefers-reduced-motion:reduce){.tourring{transition:none}}
 /* weekly challenge + board */
-.bcard.challenge,.bcard.weekly{grid-column:span 3}
+.bcard.challenge,.bcard.weekly{grid-column:span 6}
 .bcard.challenge{background:linear-gradient(135deg,color-mix(in srgb,var(--neon-3) 12%,var(--card)),var(--card))}
 .bcard.challenge h2{font-size:19px;margin:2px 0}
 .bcard.challenge p{color:var(--fg-2);font-size:14px;margin-bottom:8px}
 .bcard.challenge .btn{align-self:flex-start;margin-top:auto}
 .wlist{list-style:none;margin:6px 0;padding:0;display:grid;gap:6px}
 .wlist li{display:grid;grid-template-columns:3em 1fr auto;gap:8px;font-size:14px;align-items:center}
+.wlist li.note{display:block}
 .wlist li.me{color:var(--gold-strong);font-weight:600}
 :root[data-theme="light"] .wlist li.me{color:var(--gold)}
 .wlist .rk,.wlist .pts{font-family:var(--mono);font-size:12.5px;color:var(--fg-3)}
@@ -1927,9 +1931,10 @@ async function claimCertificate(track, name) {
     return { ok: true, id: data };
   }
   const p = await getProgress();
-  const lo = { python: 1, ml: 31, ai: 61 }[track];
-  let n = 0; for (let i = lo; i < lo + 30; i++) if (p["d" + String(i).padStart(2, "0")]) n++;
-  if (n < 30) return { ok: false, error: "Clear all 30 days of this stage first (" + n + " of 30 done)." };
+  const ids = STAGE_IDS[track];
+  if (!ids) return { ok: false, error: "Unknown stage." };
+  const n = ids.filter((x) => p[x]).length;
+  if (n < ids.length) return { ok: false, error: "Clear every lesson of this stage first (" + n + " of " + ids.length + " done)." };
   const clean = String(name || "").replace(/[^\p{L}\p{N} .'-]/gu, "").trim().slice(0, 60);
   if (clean.length < 2) return { ok: false, error: "Put the name you want on the certificate." };
   const s = demo.read();
@@ -2011,9 +2016,22 @@ const TRACKS = [
     why: "Every machine-learning idea you will ever read is written in Python. Ten warm-up lessons, then AI-90 Days 1–30: core Python, automation bots, then real datasets like Titanic and Iris." },
   { id: "ml", title: "Machine learning from scratch", short: "Machine Learning",
     why: "A model is a function with numbers you can tune. AI-90 Days 31–60: build each algorithm in NumPy first — regression, trees, forests, boosting, PCA — then check it against scikit-learn on real data." },
+  { id: "adv", title: "Advanced ML: beyond the basics", short: "Advanced ML",
+    why: "13 lessons between classic ML and deep learning: lasso, calibration, SVMs and kernels, mixtures, DBSCAN, t-SNE, anomaly detection, recommenders, reinforcement learning, an autoencoder with hand-written backprop, drift and fairness." },
   { id: "ai", title: "Build your own AI", short: "Build your own AI",
     why: "AI-90 Days 61–90: your own autograd engine, then a GPT trained on Shakespeare, then chat, retrieval, tools and a web server. NumPy only, every line yours." },
 ];
+
+// What each stage covers and roughly how long it takes (sum of lesson times, from content/ai90.json).
+const STAGE_SPAN = { python: "Days 1–30", ml: "Days 31–60", adv: "Advanced 1–13", ai: "Days 61–90" };
+const STAGE_HOURS = { python: 61, ml: 64, adv: 29, ai: 69 };
+const COURSE_LESSONS = 103, COURSE_TESTS = 355;
+function stageHours(id) {
+  const ls = (AI90?.lessons || []).filter((l) => l.track === id);
+  return ls.length ? Math.round(ls.reduce((a, l) => a + (l.minutes || 0), 0) / 60) : STAGE_HOURS[id];
+}
+function courseNo(l) { return l.day ? "Day " + l.day : l.adv ? "Advanced " + l.adv : "Lesson " + l.order; }
+function courseTag(l) { return l.day ? "D" + String(l.day).padStart(2, "0") : l.adv ? "A" + String(l.adv).padStart(2, "0") : null; }
 
 function trackMeta(id) {
   return TRACKS.find((t) => t.id === id) || { id, title: id, why: "" };
@@ -2065,7 +2083,7 @@ function pitchColumn(hero = true) {
     cta.append(tryIt, tryMore);
     col.append(cta);
     const stats = mark(el("div", "herostats"));
-    [["90", "days, one path"], ["307", "tests you turn green"], ["0", "installs: Python runs in your browser"]].forEach(([n, t]) => {
+    [[String(COURSE_LESSONS), "lessons, one path"], [String(COURSE_TESTS), "tests you turn green"], ["0", "installs: Python runs in your browser"]].forEach(([n, t]) => {
       const s = el("div", "hstat"); s.append(el("b", null, n), el("span", null, t)); stats.append(s);
     });
     col.append(stats);
@@ -2091,7 +2109,7 @@ function pitchColumn(hero = true) {
   path.append(mark(el("h2", null, "One path, start to finish")));
   TRACKS.forEach((t, i) => {
     const step = mark(el("div", "step"));
-    step.append(el("span", "stepn", "Days " + (i * 30 + 1) + "–" + (i * 30 + 30)));
+    step.append(el("span", "stepn", STAGE_SPAN[t.id] + " · ~" + STAGE_HOURS[t.id] + " h"));
     const b = el("div");
     b.append(el("h3", null, t.title), el("p", null, t.why));
     step.append(b);
@@ -2569,6 +2587,7 @@ function profilePanel() {
 const GLYPH = {
   "python": "<svg viewBox=\"0 0 32 32\" fill=\"none\" aria-hidden=\"true\"><path d=\"M11 8 5 16l6 8M21 8l6 8-6 8M18.5 6l-5 20\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>",
   "ml": "<svg viewBox=\"0 0 32 32\" fill=\"none\" aria-hidden=\"true\"><path d=\"M4 27h24M6 22l6-7 5 4 8-11\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><circle cx=\"12\" cy=\"15\" r=\"2.4\" fill=\"currentColor\"/><circle cx=\"17\" cy=\"19\" r=\"2.4\" fill=\"currentColor\"/><circle cx=\"25\" cy=\"8\" r=\"2.4\" fill=\"currentColor\"/></svg>",
+  "adv": "<svg viewBox=\"0 0 32 32\" fill=\"none\" aria-hidden=\"true\"><path d=\"M16 4l10 6v12l-10 6-10-6V10z\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linejoin=\"round\"/><path d=\"M16 4v24M6 10l20 12M26 10 6 22\" stroke=\"currentColor\" stroke-width=\"1.4\" opacity=\".55\"/><circle cx=\"16\" cy=\"16\" r=\"3\" fill=\"currentColor\"/></svg>",
   "ai": "<svg viewBox=\"0 0 32 32\" fill=\"none\" aria-hidden=\"true\"><path d=\"M8 9h7M8 23h7M22 16h-7M15 9v14\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\"/><circle cx=\"6\" cy=\"9\" r=\"3.2\" stroke=\"currentColor\" stroke-width=\"2.2\"/><circle cx=\"6\" cy=\"23\" r=\"3.2\" stroke=\"currentColor\" stroke-width=\"2.2\"/><circle cx=\"25\" cy=\"16\" r=\"3.2\" stroke=\"currentColor\" stroke-width=\"2.2\"/></svg>"
 };
 
@@ -2582,7 +2601,7 @@ function renderHub() {
   const k = el("span", "part", "AIM · AI-90"); k.dataset.reveal = "";
   const h = el("h1"); h.dataset.reveal = "";
   h.append(document.createTextNode("Build AI. "), el("span", "neontext", "Don't just vibe-code it."));
-  const p = el("p", null, "Three stages, ninety days, one path. Python first, because the two after it are written in it.");
+  const p = el("p", null, "Four stages, " + COURSE_LESSONS + " lessons, one path. Python first, because everything after it is written in it.");
   p.dataset.reveal = "";
   head.append(k, h, p);
   wrap.append(head);
@@ -2604,9 +2623,9 @@ function renderHub() {
     c.setAttribute("aria-label", "Open stage " + (i + 1) + ": " + meta.title);
     c.onclick = () => { location.hash = id; };
     const glyph = el("span", "glyph"); glyph.innerHTML = GLYPH[id] || GLYPH.python;
-    const days = ls.filter((l) => l.day);
-    const range = days.length ? "Days " + days[0].day + "–" + days[days.length - 1].day : ls.length + " stops";
+    const range = STAGE_SPAN[id] || ls.length + " stops";
     c.append(glyph, el("span", "cubenum", "Stage " + (i + 1) + " · " + range), el("span", "cubetitle", meta.short || meta.title));
+    c.append(el("span", "cubehours", "~" + stageHours(id) + " h · " + ls.length + " lessons"));
     const bar = el("span", "bbar"); const fill = el("i"); fill.style.width = ls.length ? (done / ls.length * 100) + "%" : "0"; bar.append(fill);
     c.append(bar, el("span", "cubemeta", done + " of " + ls.length + " cleared"));
     c.append(el("span", "cubetag go", done ? "Continue" : (i ? "Open" : "Start here")));
@@ -2617,33 +2636,36 @@ function renderHub() {
   const nc = card("next");
   nc.append(el("span", "blabel", "Next up"));
   if (next) {
-    nc.append(el("h2", null, (next.day ? "Day " + next.day + " · " : "") + next.title), el("p", null, next.blurb));
+    nc.append(el("h2", null, (courseTag(next) ? courseNo(next) + " · " : "") + next.title), el("p", null, next.blurb));
     const go = el("button", "btn", "Continue →");
     go.onclick = () => { location.hash = next.id; };
     nc.append(go);
   } else {
-    nc.append(el("h2", null, "All 90 days cleared."), el("p", null, "Ship it: your repo, your demo, your model card."));
+    nc.append(el("h2", null, "Every lesson cleared."), el("p", null, "Ship it: your repo, your demo, your model card."));
   }
 
   // AI-90 journey: one cell per day
-  const days = LESSONS.filter((l) => l.day);
+  const days = LESSONS.filter((l) => l.day || l.adv);
   if (days.length) {
     const jc = card("journey");
     const cleared = days.filter((l) => PROGRESS[l.id]).length;
     const top = el("div", "jtop");
-    top.append(el("span", "blabel", "Your AI-90 journey"), el("b", "jcount", cleared + " / 90"));
+    top.append(el("span", "blabel", "Your AI-90 journey"), el("b", "jcount", cleared + " / " + days.length));
     jc.append(top);
     const g = el("div", "jgrid");
+    let prevBand = 0;
     days.forEach((l) => {
-      const cell = el("button", "jc b" + (l.day <= 30 ? 1 : l.day <= 60 ? 2 : 3) + (PROGRESS[l.id] ? " on" : "") + (next && next.id === l.id ? " now" : ""));
-      cell.title = "Day " + l.day + " · " + l.title;
+      const band = l.adv ? 3 : l.day <= 30 ? 1 : l.day <= 60 ? 2 : 4;
+      const cell = el("button", "jc b" + band + (PROGRESS[l.id] ? " on" : "") + (next && next.id === l.id ? " now" : ""));
+      if (band !== prevBand) { cell.style.gridColumnStart = "1"; prevBand = band; }
+      cell.title = courseNo(l) + " · " + l.title;
       cell.setAttribute("aria-label", cell.title + (PROGRESS[l.id] ? ", cleared" : ""));
       cell.onclick = () => { location.hash = l.id; };
       g.append(cell);
     });
     jc.append(g);
     const leg = el("div", "jleg");
-    [["b1", "Python 1–30"], ["b2", "ML 31–60"], ["b3", "AI 61–90"]].forEach(([c, t]) => { const s = el("span"); s.append(el("i", c), document.createTextNode(t)); leg.append(s); });
+    [["b1", "Python 1–30"], ["b2", "ML 31–60"], ["b3", "Advanced 1–13"], ["b4", "AI 61–90"]].forEach(([c, t]) => { const s = el("span"); s.append(el("i", c), document.createTextNode(t)); leg.append(s); });
     jc.append(leg);
   }
 
@@ -2927,7 +2949,7 @@ function renderTracks(trackId) {
   const bar = el("div", "track"), fill = el("i");
   fill.style.width = ls.length ? (done / ls.length * 100) + "%" : "0%";
   bar.append(fill);
-  meter.append(bar, el("span", "n", done + " of " + ls.length + " challenges cleared"));
+  meter.append(bar, el("span", "n", done + " of " + ls.length + " challenges cleared" + (STAGE_SPAN[id] ? " · " + STAGE_SPAN[id] + " · about " + stageHours(id) + " hours" : "")));
   head.append(meter);
   head.querySelectorAll(":scope > *").forEach((n) => { n.dataset.reveal = ""; });
   wrap.append(head);
@@ -2938,7 +2960,7 @@ function renderTracks(trackId) {
     const det = el("details", "blockintro spot");
     det.dataset.reveal = "";
     const sm = el("summary");
-    sm.append(el("span", "vizpill", "AI-90"), el("span", null, "How the 30 days in this stage fit together"));
+    sm.append(el("span", "vizpill", "AI-90"), el("span", null, "How the " + (id === "adv" ? "13 lessons" : "30 days") + " in this stage fit together"));
     det.append(sm);
     const body = el("div", "blockbody");
     blk.sections.forEach((s) => {
@@ -3003,7 +3025,7 @@ function renderTracks(trackId) {
           '<path d="M2 6.3 4.7 9 10 3.2" stroke="currentColor" stroke-width="2.4" ' +
           'stroke-linecap="round" stroke-linejoin="round"/></svg>';
       } else {
-        badge.textContent = l.day ? "D" + String(l.day).padStart(2, "0") : String(l.order).padStart(2, "0");
+        badge.textContent = courseTag(l) || String(l.order).padStart(2, "0");
       }
       const top = el("span", "peaktop");
       top.append(badge);
@@ -3054,7 +3076,7 @@ function renderTracks(trackId) {
 // The 90-day course lives in content/ai90.json (built from AI90_MASTER.md by
 // tools/build_ai90.py). Days 1-30 join the Python stage, 31-60 Machine
 // Learning, 61-90 Build your own AI.
-const ASSET_V = "20261117v5";
+const ASSET_V = "20261117v6";
 let AI90 = null;
 async function loadAI90() {
   if (AI90) return AI90;
@@ -3069,7 +3091,7 @@ async function loadAI90() {
   return AI90;
 }
 const AI90_MOD = () => Object.fromEntries((AI90?.lessons || []).map((l) => [l.exercise.module, l]));
-function lessonKey(l) { return l.day ? 100 + l.day : l.order; }
+function lessonKey(l) { return l.day ? 100 + l.day : l.adv ? 100 + l.adv : l.order; }
 
 // Earlier days a piece of code imports (and what they import), as reference solutions.
 function dayFiles(code, skip) {
@@ -3080,7 +3102,7 @@ function dayFiles(code, skip) {
     out[m + ".py"] = mods[m].exercise.solution;
     mods[m].exercise.deps.forEach(add);
   };
-  for (const m of code.matchAll(/^\s*(?:from|import)\s+(day\d\d)\b/gm)) add(m[1]);
+  for (const m of code.matchAll(/^\s*(?:from|import)\s+((?:day|x)\d\d)\b/gm)) add(m[1]);
   return out;
 }
 
@@ -3116,7 +3138,7 @@ const SNIPPET = \`
 import sys, io, os, json, base64, traceback, re
 os.makedirs("/ai90/run", exist_ok=True); os.chdir("/ai90/run")
 if "/ai90" not in sys.path: sys.path.insert(0, "/ai90")
-for _m in [k for k in list(sys.modules) if re.fullmatch(r"(test_)?day\\\\d\\\\d", k)]: del sys.modules[_m]
+for _m in [k for k in list(sys.modules) if re.fullmatch(r"(test_)?(day|x)\\\\d\\\\d", k)]: del sys.modules[_m]
 _buf = io.StringIO(); _old = sys.stdout, sys.stderr; sys.stdout = sys.stderr = _buf
 _figs, _err = [], ""
 try:
@@ -3268,7 +3290,8 @@ function loadViz() {
     document.head.append(s);
   });
   VIZ_READY = add("assets/viz-data.js").then(() => add("assets/viz-core.js"))
-    .then(() => Promise.all([add("assets/viz-ml.js"), add("assets/viz-ai.js")]));
+    .then(() => Promise.all([add("assets/viz-ml.js"), add("assets/viz-ai.js"),
+      add("assets/viz-adv-data.js").then(() => add("assets/viz-adv.js"))]));
   return VIZ_READY;
 }
 function vizBlock(id, caption) {
@@ -3506,7 +3529,7 @@ function maybeTour() {
   if (location.hash.replace("#", "") !== "" || document.querySelector(".tourtip")) return;
   try { if (localStorage.getItem(TOUR_KEY)) return; } catch (e) { return; }
   const steps = [
-    [".bcard.stage", "Three stages, in order", "Python, then machine learning, then building your own AI. 90 days in all, plus warm-ups."],
+    [".bcard.stage", "Four stages, in order", "Python, machine learning, advanced ML, then building your own AI. " + COURSE_LESSONS + " lessons in all, plus warm-ups."],
     [".bcard.next", "Always one click away", "Next up is the first thing you haven't cleared. Every lesson ends with tests you turn green."],
     [".bcard.challenge", "This week's challenge", "Clear the featured day before Sunday for +10 bonus points on top of the usual +5."],
     [".bcard.doubts", "Stuck? Ask the others", "Doubts is a group chat. Answer someone's question and earn +2 when it's marked as the solution."],
@@ -3591,25 +3614,30 @@ function weeklyCards(bento, card) {
 }
 
 /* ------------------------------------------------------------ certificates */
-const STAGE_NAME = { python: "Python, automation and real data", ml: "Machine learning from scratch", ai: "Build your own AI" };
+const STAGE_NAME = { python: "Python, automation and real data", ml: "Machine learning from scratch", adv: "Advanced ML: beyond the basics", ai: "Build your own AI" };
+// lesson ids that make up each certifiable stage (the database checks the same lists)
+const STAGE_IDS = (() => {
+  const d = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => "d" + String(a + i).padStart(2, "0"));
+  return { python: d(1, 30), ml: d(31, 60), adv: Array.from({ length: 13 }, (_, i) => "x" + String(i + 1).padStart(2, "0")), ai: d(61, 90) };
+})();
 function certPanel() {
   const box = el("div", "panel certpanel");
   box.append(el("h2", null, "Certificates"));
-  box.append(el("p", "note", "Clear all 30 days of a stage to claim a certificate anyone can verify. Add it to LinkedIn in one click."));
+  box.append(el("p", "note", "Clear every lesson of a stage to claim a certificate anyone can verify. Add it to LinkedIn in one click."));
   const grid = el("div", "certgrid");
   box.append(grid);
   api.myCertificates().then((certs) => {
-    [["python", 1], ["ml", 31], ["ai", 61]].forEach(([trk, lo]) => {
-      let n = 0;
-      for (let i = lo; i < lo + 30; i++) if (PROGRESS["d" + String(i).padStart(2, "0")]) n++;
+    ["python", "ml", "adv", "ai"].forEach((trk) => {
+      const ids = STAGE_IDS[trk], N = ids.length;
+      const n = ids.filter((x) => PROGRESS[x]).length;
       const have = certs.find((c) => c.track === trk);
-      const c = el("div", "certcard spot" + (have ? " got" : n >= 30 ? " ready" : ""));
-      c.append(el("span", "blabel", "Days " + lo + "–" + (lo + 29)), el("b", null, STAGE_NAME[trk]));
-      const bar = el("span", "bbar"); const f = el("i"); f.style.width = (n / 30 * 100) + "%"; bar.append(f);
-      c.append(bar, el("span", "bsub", n + " of 30 days"));
+      const c = el("div", "certcard spot" + (have ? " got" : n >= N ? " ready" : ""));
+      c.append(el("span", "blabel", STAGE_SPAN[trk]), el("b", null, STAGE_NAME[trk]));
+      const bar = el("span", "bbar"); const f = el("i"); f.style.width = (n / N * 100) + "%"; bar.append(f);
+      c.append(bar, el("span", "bsub", n + " of " + N + " lessons"));
       if (have) {
         const a = el("a", "btn sm", "View certificate"); a.href = "#cert-" + have.id; c.append(a);
-      } else if (n >= 30) {
+      } else if (n >= N) {
         const form = el("form", "certclaim");
         const inp = el("input"); inp.type = "text"; inp.maxLength = 60; inp.required = true;
         inp.placeholder = "Name on the certificate"; inp.setAttribute("aria-label", "Name on the certificate");
@@ -3653,11 +3681,12 @@ async function renderCert(id) {
     '<div class="certbrand"><span class="dot"></span>AIM <small>AI &amp; Machine Learning Institute</small></div>' +
     '<p class="certpre">This certifies that</p>' +
     '<h1 class="certname"></h1>' +
-    '<p class="certpre">has completed all 30 days of</p>' +
+    '<p class="certpre"></p>' +
     '<h2 class="certstage"></h2>' +
     '<p class="certmeta"></p>' +
     '<div class="certfoot"><span>telugucoders.com</span><span class="certid"></span></div></div>';
   cert.querySelector(".certname").textContent = c.name;
+  cert.querySelectorAll(".certpre")[1].textContent = "has completed all " + (STAGE_IDS[c.track] || []).length + " lessons of";
   cert.querySelector(".certstage").textContent = "AI-90 · " + STAGE_NAME[c.track];
   cert.querySelector(".certmeta").textContent = "Issued " + date + (c.handle ? " · " + c.handle : "") + " · every day graded by automated tests";
   cert.querySelector(".certid").textContent = "Verify: " + id.toUpperCase();
@@ -3728,6 +3757,8 @@ function portfolioPanel() {
       const by = Object.fromEntries(rows.map((r) => [r.lesson_id, r]));
       const files = [];
       const days = data.lessons.filter((l) => by[l.id]);
+      const ORDER = { python: 0, ml: 1, adv: 2, ai: 3 };
+      days.sort((a, b) => (ORDER[a.track] - ORDER[b.track]) || (lessonKey(a) - lessonKey(b)));
       days.forEach((l) => {
         let code = by[l.id].code;
         if (!code) { try { code = localStorage.getItem(CODE_KEY(l.id)); } catch (e) {} }
@@ -3735,17 +3766,17 @@ function portfolioPanel() {
         files.push(["ai-90/tests/test_" + l.exercise.module + ".py", l.exercise.tests_code]);
       });
       const me = api.session();
-      const bar = (n) => "█".repeat(n) + "░".repeat(30 - n);
-      const blocks = [["Python + automation", 1], ["Machine learning", 31], ["AI from scratch", 61]].map(([name, lo]) => {
-        const n = days.filter((l) => l.day >= lo && l.day < lo + 30).length;
-        return "`" + name.padEnd(20) + " " + bar(n) + " " + String(n).padStart(2) + "/30`";
+      const bar = (n, N) => "█".repeat(Math.round(n / N * 30)) + "░".repeat(30 - Math.round(n / N * 30));
+      const blocks = [["Python + automation", "python"], ["Machine learning", "ml"], ["Advanced ML", "adv"], ["AI from scratch", "ai"]].map(([name, trk]) => {
+        const N = STAGE_IDS[trk].length, n = STAGE_IDS[trk].filter((x) => by[x]).length;
+        return "`" + name.padEnd(20) + " " + bar(n, N) + " " + String(n).padStart(2) + "/" + N + "`";
       });
       const readme = [
         "# AI-90 — " + (me.handle || "my") + " portfolio", "",
-        "My work from [AIM — AI & Machine Learning Institute](https://telugucoders.com): 90 days from first Python to my own GPT, built from scratch in NumPy.", "",
+        "My work from [AIM — AI & Machine Learning Institute](https://telugucoders.com): " + COURSE_LESSONS + " lessons from first Python to my own GPT, built from scratch in NumPy.", "",
         "## Progress", "", ...blocks.map((b) => b + "  "), "",
-        "## Days cleared", "", "| Day | Topic | Cleared |", "| --- | --- | --- |",
-        ...days.map((l) => "| " + l.day + " | " + l.title.replace(/\|/g, "/") + " | " + ((by[l.id].completed_at || "").slice(0, 10) || "✓") + " |"), "",
+        "## Lessons cleared", "", "| Lesson | Topic | Cleared |", "| --- | --- | --- |",
+        ...days.map((l) => "| " + courseNo(l) + " | " + l.title.replace(/\|/g, "/") + " | " + ((by[l.id].completed_at || "").slice(0, 10) || "✓") + " |"), "",
         "## Run the tests", "", "```bash", "pip install numpy pandas scikit-learn matplotlib pytest", "cd ai-90 && pytest -q", "```", "",
         "Later days import earlier ones (`from day23 import ...`), so keep all the files together.", "",
       ].join("\n");
@@ -3755,7 +3786,7 @@ function portfolioPanel() {
       a.href = URL.createObjectURL(blob);
       a.download = "ai-90-portfolio.zip";
       document.body.append(a); a.click(); a.remove();
-      msg.textContent = days.length + " days exported. Unzip, then create a GitHub repo and upload the folder.";
+      msg.textContent = days.length + " lessons exported. Unzip, then create a GitHub repo and upload the folder.";
     } catch (e) { msg.textContent = "Export failed: " + e.message; }
     btn.disabled = false; btn.textContent = "Download portfolio (.zip)";
   };
@@ -3788,7 +3819,7 @@ async function dropOffPanel() {
     const n = count[l.id] || 0;
     const r = el("div", "droprow" + (l.id === worst ? " worst" : ""));
     const bar = el("i"); const f = el("b"); f.style.width = (n / max * 100) + "%"; bar.append(f);
-    r.append(el("span", null, (l.day ? "D" + String(l.day).padStart(2, "0") : l.id) + " " + l.title), bar, el("code", null, String(n)));
+    r.append(el("span", null, (courseTag(l) || l.id) + " " + l.title), bar, el("code", null, String(n)));
     list.append(r);
   });
   return box;
@@ -3845,12 +3876,13 @@ function renderLesson(l, opts = {}) {
   root.append(guest ? guestBar(l) : topBar());
   const grid = el("div", "grid");
   const ex = l.exercise;
-  const isDay = !!l.day;
+  const isDay = !!(l.day || l.adv);
 
   /* ---- left: the teaching ---- */
   const left = el("div", "pane lesson");
   const kick = el("span", "kicker",
-    isDay ? "Day " + String(l.day).padStart(2, "0") + " of 90 · " + trackMeta(l.track).short
+    l.day ? "Day " + String(l.day).padStart(2, "0") + " of 90 · " + trackMeta(l.track).short
+    : l.adv ? "Advanced " + String(l.adv).padStart(2, "0") + " of 13 · ~" + Math.round((l.minutes || 120) / 60) + " h · " + trackMeta(l.track).short
           : "Lesson " + String(l.order).padStart(2, "0") + " · " + trackMeta(l.track).title);
   kick.dataset.reveal = "";
   left.append(kick);
@@ -4002,7 +4034,7 @@ function renderLesson(l, opts = {}) {
   right.append(out);
   const done = el("div", "done"); done.hidden = true;
   done.innerHTML = "<b>All tests passed.</b> ";
-  done.append(document.createTextNode(isDay ? "Day " + l.day + " marked complete." : "Marked complete."));
+  done.append(document.createTextNode(isDay ? courseNo(l) + " marked complete." : "Marked complete."));
   right.append(done);
   if (ex.kind === "pytest" && ex.done_html) {
     const dw = el("div", "donewhen");
@@ -4271,15 +4303,15 @@ function notesRow(l) {
   const file = l.notes.path.split("/").pop();
   const read = el("a", "btn ghost sm");
   read.href = l.notes.github; read.target = "_blank"; read.rel = "noopener";
-  read.setAttribute("aria-label", "Read Day " + l.day + " notes on GitHub (opens in a new tab)");
+  read.setAttribute("aria-label", "Read " + courseNo(l) + " notes on GitHub (opens in a new tab)");
   read.innerHTML = ICON_BOOK; read.append(el("span", null, "Read on GitHub"));
   const down = el("a", "btn ghost sm");
   down.href = l.notes.path; down.setAttribute("download", file);
-  down.setAttribute("aria-label", "Download Day " + l.day + " notes as a Markdown file");
+  down.setAttribute("aria-label", "Download " + courseNo(l) + " notes as a Markdown file");
   down.innerHTML = ICON_DOWN; down.append(el("span", null, "Download .md"));
-  const all = el("a", "all", "All 90 notes");
+  const all = el("a", "all", "All notes");
   all.href = NOTES_LIB; all.target = "_blank"; all.rel = "noopener";
-  all.setAttribute("aria-label", "All 90 days of notes on GitHub (opens in a new tab)");
+  all.setAttribute("aria-label", "All " + COURSE_LESSONS + " lesson notes on GitHub (opens in a new tab)");
   row.append(read, down, all);
   return row;
 }

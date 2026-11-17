@@ -399,7 +399,7 @@ begin
   update profiles p set points =
       5 * (select count(distinct g.lesson_id) from progress g
             where g.user_id = uid and g.completed
-              and g.lesson_id ~ '^(d(0[1-9]|[1-8][0-9]|90)|py-0[1-8]|py-intro|py-what|ml-0[1-8]|ai-0[1-6])$')
+              and g.lesson_id ~ '^(d(0[1-9]|[1-8][0-9]|90)|x(0[1-9]|1[0-3])|py-0[1-8]|py-intro|py-what|ml-0[1-8]|ai-0[1-6])$')
     + 2 * p.solved_count
    where p.id = uid;
 end $$;
@@ -467,7 +467,7 @@ begin
   update profiles p set points =
       5 * (select count(distinct g.lesson_id) from progress g
             where g.user_id = uid and g.completed
-              and g.lesson_id ~ '^(d(0[1-9]|[1-8][0-9]|90)|py-0[1-8]|py-intro|py-what|ml-0[1-8]|ai-0[1-6])$')
+              and g.lesson_id ~ '^(d(0[1-9]|[1-8][0-9]|90)|x(0[1-9]|1[0-3])|py-0[1-8]|py-intro|py-what|ml-0[1-8]|ai-0[1-6])$')
     + 10 * (select count(*) from progress g
              where g.user_id = uid and g.completed and g.completed_at is not null
                and g.lesson_id = challenge_lesson(g.completed_at::date))
@@ -508,7 +508,7 @@ language sql stable security definer set search_path = public as $$
   pts as (
     select p.id, p.handle,
       (5 * (select count(*) from progress g, wk where g.user_id = p.id and g.completed and g.completed_at >= wk.start
-             and g.lesson_id ~ '^(d(0[1-9]|[1-8][0-9]|90)|py-0[1-8]|py-intro|py-what|ml-0[1-8]|ai-0[1-6])$')
+             and g.lesson_id ~ '^(d(0[1-9]|[1-8][0-9]|90)|x(0[1-9]|1[0-3])|py-0[1-8]|py-intro|py-what|ml-0[1-8]|ai-0[1-6])$')
      + 10 * (select count(*) from progress g, wk where g.user_id = p.id and g.completed and g.completed_at >= wk.start
              and g.lesson_id = challenge_lesson(g.completed_at::date))
      + 2 * (select count(*) from doubts d join doubt_replies r on r.id = d.solved_reply_id, wk
@@ -530,6 +530,9 @@ create table if not exists certificates (
   issued_at timestamptz not null default now(),
   unique (user_id, track)
 );
+-- v6: the Advanced ML stage (x01–x13) can be certified too
+alter table certificates drop constraint if exists certificates_track_check;
+alter table certificates add constraint certificates_track_check check (track in ('python', 'ml', 'adv', 'ai'));
 alter table certificates enable row level security;
 revoke insert, update, delete on certificates from anon, authenticated;
 drop policy if exists c_own on certificates;
@@ -537,16 +540,21 @@ create policy c_own on certificates for select using (user_id = auth.uid() or is
 
 create or replace function claim_certificate(trk text, display_name text) returns text
 language plpgsql security definer set search_path = public as $$
-declare lo int; hi int; n int; cid text; nm text := btrim(regexp_replace(coalesce(display_name, ''), '[^[:alpha:][:digit:] .''-]', '', 'g'));
+declare ids text[]; n int; cid text; nm text := btrim(regexp_replace(coalesce(display_name, ''), '[^[:alpha:][:digit:] .''-]', '', 'g'));
 begin
   if auth.uid() is null or not is_active() then raise exception 'Sign in first.'; end if;
-  lo := case trk when 'python' then 1 when 'ml' then 31 when 'ai' then 61 end;
-  if lo is null then raise exception 'Unknown stage.'; end if;
-  hi := lo + 29;
+  ids := case trk
+    when 'python' then array(select 'd' || lpad(i::text, 2, '0') from generate_series(1, 30) i)
+    when 'ml'     then array(select 'd' || lpad(i::text, 2, '0') from generate_series(31, 60) i)
+    when 'adv'    then array(select 'x' || lpad(i::text, 2, '0') from generate_series(1, 13) i)
+    when 'ai'     then array(select 'd' || lpad(i::text, 2, '0') from generate_series(61, 90) i)
+  end;
+  if ids is null then raise exception 'Unknown stage.'; end if;
   select count(distinct lesson_id) into n from progress
-   where user_id = auth.uid() and completed
-     and lesson_id in (select 'd' || lpad(i::text, 2, '0') from generate_series(lo, hi) i);
-  if n < 30 then raise exception 'Clear all 30 days of this stage first (% of 30 done).', n; end if;
+   where user_id = auth.uid() and completed and lesson_id = any(ids);
+  if n < cardinality(ids) then
+    raise exception 'Clear every lesson of this stage first (% of % done).', n, cardinality(ids);
+  end if;
   if char_length(nm) < 2 then raise exception 'Put the name you want on the certificate.'; end if;
   select id into cid from certificates where user_id = auth.uid() and track = trk;
   if cid is not null then return cid; end if;

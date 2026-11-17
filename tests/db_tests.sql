@@ -239,3 +239,38 @@ do $$ begin
   if (select reminders from profiles where id = current_setting('t.l')::uuid) then raise exception 'T36 reminders flag'; end if;
   if challenge_lesson(date '2026-11-16') <> 'd01' or challenge_lesson(date '2026-11-23') <> 'd38' then raise exception 'T39 challenge rotation'; end if;
 end $$;
+
+-- T40–T42 Advanced ML stage (v6)
+reset role;
+update profiles set approved = true where id = current_setting('t.l')::uuid;
+do $$ declare b int; begin
+  select points into b from profiles where id = current_setting('t.l')::uuid;
+  insert into progress (user_id, lesson_id, completed) values (current_setting('t.l')::uuid, 'x01', true)
+    on conflict (user_id, lesson_id) do update set completed = true;
+  if (select points from profiles where id = current_setting('t.l')::uuid) <> b + 5 then raise exception 'T40 x01 not worth 5 points'; end if;
+  insert into progress (user_id, lesson_id, completed) values (current_setting('t.l')::uuid, 'x14', true)
+    on conflict (user_id, lesson_id) do update set completed = true;
+  if (select points from profiles where id = current_setting('t.l')::uuid) <> b + 5 then raise exception 'T40 x14 should not score'; end if;
+end $$;
+set local role authenticated;
+select set_config('request.jwt.claims', json_build_object('sub', current_setting('t.l'), 'role', 'authenticated')::text, true);
+do $$ begin
+  begin
+    perform claim_certificate('adv', 'Learner Name');
+    raise exception 'T41 adv cert with 1 of 13';
+  exception when raise_exception then
+    if sqlerrm not like '%1 of 13%' then raise; end if;
+  end;
+end $$;
+reset role;
+insert into progress (user_id, lesson_id, completed)
+  select current_setting('t.l')::uuid, 'x' || lpad(i::text, 2, '0'), true from generate_series(2, 13) i
+  on conflict (user_id, lesson_id) do update set completed = true;
+set local role authenticated;
+select set_config('request.jwt.claims', json_build_object('sub', current_setting('t.l'), 'role', 'authenticated')::text, true);
+do $$ declare cid text; r record; begin
+  cid := claim_certificate('adv', 'Learner Name');
+  select * into r from verify_certificate(cid);
+  if r.track <> 'adv' then raise exception 'T42 adv cert track %', r.track; end if;
+end $$;
+reset role;

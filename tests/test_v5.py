@@ -185,7 +185,7 @@ async def main():
           for (let i = 1; i <= 30; i++) p['d' + String(i).padStart(2, '0')] = true; localStorage.setItem(k, JSON.stringify(p)); }""")
         await pg.reload(); await pg.wait_for_selector(".bento")
         await go(pg, "me", 900); await pg.wait_for_selector(".certcard")
-        check(await pg.locator(".certcard").count() == 3, "three certificate cards")
+        check(await pg.locator(".certcard").count() == 4, "four certificate cards (Advanced ML included)")
         check(await pg.locator(".certcard.ready").count() == 1, "Python certificate ready after 30 days")
         await pg.fill(".certclaim input", "Learner <script>One</script>")
         await pg.click(".certclaim button")

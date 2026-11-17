@@ -75,6 +75,24 @@ One note per day: visual, notes, worked code, your task, tests and a reference s
 | 59 | Explaining models: permutation importance | Car MPG / Titanic | [read](day59-explaining-models-permutation-importance.md) | [.md · 3.3 KB](https://telugucoders.com/notes/day59-explaining-models-permutation-importance.md) |
 | 60 | Block 2 capstone: minisklearn benchmark | Iris, Wine, Breast Cancer, Digits | [read](day60-block-2-capstone-minisklearn-benchmark.md) | [.md · 5.2 KB](https://telugucoders.com/notes/day60-block-2-capstone-minisklearn-benchmark.md) |
 
+## Block 2.5 · Advanced ML: beyond the basics
+
+| # | Topic | Dataset | Read | Download |
+| --- | --- | --- | --- | --- |
+| A1 | Lasso: letting the model pick its features | Diabetes (442 patients × 10 measurements) — bundled: skle… | [read](adv01-lasso-letting-the-model-pick-its-features.md) | [.md · 5.5 KB](https://telugucoders.com/notes/adv01-lasso-letting-the-model-pick-its-features.md) |
+| A2 | Calibration: can you trust the probability? | synthetic over-confident scores (4,000 predictions) | [read](adv02-calibration-can-you-trust-the-probability.md) | [.md · 6.0 KB](https://telugucoders.com/notes/adv02-calibration-can-you-trust-the-probability.md) |
+| A3 | Support vector machines: the widest street | Iris (2 species) and Breast Cancer (569 tumours × 30 feat… | [read](adv03-support-vector-machines-the-widest-street.md) | [.md · 5.5 KB](https://telugucoders.com/notes/adv03-support-vector-machines-the-widest-street.md) |
+| A4 | Kernels: curved boundaries with linear maths | make_moons and make_circles (sklearn generators) | [read](adv04-kernels-curved-boundaries-with-linear-maths.md) | [.md · 5.5 KB](https://telugucoders.com/notes/adv04-kernels-curved-boundaries-with-linear-maths.md) |
+| A5 | Gaussian mixtures and EM: soft clusters | two synthetic blobs, then Iris without labels | [read](adv05-gaussian-mixtures-and-em-soft-clusters.md) | [.md · 6.2 KB](https://telugucoders.com/notes/adv05-gaussian-mixtures-and-em-soft-clusters.md) |
+| A6 | DBSCAN and hierarchical clustering | make_moons + synthetic blobs with noise | [read](adv06-dbscan-and-hierarchical-clustering.md) | [.md · 5.5 KB](https://telugucoders.com/notes/adv06-dbscan-and-hierarchical-clustering.md) |
+| A7 | t-SNE: maps of high-dimensional data | Digits 0, 1, 6 (8×8 pixel images) | [read](adv07-t-sne-maps-of-high-dimensional-data.md) | [.md · 6.2 KB](https://telugucoders.com/notes/adv07-t-sne-maps-of-high-dimensional-data.md) |
+| A8 | Anomaly detection: finding the odd ones out | synthetic correlated sensors + two-blob data with planted… | [read](adv08-anomaly-detection-finding-the-odd-ones-out.md) | [.md · 6.9 KB](https://telugucoders.com/notes/adv08-anomaly-detection-finding-the-odd-ones-out.md) |
+| A9 | Recommender systems: matrix factorisation | synthetic users × items with hidden tastes (30% of rating… | [read](adv09-recommender-systems-matrix-factorisation.md) | [.md · 5.4 KB](https://telugucoders.com/notes/adv09-recommender-systems-matrix-factorisation.md) |
+| A10 | Reinforcement learning: bandits and Q-learning | simulated slot machines + a 4×4 grid world | [read](adv10-reinforcement-learning-bandits-and-q-learning.md) | [.md · 6.5 KB](https://telugucoders.com/notes/adv10-reinforcement-learning-bandits-and-q-learning.md) |
+| A11 | Autoencoders: compression you can train | Digits (400 images, 64 pixels) | [read](adv11-autoencoders-compression-you-can-train.md) | [.md · 6.3 KB](https://telugucoders.com/notes/adv11-autoencoders-compression-you-can-train.md) |
+| A12 | Production ML: drift and experiment tracking | synthetic training vs live feature columns | [read](adv12-production-ml-drift-and-experiment-tracking.md) | [.md · 6.3 KB](https://telugucoders.com/notes/adv12-production-ml-drift-and-experiment-tracking.md) |
+| A13 | Fairness: equal errors across groups | synthetic loan decisions with a biased score | [read](adv13-fairness-equal-errors-across-groups.md) | [.md · 5.4 KB](https://telugucoders.com/notes/adv13-fairness-equal-errors-across-groups.md) |
+
 ## Block 3 · Build an AI from scratch
 
 | Day | Topic | Dataset | Read | Download |

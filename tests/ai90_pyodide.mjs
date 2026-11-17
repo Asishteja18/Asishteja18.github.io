@@ -1,5 +1,5 @@
 // Runs every AI-90 day inside real Pyodide (same harness the site's worker uses).
-//   node tests/ai90_pyodide.mjs <pyodide-dir> [solutions|starters] [days e.g. 1-90] [wheel-dir]
+//   node tests/ai90_pyodide.mjs <pyodide-dir> [solutions|starters] [days e.g. 1-90 | x1-13 | all] [wheel-dir]
 import { readFileSync, readdirSync } from "node:fs";
 const [dir, mode = "solutions", range = "1-90", wheels = ""] = process.argv.slice(2);
 const { loadPyodide } = await import(dir + "/pyodide.mjs");
@@ -7,10 +7,12 @@ const data = JSON.parse(readFileSync(new URL("../content/ai90.json", import.meta
 const byMod = Object.fromEntries(data.lessons.map((l) => [l.exercise.module, l]));
 const py = await loadPyodide({ indexURL: dir + "/" });
 await py.loadPackage("micropip");
-const [lo, hi] = range.split("-").map(Number);
+const isAdv = range.startsWith("x"), all = range === "all";
+const [lo, hi] = (all ? "1-999" : range.replace(/^x/, "")).split("-").map(Number);
+const pick = (l) => all || (isAdv ? l.adv && l.adv >= lo && l.adv <= (hi || lo) : l.day && l.day >= lo && l.day <= (hi || lo));
 let tot = { pass: 0, fail: 0, todo: 0, error: 0 }, bad = [];
 const t00 = Date.now();
-for (const l of data.lessons.filter((l) => l.day >= lo && l.day <= (hi || lo))) {
+for (const l of data.lessons.filter(pick)) {
   const ex = l.exercise, t0 = Date.now();
   try { py.FS.mkdirTree("/ai90"); } catch (_) {}
   for (const f of py.FS.readdir("/ai90")) if (/\.py$/.test(f)) py.FS.unlink("/ai90/" + f);
@@ -27,8 +29,8 @@ for (const l of data.lessons.filter((l) => l.day >= lo && l.day <= (hi || lo))) 
   py.globals.set("TEST", "test_" + ex.module);
   const r = JSON.parse(py.runPython(data.harness));
   const c = { pass: 0, fail: 0, todo: 0, error: 0 };
-  r.results.forEach(([n, s, m]) => { c[s]++; tot[s]++; if (s === "fail" || s === "error") bad.push(`Day ${l.day} ${n}: ${m}`); });
-  console.log(`Day ${String(l.day).padStart(2)} ${((Date.now() - t0) / 1000).toFixed(1).padStart(5)}s  ` +
+  r.results.forEach(([n, s, m]) => { c[s]++; tot[s]++; if (s === "fail" || s === "error") bad.push(`${l.day ? "Day " + l.day : "Adv " + l.adv} ${n}: ${m}`); });
+  console.log(`${l.day ? "Day " + String(l.day).padStart(2) : "Adv " + String(l.adv).padStart(2)} ${((Date.now() - t0) / 1000).toFixed(1).padStart(5)}s  ` +
     Object.entries(c).filter(([, v]) => v).map(([k, v]) => k + " " + v).join("  "));
 }
 console.log("\nTOTAL", JSON.stringify(tot), ((Date.now() - t00) / 1000).toFixed(0) + "s");

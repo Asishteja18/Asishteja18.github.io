@@ -31,12 +31,15 @@ already filled in; code examples have "Ask about this".
 
 **AI-90 — 90 days to build your own AI** (`content/ai90.json`): Days 1–30
 (Python, automation, real data) sit in Stage 1 after the 10 warm-up lessons,
-Days 31–60 (ML from scratch) in Stage 2, Days 61–90 (autograd engine → GPT →
-chat, RAG, tools, server) in Stage 3. Each day has the syllabus Visual (ASCII
+Days 31–60 (ML from scratch) in Stage 2, **Advanced ML** (13 lessons, x01–x13,
+`syllabus/AI90_PLUS.md`: lasso, calibration, SVMs + kernels, GMM/EM, DBSCAN,
+t-SNE, anomalies, recommenders, RL, autoencoder, drift, fairness) in Stage 3,
+and Days 61–90 (autograd engine → GPT → chat, RAG, tools, server) in Stage 4.
+103 lessons, ~223 hours (~61 / 64 / 29 / 69 h per stage). Each day has the syllabus Visual (ASCII
 or Mermaid), the Notes with **runnable examples** (output and matplotlib plots
-show inline), and a practice pane that runs the day's real tests (307 in all)
+show inline), and a practice pane that runs the day's real tests (355 in all)
 in a Web Worker. Earlier days a test imports are loaded from their reference
-solutions, so nobody is blocked. 39 days carry an **interactive illustration**
+solutions, so nobody is blocked. 52 lessons carry an **interactive illustration**
 (`assets/viz-*.js`, real Iris / airline / names / digits data).
 
 **Look:** Midnight Slate & Frosted Neon — aurora mesh background, film grain,
@@ -67,7 +70,7 @@ offline caching, and share previews.
 | `tests/test_notes_links.py` | Browser test of the per-day notes links (desktop + phone, 31 checks). |
 | `tools/build_ai90.py` | `python3 tools/build_ai90.py` → rebuilds `content/ai90.json` (needs `pip install markdown`). |
 | `assets/viz-*.js` | The interactive illustrations (core + Python, ML, AI) and their data. |
-| `tests/ai90_pyodide.mjs` | Runs all 90 days in real Pyodide: `node tests/ai90_pyodide.mjs <pyodide-dist> solutions` (307/307) or `starters` (no crashes). |
+| `tests/ai90_pyodide.mjs` | Runs all 103 lessons in real Pyodide: `node tests/ai90_pyodide.mjs <pyodide-dist> solutions all` (355/355; `x1-13` for Advanced only) or `starters` (no crashes). |
 | `tests/test_ai90_site.py` | Browser test of AI-90 + the redesign (40 checks: tests in the worker, plots, every illustration, phone layout). |
 | `supabase-schema.sql` | Database tables and access rules. Re-runnable top to bottom. |
 | `supabase-reminders.sql` | Daily streak reminder job (pg_cron + pg_net → Brevo). Needs the Brevo API key in Vault, see below. |
@@ -131,13 +134,15 @@ the title, press Add. It shows as a click-to-play thumbnail for everyone.
 
 ## Change the AI-90 course
 
-Edit `syllabus/AI90_MASTER.md` (keep each day's Visual · Notes · Task · Tests ·
-Solution · Done when), then:
+Edit `syllabus/AI90_MASTER.md` (Days) or `syllabus/AI90_PLUS.md` (Advanced ML) —
+keep each lesson's Visual · Notes · Task · Tests · Solution · Done when — then:
 
 ```bash
-python3 tools/build_ai90.py
-node tests/ai90_pyodide.mjs /path/to/pyodide-0.29.5 solutions   # must stay 307/307
+python3 tools/build_notes.py && python3 tools/build_ai90.py
+node tests/ai90_pyodide.mjs /path/to/pyodide-0.29.5 solutions all   # must stay 355/355
 ```
+
+DB for the Advanced stage (points + certificate) is `supabase-v6.sql` — already applied live.
 
 To attach an illustration to a day, add it to `VIZ` in `tools/build_ai90.py`
 and write the widget in `assets/viz-*.js` (`V.W.<id> = (host) => {...}`).

@@ -1082,5 +1082,163 @@
    "time": "~3 h",
    "kb": 5.5
   }
+ ],
+ "advanced": [
+  {
+   "adv": 1,
+   "title": "Lasso: letting the model pick its features",
+   "block": "Block 2.5 · Advanced ML: beyond the basics",
+   "file": "adv01-lasso-letting-the-model-pick-its-features.md",
+   "path": "notes/adv01-lasso-letting-the-model-pick-its-features.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/adv01-lasso-letting-the-model-pick-its-features.md",
+   "download": "https://telugucoders.com/notes/adv01-lasso-letting-the-model-pick-its-features.md",
+   "dataset": "Diabetes (442 patients × 10 measurements) — bundled: sklearn.datasets.load_diabetes()",
+   "time": "~2 h",
+   "kb": 5.5
+  },
+  {
+   "adv": 2,
+   "title": "Calibration: can you trust the probability?",
+   "block": "Block 2.5 · Advanced ML: beyond the basics",
+   "file": "adv02-calibration-can-you-trust-the-probability.md",
+   "path": "notes/adv02-calibration-can-you-trust-the-probability.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/adv02-calibration-can-you-trust-the-probability.md",
+   "download": "https://telugucoders.com/notes/adv02-calibration-can-you-trust-the-probability.md",
+   "dataset": "synthetic over-confident scores (4,000 predictions)",
+   "time": "~2 h",
+   "kb": 6.0
+  },
+  {
+   "adv": 3,
+   "title": "Support vector machines: the widest street",
+   "block": "Block 2.5 · Advanced ML: beyond the basics",
+   "file": "adv03-support-vector-machines-the-widest-street.md",
+   "path": "notes/adv03-support-vector-machines-the-widest-street.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/adv03-support-vector-machines-the-widest-street.md",
+   "download": "https://telugucoders.com/notes/adv03-support-vector-machines-the-widest-street.md",
+   "dataset": "Iris (2 species) and Breast Cancer (569 tumours × 30 features) — bundled with sklearn",
+   "time": "~2 h",
+   "kb": 5.5
+  },
+  {
+   "adv": 4,
+   "title": "Kernels: curved boundaries with linear maths",
+   "block": "Block 2.5 · Advanced ML: beyond the basics",
+   "file": "adv04-kernels-curved-boundaries-with-linear-maths.md",
+   "path": "notes/adv04-kernels-curved-boundaries-with-linear-maths.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/adv04-kernels-curved-boundaries-with-linear-maths.md",
+   "download": "https://telugucoders.com/notes/adv04-kernels-curved-boundaries-with-linear-maths.md",
+   "dataset": "make_moons and make_circles (sklearn generators)",
+   "time": "~2 h",
+   "kb": 5.5
+  },
+  {
+   "adv": 5,
+   "title": "Gaussian mixtures and EM: soft clusters",
+   "block": "Block 2.5 · Advanced ML: beyond the basics",
+   "file": "adv05-gaussian-mixtures-and-em-soft-clusters.md",
+   "path": "notes/adv05-gaussian-mixtures-and-em-soft-clusters.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/adv05-gaussian-mixtures-and-em-soft-clusters.md",
+   "download": "https://telugucoders.com/notes/adv05-gaussian-mixtures-and-em-soft-clusters.md",
+   "dataset": "two synthetic blobs, then Iris without labels",
+   "time": "~2 h",
+   "kb": 6.2
+  },
+  {
+   "adv": 6,
+   "title": "DBSCAN and hierarchical clustering",
+   "block": "Block 2.5 · Advanced ML: beyond the basics",
+   "file": "adv06-dbscan-and-hierarchical-clustering.md",
+   "path": "notes/adv06-dbscan-and-hierarchical-clustering.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/adv06-dbscan-and-hierarchical-clustering.md",
+   "download": "https://telugucoders.com/notes/adv06-dbscan-and-hierarchical-clustering.md",
+   "dataset": "make_moons + synthetic blobs with noise",
+   "time": "~2 h",
+   "kb": 5.5
+  },
+  {
+   "adv": 7,
+   "title": "t-SNE: maps of high-dimensional data",
+   "block": "Block 2.5 · Advanced ML: beyond the basics",
+   "file": "adv07-t-sne-maps-of-high-dimensional-data.md",
+   "path": "notes/adv07-t-sne-maps-of-high-dimensional-data.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/adv07-t-sne-maps-of-high-dimensional-data.md",
+   "download": "https://telugucoders.com/notes/adv07-t-sne-maps-of-high-dimensional-data.md",
+   "dataset": "Digits 0, 1, 6 (8×8 pixel images)",
+   "time": "~2–3 h",
+   "kb": 6.2
+  },
+  {
+   "adv": 8,
+   "title": "Anomaly detection: finding the odd ones out",
+   "block": "Block 2.5 · Advanced ML: beyond the basics",
+   "file": "adv08-anomaly-detection-finding-the-odd-ones-out.md",
+   "path": "notes/adv08-anomaly-detection-finding-the-odd-ones-out.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/adv08-anomaly-detection-finding-the-odd-ones-out.md",
+   "download": "https://telugucoders.com/notes/adv08-anomaly-detection-finding-the-odd-ones-out.md",
+   "dataset": "synthetic correlated sensors + two-blob data with planted anomalies",
+   "time": "~2 h",
+   "kb": 6.9
+  },
+  {
+   "adv": 9,
+   "title": "Recommender systems: matrix factorisation",
+   "block": "Block 2.5 · Advanced ML: beyond the basics",
+   "file": "adv09-recommender-systems-matrix-factorisation.md",
+   "path": "notes/adv09-recommender-systems-matrix-factorisation.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/adv09-recommender-systems-matrix-factorisation.md",
+   "download": "https://telugucoders.com/notes/adv09-recommender-systems-matrix-factorisation.md",
+   "dataset": "synthetic users × items with hidden tastes (30% of ratings seen)",
+   "time": "~2 h",
+   "kb": 5.4
+  },
+  {
+   "adv": 10,
+   "title": "Reinforcement learning: bandits and Q-learning",
+   "block": "Block 2.5 · Advanced ML: beyond the basics",
+   "file": "adv10-reinforcement-learning-bandits-and-q-learning.md",
+   "path": "notes/adv10-reinforcement-learning-bandits-and-q-learning.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/adv10-reinforcement-learning-bandits-and-q-learning.md",
+   "download": "https://telugucoders.com/notes/adv10-reinforcement-learning-bandits-and-q-learning.md",
+   "dataset": "simulated slot machines + a 4×4 grid world",
+   "time": "~2–3 h",
+   "kb": 6.5
+  },
+  {
+   "adv": 11,
+   "title": "Autoencoders: compression you can train",
+   "block": "Block 2.5 · Advanced ML: beyond the basics",
+   "file": "adv11-autoencoders-compression-you-can-train.md",
+   "path": "notes/adv11-autoencoders-compression-you-can-train.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/adv11-autoencoders-compression-you-can-train.md",
+   "download": "https://telugucoders.com/notes/adv11-autoencoders-compression-you-can-train.md",
+   "dataset": "Digits (400 images, 64 pixels)",
+   "time": "~2–3 h",
+   "kb": 6.3
+  },
+  {
+   "adv": 12,
+   "title": "Production ML: drift and experiment tracking",
+   "block": "Block 2.5 · Advanced ML: beyond the basics",
+   "file": "adv12-production-ml-drift-and-experiment-tracking.md",
+   "path": "notes/adv12-production-ml-drift-and-experiment-tracking.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/adv12-production-ml-drift-and-experiment-tracking.md",
+   "download": "https://telugucoders.com/notes/adv12-production-ml-drift-and-experiment-tracking.md",
+   "dataset": "synthetic training vs live feature columns",
+   "time": "~2 h",
+   "kb": 6.3
+  },
+  {
+   "adv": 13,
+   "title": "Fairness: equal errors across groups",
+   "block": "Block 2.5 · Advanced ML: beyond the basics",
+   "file": "adv13-fairness-equal-errors-across-groups.md",
+   "path": "notes/adv13-fairness-equal-errors-across-groups.md",
+   "github": "https://github.com/Asishteja18/asishteja18.github.io/blob/main/notes/adv13-fairness-equal-errors-across-groups.md",
+   "download": "https://telugucoders.com/notes/adv13-fairness-equal-errors-across-groups.md",
+   "dataset": "synthetic loan decisions with a biased score",
+   "time": "~2 h",
+   "kb": 5.4
+  }
  ]
 }

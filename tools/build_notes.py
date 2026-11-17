@@ -31,6 +31,41 @@ def filename(n, title):
     return f"day{n:02}-{slug(title)}.md"
 
 
+PLUS_BLOCK = "Block 2.5 · Advanced ML: beyond the basics"
+
+
+def adv_filename(n, title):
+    return f"adv{n:02}-{slug(title)}.md"
+
+
+def parse_plus(text):
+    heads = list(re.finditer(r"^### Advanced (\d+) — (.+)$", text, re.M))
+    out = {}
+    for k, h in enumerate(heads):
+        stop = heads[k + 1].start() if k + 1 < len(heads) else len(text)
+        body = re.sub(r"\n---\s*$", "", text[h.end():stop].strip()).strip()
+        out[int(h.group(1))] = (h.group(2).strip(), body)
+    return out
+
+
+def adv_note(n, adv):
+    title, body = adv[n]
+    nav = []
+    if n > 1:
+        nav.append(f"[← Advanced {n - 1}]({adv_filename(n - 1, adv[n - 1][0])})")
+    nav.append("[All notes](README.md)")
+    if n < len(adv):
+        nav.append(f"[Advanced {n + 1} →]({adv_filename(n + 1, adv[n + 1][0])})")
+    nav = " · ".join(nav)
+    return "\n".join([
+        f"# Advanced {n} — {title}", "",
+        f"> **AI-90** · {PLUS_BLOCK} · Advanced {n} of {len(adv)}  ",
+        f"> Practise it with live tests on [telugucoders.com]({SITE}) · "
+        f"source: [AI90_PLUS.md](../syllabus/AI90_PLUS.md)", "",
+        nav, "", "---", "", body, "", "---", "", nav, "",
+        "<sub>Generated from `syllabus/AI90_PLUS.md` by `tools/build_notes.py`.</sub>", ""])
+
+
 def block_of(n):
     return next(name for lo, hi, name in BLOCKS if lo <= n <= hi)
 
@@ -83,8 +118,18 @@ def main():
     assert sorted(days) == list(range(1, 91)), sorted(days)[:5]
     out = ROOT / "notes"
     out.mkdir(exist_ok=True)
-    for old in out.glob("day*.md"):
+    for old in list(out.glob("day*.md")) + list(out.glob("adv*.md")):
         old.unlink()
+    adv = parse_plus((ROOT / "syllabus" / "AI90_PLUS.md").read_text(encoding="utf-8"))
+    adv_links = []
+    for n, (title, body) in sorted(adv.items()):
+        fn = adv_filename(n, title)
+        (out / fn).write_text(adv_note(n, adv), encoding="utf-8")
+        dataset, time = meta(body)
+        adv_links.append({"adv": n, "title": title.replace("`", ""), "block": PLUS_BLOCK, "file": fn,
+                          "path": "notes/" + fn, "github": GH_VIEW + fn, "download": SITE + "notes/" + fn,
+                          "dataset": re.sub(r"[`*]", "", dataset), "time": time,
+                          "kb": round((out / fn).stat().st_size / 1024, 1)})
     links = []
     for n in range(1, 91):
         title = days[n][0]
@@ -96,7 +141,7 @@ def main():
                       "dataset": re.sub(r"[`*]", "", dataset), "time": time,
                       "kb": round((out / fn).stat().st_size / 1024, 1)})
     (out / "links.json").write_text(json.dumps({"repo": REPO, "all_in_one": SITE + "syllabus/AI90_MASTER.md",
-                                                 "days": links}, indent=1, ensure_ascii=False), encoding="utf-8")
+                                                 "days": links, "advanced": adv_links}, indent=1, ensure_ascii=False), encoding="utf-8")
     lines = ["# AI-90 notes — 90 days to build your own AI", "",
              "One note per day: visual, notes, worked code, your task, tests and a reference solution. "
              "Read them here on GitHub, or download any day as a Markdown file.", "",
@@ -111,8 +156,17 @@ def main():
             lines.append(f"| {L['day']} | {L['title']} | {ds} | [read]({L['file']}) | "
                          f"[.md · {L['kb']} KB]({L['download']}) |")
         lines.append("")
+        if hi == 60:
+            lines += [f"## {PLUS_BLOCK}", "", "| # | Topic | Dataset | Read | Download |",
+                      "| --- | --- | --- | --- | --- |"]
+            for L in adv_links:
+                ds = L["dataset"].replace("|", "/")
+                ds = ds if len(ds) <= 60 else ds[:57].rstrip() + "…"
+                lines.append(f"| A{L['adv']} | {L['title']} | {ds} | [read]({L['file']}) | "
+                             f"[.md · {L['kb']} KB]({L['download']}) |")
+            lines.append("")
     (out / "README.md").write_text("\n".join(lines), encoding="utf-8")
-    print(f"wrote {len(links)} notes + README.md + links.json to {out}")
+    print(f"wrote {len(links)} + {len(adv_links)} notes + README.md + links.json to {out}")
 
 
 if __name__ == "__main__":

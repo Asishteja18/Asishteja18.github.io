@@ -95,7 +95,8 @@ async def main():
         check(pe == "none", "grain never catches the pointer")
         check(await pg.evaluate("!!window.gsap"), "GSAP loaded for staggered reveals")
         txt = await pg.inner_text("body")
-        check("Days 61–90" in txt and "307" in txt, "landing pitch mentions the AI-90 path")
+        check("Days 61–90" in txt and "Advanced 1–13" in txt and "355" in txt and "103" in txt, "landing pitch shows the 4-stage path, 103 lessons, 355 tests")
+        check("~29 h" in txt, "landing path shows stage hours")
         bf = await pg.evaluate("getComputedStyle(document.querySelector('.auth')).backdropFilter")
         check("blur(16px)" in bf, "auth card is frosted glass (blur 16px)")
         await shot(pg, "01-landing")
@@ -113,8 +114,13 @@ async def main():
         await pg.wait_for_timeout(1200)
 
         # ---------------------------------------------------- hub bento
-        check(await pg.locator(".bcard.stage").count() == 3, "three stage cards in the bento")
-        check(await pg.locator(".jgrid .jc").count() == 90, "AI-90 journey grid has 90 days")
+        check(await pg.locator(".bcard.stage").count() == 4, "four stage cards in the bento")
+        order = await pg.locator(".bcard.stage .cubetitle").all_inner_texts()
+        check(order == ["Python", "Machine Learning", "Advanced ML", "Build your own AI"], "Advanced ML sits between ML and AI (%s)" % order)
+        check(await pg.locator(".jgrid .jc").count() == 103, "journey grid has 103 lessons")
+        check(await pg.locator(".jgrid .jc.b3").count() == 13, "13 Advanced cells in the journey")
+        hrs = await pg.locator(".bcard.stage .cubehours").all_inner_texts()
+        check(len(hrs) == 4 and hrs[2].startswith("~29 h") and "13 lessons" in hrs[2], "stage cards show hours (%s)" % hrs)
         stages = (await pg.text_content(".bento"))
         check("Days 1–30" in stages and "Days 31–60" in stages and "Days 61–90" in stages, "stage cards show day ranges")
         check("Coming soon" not in stages, "ML and AI stages are open now")
@@ -135,6 +141,20 @@ async def main():
         await go(pg, "ai"); await pg.wait_for_selector(".wrap .sect")
         heads = await pg.locator(".wrap .secttitle").all_inner_texts()
         check("Days 73–81 · Language models + GPT" in heads, "AI stage has the GPT section")
+        await go(pg, "adv"); await pg.wait_for_selector(".wrap .sect")
+        heads = await pg.locator(".wrap .secttitle").all_inner_texts()
+        check(heads == ["Advanced 1–4 · Better models", "Advanced 5–10 · Beyond labels", "Advanced 11–13 · Bridge to AI + production"],
+              "Advanced stage sections (%s)" % heads)
+        check("about 29 hours" in await pg.inner_text(".wrap .meter"), "Advanced stage header shows the time")
+        check(await pg.locator(".blockintro").count() == 1, "Advanced block overview present")
+        # an Advanced lesson grades in the browser
+        await go(pg, "x09"); await pg.wait_for_selector(".editor textarea", state="attached")
+        check("Advanced 09 of 13" in await pg.text_content(".kicker"), "Advanced kicker")
+        await pg.wait_for_function("document.querySelector('.status').textContent.includes('ready')", timeout=120000)
+        await set_code(pg, await pg.evaluate("__aim.ai90.lessons.find(l => l.id === 'x09').exercise.solution"))
+        st = await run_tests(pg)
+        check("2/2 passing" in st, "Advanced 9 solution passes in the browser (%s)" % st)
+        check(await pg.locator(".daynotes a[href*='adv09']").count() >= 1, "Advanced notes links")
         await shot(pg, "03-track-ai")
 
         # ---------------------------------------------------- Day 1

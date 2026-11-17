@@ -22,7 +22,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from hints import make_hints  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from build_notes import GH_VIEW, filename as note_filename  # noqa: E402
+from build_notes import GH_VIEW, adv_filename, filename as note_filename  # noqa: E402
 
 FENCE = "`" * 3
 ROOT = Path(__file__).resolve().parent.parent
@@ -40,7 +40,29 @@ SECTIONS = [
     (61, 72, "ai", "Days 61–72 · Your engine: tinytorch"),
     (73, 81, "ai", "Days 73–81 · Language models + GPT"),
     (82, 90, "ai", "Days 82–90 · Chat, RAG, tools, serving"),
+] 
+
+# Advanced ML (syllabus/AI90_PLUS.md): x01–x13, between ML and AI
+ADV_SECTIONS = [
+    (1, 4, "Advanced 1–4 · Better models"),
+    (5, 10, "Advanced 5–10 · Beyond labels"),
+    (11, 13, "Advanced 11–13 · Bridge to AI + production"),
 ]
+ADV_VIZ = {
+    1: ("lasso", "Slide α up. Weights hit exactly zero one by one — the lasso path on real diabetes data."),
+    2: ("calib", "Squash or stretch the scores. The reliability curve leaves the diagonal; Platt scaling pulls it back."),
+    3: ("svm", "Click to add points. The street widens or narrows with C; ringed points are support vectors."),
+    4: ("kernel", "Same moons, different kernel. Turn γ up for a wigglier RBF boundary."),
+    5: ("gmm", "Press Step to run EM: each point is shaded by how much each bell owns it."),
+    6: ("dbscan", "Change eps and min_pts. Core points flood their clusters; grey crosses are noise."),
+    7: ("tsne", "Watch t-SNE pull 3 digit classes apart, one gradient step at a time."),
+    8: ("iforest", "Random cuts isolate the odd point quickly. Click to move it and count the cuts."),
+    9: ("mf", "Train the factorisation: the missing cells fill in as user and item vectors learn."),
+    10: ("qlearn", "Train the agent. Arrows show the best action in each square; colour shows its value."),
+    11: ("autoenc", "Shrink the bottleneck. With fewer code numbers the rebuilt digit gets blurrier."),
+    12: ("drift", "Shift the live data. PSI climbs past 0.1 (watch) and 0.25 (drifted)."),
+    13: ("fairness", "Move each group's threshold. One threshold gives unequal TPR; two can match them."),
+}
 
 # ------------------------------------------------- interactive illustrations
 # day -> (widget id, what the picture shows). The widgets live in index.html.
@@ -95,7 +117,7 @@ os.makedirs("/ai90/run", exist_ok=True)
 os.chdir("/ai90/run")
 if "/ai90" not in sys.path:
     sys.path.insert(0, "/ai90")
-for _m in [k for k in list(sys.modules) if re.fullmatch(r"(test_)?day\d\d", k)]:
+for _m in [k for k in list(sys.modules) if re.fullmatch(r"(test_)?(day|x)\d\d", k)]:
     del sys.modules[_m]
 importlib.invalidate_caches()
 _out, _buf = [], io.StringIO()
@@ -107,7 +129,7 @@ try:
     except Exception as e:
         tb = traceback.extract_tb(e.__traceback__)
         where = next((f"{os.path.basename(f.filename)}:{f.lineno}" for f in reversed(tb)
-                      if re.search(r"day\d\d\.py$", f.filename)), "")
+                      if re.search(r"(day|x)\d\d\.py$", f.filename)), "")
         _out = [["import", "error", f"{type(e).__name__}: {e}" + (f" ({where})" if where else "")]]
     else:
         for name in sorted(n for n in dir(_mod) if n.startswith("test_")):
@@ -276,9 +298,10 @@ def pretty(name):
     return name[5:] if name.startswith("test_") else name
 
 
-def build_day(n, title, body, files):
-    sol = files[f"day{n:02}.py"]
-    tests = files[f"test_day{n:02}.py"]
+def build_day(n, title, body, files, adv=False):
+    mod = f"x{n:02}" if adv else f"day{n:02}"
+    sol = files[f"{mod}.py"]
+    tests = files[f"test_{mod}.py"]
 
     meta = {}
     m = re.search(r"\*\*Dataset:\*\*\s*(.+?)\s*·\s*\*\*Time:\*\*\s*([^\n]+)", body)
@@ -307,8 +330,9 @@ def build_day(n, title, body, files):
     if vis:
         vtext = re.sub(r"^\*\*Goal:\*\*.*$", "", vis.group(1), flags=re.M)
         sections += [dict(s, role="visual") for s in to_sections(vtext)]
-    if n in VIZ:
-        sections.append({"type": "viz", "viz": VIZ[n][0], "caption": VIZ[n][1]})
+    viz = ADV_VIZ if adv else VIZ
+    if n in viz:
+        sections.append({"type": "viz", "viz": viz[n][0], "caption": viz[n][1]})
     notes = re.sub(r"^\*\*Goal:\*\*.*$", "", notes, flags=re.M)
     sections += to_sections(notes)
 
@@ -330,7 +354,7 @@ def build_day(n, title, body, files):
     if not brief_md and head_fns:
         brief_md = f"Write {head_fns}."
     if not task_md and head_fns:
-        brief_md = f"Write these in `day{n:02}.py`: {head_fns}. Each one has a docstring with an example."
+        brief_md = f"Write these in `{mod}.py`: {head_fns}. Each one has a docstring with an example."
 
     hints = {}
     for b in re.findall(r"^- (.+)$", task_md, re.M):
@@ -342,23 +366,26 @@ def build_day(n, title, body, files):
         for name in re.findall(r"\.(\w+)\(", b):
             hints.setdefault(name, plain)
     test_names = re.findall(r"^def (test_\w+)\(", tests, re.M)
-    deps = sorted(deps_of(tests + "\n" + sol, files) - {f"day{n:02}"})
+    deps = sorted(deps_of(tests + "\n" + sol, files) - {mod})
+    nf = adv_filename(n, title) if adv else note_filename(n, title)
     lesson = {
-        "id": f"d{n:02}",
-        "day": n,
-        "track": "python" if n <= 30 else "ml" if n <= 60 else "ai",
+        "id": f"x{n:02}" if adv else f"d{n:02}",
+        "day": None if adv else n,
+        "adv": n if adv else None,
+        "track": "adv" if adv else "python" if n <= 30 else "ml" if n <= 60 else "ai",
         "order": n,
         "title": title.replace("`", ""),
         "blurb": blurb,
         "minutes": minutes_of(meta.get("time")),
-        "section": next(s[3] for s in SECTIONS if s[0] <= n <= s[1]),
+        "section": (next(s[2] for s in ADV_SECTIONS if s[0] <= n <= s[1]) if adv
+                    else next(s[3] for s in SECTIONS if s[0] <= n <= s[1])),
         "meta": meta,
         "objectives": [],
-        "notes": {"path": "notes/" + note_filename(n, title), "github": GH_VIEW + note_filename(n, title)},
+        "notes": {"path": "notes/" + nf, "github": GH_VIEW + nf},
         "sections": sections,
         "exercise": {
             "kind": "pytest",
-            "module": f"day{n:02}",
+            "module": mod,
             "brief_html": md(brief_md),
             "done_html": md(done.group(1)) if done else "",
             "starter": make_starter(sol, hints),
@@ -387,11 +414,20 @@ def main(src):
     for name, hdr in [("python", "BLOCK 1"), ("ml", "BLOCK 2"), ("ai", "BLOCK 3")]:
         m = re.search(r"^## " + hdr + r"[^\n]*\n(.*?)(?=^### Day)", text, re.S | re.M)
         blocks.append({"track": name, "sections": to_sections(m.group(1).replace("---", ""))})
+    # Advanced ML stage from AI90_PLUS.md
+    plus = (ROOT / "syllabus" / "AI90_PLUS.md").read_text(encoding="utf-8")
+    pfiles = dict(re.findall(FENCE + r"python\n# file: (\S+)\n(.*?)" + FENCE, plus, re.S))
+    heads = list(re.finditer(r"^### Advanced (\d+) — (.+)$", plus, re.M))
+    for k, h in enumerate(heads):
+        stop = heads[k + 1].start() if k + 1 < len(heads) else len(plus)
+        lessons.append(build_day(int(h.group(1)), h.group(2).strip(), plus[h.end():stop], pfiles, adv=True))
+    m = re.search(r"^## BLOCK 2\.5[^\n]*\n(.*?)(?=^### Advanced)", plus, re.S | re.M)
+    blocks.append({"track": "adv", "sections": to_sections(m.group(1).replace("---", ""))})
     out = {"version": "2026-11-17", "harness": HARNESS, "lessons": lessons, "blocks": blocks}
     dest = ROOT / "content" / "ai90.json"
     dest.parent.mkdir(exist_ok=True)
     dest.write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-    print(f"wrote {dest} — {len(lessons)} days, {dest.stat().st_size // 1024} KB, "
+    print(f"wrote {dest} — {len(lessons)} lessons, {dest.stat().st_size // 1024} KB, "
           f"{sum(len(l['exercise']['tests']) for l in lessons)} tests")
 
 
