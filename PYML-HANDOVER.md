@@ -147,6 +147,21 @@ purpose — learners build a perceptron and backprop by hand, and it avoids a
   Found and fixed before deploy: the admin could mark their own reply as the
   solution.
 
+## AIM brand and mission (17 Nov 2026)
+
+- [stated] AIM = the AI and Machine Learning Institute. Mission: learn to build
+  AI instead of only vibe coding (vibe coding still needs basic coding), all
+  brought together in one format, "the mission AIM". Started exclusively to
+  encourage the Telugu coders community, to teach and learn in a good, fun way.
+- Visible brand is now AIM everywhere (title, logo, sign-in card with
+  "AI & Machine Learning Institute", chat copy, loading). Internal keys
+  (`pyml.*` storage, demo emails, repo file names) intentionally unchanged.
+- Landing: Telugu kicker "తెలుగు కోడర్ల కోసం · For Telugu coders"; hero "Build AI.
+  Don't just vibe-code it."; "The mission" (basics before vibe coding, build the
+  AI, all in one place, learn together and have fun); closer "కలిసి నేర్చుకుందాం —
+  let's learn together". Noto Sans Telugu loaded from Google Fonts.
+- Supabase sign-up email: subject "Your AIM code", sender name AIM.
+
 ## How to run it
 
 ```bash

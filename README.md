@@ -1,4 +1,9 @@
-# PyML
+# AIM — AI & Machine Learning Institute
+
+Telugu coders' home for learning to **build** AI, not just vibe-code it:
+basic Python first, then machine learning, then your own models, all in one
+path, learned together. తెలుగు కోడర్ల కోసం.
+
 
 Python and machine learning taught by making you write the code. Lessons run a
 real Python runtime in the browser and grade your work against tests.
