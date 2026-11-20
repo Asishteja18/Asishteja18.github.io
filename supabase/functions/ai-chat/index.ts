@@ -79,7 +79,8 @@ async function webSearch(q: string): Promise<Source[]> {
 async function chat(url: string, key: string, model: string, messages: Msg[]) {
   const r = await fetch(url, {
     method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: "Bearer " + key },
+    headers: key ? { "Content-Type": "application/json", Authorization: "Bearer " + key }
+                 : { "Content-Type": "application/json" },
     body: JSON.stringify({ model, messages, max_tokens: 900, temperature: 0.4 }),
     signal: AbortSignal.timeout(55000),
   });
@@ -107,16 +108,33 @@ async function think(messages: Msg[]): Promise<{ text: string; model: string }> 
       return { text: await chat("https://openrouter.ai/api/v1/chat/completions", or, model, messages), model };
     } catch (e) { errors.push(String(e)); }
   }
-  // Last resort, works with no key at all: Pollinations' open DeepSeek endpoint
-  // (rate-limited per server IP; a free POLLINATIONS_API_KEY lifts that).
+  // Last resort, works with no key at all: Pollinations' free Classic API.
+  // Its free model list changes, so ask it which ones are free (DeepSeek first).
   const pk = env("POLLINATIONS_API_KEY");
-  const pm = env("POLLINATIONS_MODEL", "deepseek");
-  try {
-    return { text: await chat(pk ? "https://gen.pollinations.ai/v1/chat/completions" : "https://text.pollinations.ai/openai",
-                              pk || "none", pm, messages), model: "pollinations/" + pm };
-  } catch (e) { errors.push(String(e)); }
+  const purl = pk ? "https://gen.pollinations.ai/v1/chat/completions" : "https://text.pollinations.ai/openai";
+  let pm = pk ? env("POLLINATIONS_MODEL", "deepseek") : "";
+  try { if (!pm) pm = await freeModel(); } catch { pm = "openai"; }
+  for (const m of pm === "openai" ? [pm] : [pm, "openai"]) {
+    try { return { text: await chat(purl, pk, m, messages), model: "pollinations/" + m }; }
+    catch (e) { errors.push(String(e)); FREE_MODEL = ""; }
+  }
   if (!errors.length) throw new Error("not-configured");
   throw new Error(errors.join(" | "));
+}
+
+let FREE_MODEL = "";
+async function freeModel(): Promise<string> {
+  const want = env("POLLINATIONS_MODEL");
+  if (want) return want;
+  if (FREE_MODEL) return FREE_MODEL;
+  const r = await fetch("https://text.pollinations.ai/models", { signal: AbortSignal.timeout(8000) });
+  const list = (await r.json()) as any[];
+  const names = list.filter((m) => !m?.audio && !(m?.output_modalities || ["text"]).includes?.("audio") &&
+                                   m?.tier !== "seed" && m?.tier !== "flower")
+                    .map((m) => typeof m === "string" ? m : String(m.name || m.id || ""))
+                    .filter(Boolean);
+  FREE_MODEL = names.find((n) => /deepseek/i.test(n)) || names.find((n) => /^openai/.test(n)) || names[0] || "openai";
+  return FREE_MODEL;
 }
 
 // R1-style models think out loud inside <think>…</think>; learners get the answer.
