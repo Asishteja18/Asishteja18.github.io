@@ -19,10 +19,12 @@ globalThis.fetch = async (input: any, init?: any) => {
   if (url.includes("/rest/v1/ai_messages")) return init?.method === "POST" || (input instanceof Request && input.method === "POST") ? new Response(null, { status: 201 }) : J([{ role: "assistant", content: "earlier" }]);
   if (url.includes("api.tavily.com")) return J({ results: [{ title: "Docs", url: "https://docs.python.org/x", content: "lists are mutable" }] });
   if (url.includes("api.cloudflare.com")) {
-    if (modelMode === "fail") return J({ errors: ["x"] }, 500);
+    if (modelMode !== "ok") return J({ errors: ["x"] }, 500);
     return J({ choices: [{ message: { content: "<think>hmm let me see</think>\nLists are mutable [1]." } }] });
   }
   if (url.includes("openrouter.ai")) return J({ choices: [{ message: { content: "fallback answer" } }] });
+  if (url.includes("pollinations.ai")) return modelMode === "allfail" ? J({ error: "busy" }, 429) : J({ choices: [{ message: { content: "<think>x</think>keyless answer" } }] });
+  if (url.includes("wikipedia.org")) return J({ query: { pages: { "9": { index: 1, title: "List (abstract data type)", fullurl: "https://en.wikipedia.org/wiki/List_(abstract_data_type)", extract: "A list is..." } } } });
   return J({ unexpected: url }, 599);
 };
 Deno.env.set("SUPABASE_URL", "http://mock.supabase");
@@ -61,9 +63,13 @@ r = await call("good", { message: "x" }); j = await r.json();
 check(r.status === 200 && j.reply === "fallback answer" && j.model.endsWith(":free"), "falls back to OpenRouter free DeepSeek");
 Deno.env.delete("OPENROUTER_API_KEY");
 r = await call("good", { message: "x" }); j = await r.json();
-check(r.status === 503 && !!seen["/rest/v1/rpc/ai_refund"], "503 + refund when every model fails");
-Deno.env.delete("CF_ACCOUNT_ID");
+check(r.status === 200 && j.reply === "keyless answer" && j.model === "pollinations/deepseek", "falls back to keyless Pollinations DeepSeek");
+modelMode = "allfail";
 r = await call("good", { message: "x" }); j = await r.json();
-check(r.status === 503 && j.error.includes("isn't switched on"), "clear message when no model key is set");
+check(r.status === 503 && !!seen["/rest/v1/rpc/ai_refund"], "503 + refund when every model fails");
+modelMode = "ok";
+Deno.env.delete("CF_ACCOUNT_ID"); Deno.env.delete("TAVILY_API_KEY");
+r = await call("good", { message: "what is a list", web: true }); j = await r.json();
+check(r.status === 200 && j.model === "pollinations/deepseek" && j.sources[0]?.url.includes("wikipedia.org"), "no keys at all: keyless model + Wikipedia sources");
 console.log(fails + " failure(s)");
 Deno.exit(fails ? 1 : 0);

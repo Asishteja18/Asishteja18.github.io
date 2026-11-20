@@ -11,6 +11,8 @@
 //   OPENROUTER_API_KEY               OpenRouter              (fallback, optional)
 //   AI_MODEL          default @cf/deepseek-ai/deepseek-r1-distill-qwen-32b
 //   OPENROUTER_MODEL  default deepseek/deepseek-chat-v3-0324:free
+//   POLLINATIONS_API_KEY / POLLINATIONS_MODEL (default deepseek)  optional
+// With no keys at all it still works: Pollinations' keyless DeepSeek + Wikipedia search.
 // SUPABASE_URL, SUPABASE_ANON_KEY and SUPABASE_SERVICE_ROLE_KEY are provided automatically.
 
 import { createClient } from "npm:@supabase/supabase-js@2";
@@ -42,9 +44,23 @@ Biological (Medical Coding: ICD-10-CM, CPT, HCPCS, for the CPC exam).
 - If web results are given, rely on them for anything current and cite them as [1], [2].
   If you are not sure, say so.`;
 
+// No Tavily key? Fall back to Wikipedia's open API (no key needed).
+async function wikiSearch(q: string): Promise<Source[]> {
+  const u = "https://en.wikipedia.org/w/api.php?action=query&format=json&generator=search&gsrlimit=4" +
+    "&prop=extracts|info&inprop=url&exintro=1&explaintext=1&exchars=700&gsrsearch=" + encodeURIComponent(q.slice(0, 250));
+  const r = await fetch(u, { headers: { "User-Agent": "AIM-tutor/1.0 (https://telugucoders.com)" },
+                             signal: AbortSignal.timeout(10000) });
+  if (!r.ok) throw new Error("wiki " + r.status);
+  const pages = Object.values((await r.json())?.query?.pages || {}) as any[];
+  return pages.sort((a, b) => a.index - b.index).map((p) => ({
+    title: String(p.title), url: String(p.fullurl || "https://en.wikipedia.org/wiki/" + encodeURIComponent(p.title)),
+    snippet: String(p.extract || "").slice(0, 700),
+  }));
+}
+
 async function webSearch(q: string): Promise<Source[]> {
   const key = env("TAVILY_API_KEY");
-  if (!key) return [];
+  if (!key) return wikiSearch(q);
   const r = await fetch("https://api.tavily.com/search", {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: "Bearer " + key },
@@ -91,6 +107,14 @@ async function think(messages: Msg[]): Promise<{ text: string; model: string }> 
       return { text: await chat("https://openrouter.ai/api/v1/chat/completions", or, model, messages), model };
     } catch (e) { errors.push(String(e)); }
   }
+  // Last resort, works with no key at all: Pollinations' open DeepSeek endpoint
+  // (rate-limited per server IP; a free POLLINATIONS_API_KEY lifts that).
+  const pk = env("POLLINATIONS_API_KEY");
+  const pm = env("POLLINATIONS_MODEL", "deepseek");
+  try {
+    return { text: await chat(pk ? "https://gen.pollinations.ai/v1/chat/completions" : "https://text.pollinations.ai/openai",
+                              pk || "none", pm, messages), model: "pollinations/" + pm };
+  } catch (e) { errors.push(String(e)); }
   if (!errors.length) throw new Error("not-configured");
   throw new Error(errors.join(" | "));
 }
