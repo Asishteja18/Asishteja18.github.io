@@ -57,7 +57,9 @@ const cf = JSON.parse(seen["/client/v4/accounts/acct/ai/v1/chat/completions"].at
 check(cf.messages[0].content.includes("[1] Docs") && cf.messages[0].content.includes('lesson "Lists"'), "prompt has web results and lesson");
 check(cf.messages.some((m: any) => m.content === "earlier"), "prompt has chat history");
 const ins = seen["/rest/v1/ai_messages"].filter((x) => x.body);
-check(ins.length === 1 && JSON.parse(ins[0].body).length === 2, "saves question + answer to Supabase");
+const rows = JSON.parse(ins[0].body);
+check(ins.length === 1 && rows.length === 2, "saves question + answer to Supabase");
+check(rows.every((x: any) => Array.isArray(x.sources)), "both rows carry sources (bulk insert fills missing keys with NULL)");
 modelMode = "fail";
 Deno.env.set("OPENROUTER_API_KEY", "or");
 r = await call("good", { message: "x" }); j = await r.json();

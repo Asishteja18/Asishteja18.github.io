@@ -228,9 +228,10 @@ Deno.serve(async (req) => {
   sources = sources.map((x, i) => ({ ...x, n: i + 1 })).filter((x) => reply.includes("[" + x.n + "]"));
   reply += searchNote;
 
-  await admin.from("ai_messages").insert([
-    { user_id: user.id, role: "user", content: message, lesson_id: lessonId },
+  const { error: saveErr } = await admin.from("ai_messages").insert([
+    { user_id: user.id, role: "user", content: message, sources: [], lesson_id: lessonId, model: null },
     { user_id: user.id, role: "assistant", content: reply.slice(0, 12000), sources, lesson_id: lessonId, model },
   ]);
-  return out(200, { reply, sources, model, asks_left: quota.asks_left, searches_left: quota.searches_left });
+  if (saveErr) console.error("ai-chat save", JSON.stringify(saveErr));
+  return out(200, { reply, sources, model, saved: !saveErr, asks_left: quota.asks_left, searches_left: quota.searches_left });
 });
