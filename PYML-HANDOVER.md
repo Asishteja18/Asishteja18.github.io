@@ -492,3 +492,15 @@ Tests: `tests/test_ai90_site.py` (40 checks) + the old `test_v3.py` and
   Three.js 0.170 lazy-loads from jsDelivr when a scene scrolls into view; HTML labels; drag sideways to turn
   (vertical swipes still scroll); step buttons; reduced-motion aware; GPU context freed on navigation.
 - Tests map three@0.170.0 to a local copy (`npm pack three@0.170.0` into the cdn dir) and run Chromium with SwiftShader.
+
+## v9 — AIM AI tutor (2026-11-20)
+- **Model:** open-source DeepSeek (`@cf/deepseek-ai/deepseek-r1-distill-qwen-32b`) on Cloudflare Workers AI's free daily allowance (10,000 Neurons/day). The fallback is OpenRouter's free DeepSeek. Web search uses Tavily (1,000 free credits/month).
+- **Edge Function:** `supabase/functions/ai-chat` is deployed. Legacy JWT verification is off because the function checks the user itself through `auth.getUser`. It strips `<think>` blocks from the model's reply.
+- **Database (`supabase-v9.sql`, applied live with result "v9 ok"):**
+  - Tables `ai_messages` and `ai_usage`. Learners can read and delete their own rows; only the function writes.
+  - Daily caps via `ai_take_quota` and `ai_refund`: 20 asks and 5 searches per learner, 200 asks and 50 searches for admins. Model failures refund the ask.
+- **UI:** an "Ask AI" button in the top bar, plus "Ask AIM AI" on every lesson, which sends the lesson's title, goals and the learner's current code. The drawer is full-screen on phones and shows source chips with [n] citations.
+- **Secrets for Asish to add** under Dashboard → Edge Functions → Secrets: `CF_ACCOUNT_ID`, `CF_API_TOKEN` (Workers AI permission), `TAVILY_API_KEY`, and optionally `OPENROUTER_API_KEY`. Optional overrides: `AI_MODEL` and `OPENROUTER_MODEL`. Until the keys are added the drawer shows "AIM AI isn't switched on yet".
+- **Tests:**
+  - `tests/test_ai.py` (demo UI: desktop and phone, axe checks, mdLite safety).
+  - `deno run -A tests/ai_chat_edge_test.ts` (the function against mocked providers: 14 checks).
