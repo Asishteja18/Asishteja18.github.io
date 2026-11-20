@@ -708,6 +708,79 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
 .askrow{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .askhelp form{margin-top:12px}
 .askhelp textarea{min-height:170px;font-family:var(--mono);font-size:12.5px}
+/* ------------------------------------------------------------ v9: AIM AI */
+.aibtn svg{color:var(--gold)}
+.aiask{font-weight:600}
+.aiscrim{position:fixed;inset:0;background:rgba(3,6,14,.5);opacity:0;transition:opacity .22s;z-index:60}
+.aiscrim.on{opacity:1}
+.aidrawer{position:fixed;top:0;right:0;bottom:0;width:min(440px,100vw);z-index:61;display:flex;flex-direction:column;
+  background:var(--card-solid);border-left:1px solid var(--line);box-shadow:-24px 0 60px rgba(0,0,0,.35);
+  transform:translateX(102%);transition:transform .26s cubic-bezier(.2,.8,.2,1);
+  padding-bottom:env(safe-area-inset-bottom)}
+.aidrawer.on{transform:none}
+html.aiopen{overflow:hidden}
+.aihead{display:flex;align-items:center;gap:8px;padding:14px 14px 12px 18px;border-bottom:1px solid var(--line)}
+.aititle{display:flex;align-items:center;gap:11px;flex:1;min-width:0}
+.aititle h2{font-size:17px;line-height:1.2}
+.aisub{display:block;font-size:12px;color:var(--fg-3)}
+.aiorb{width:30px;height:30px;border-radius:50%;flex:none;
+  background:conic-gradient(from 200deg,var(--gold),#7aa2ff,#b07cff,var(--gold));
+  box-shadow:0 0 18px var(--gold-line)}
+.aix{min-width:44px}
+.aictx{display:flex;gap:10px;align-items:center;padding:8px 18px;font-size:12.5px;color:var(--fg-2);
+  background:var(--gold-soft);border-bottom:1px solid var(--line)}
+.aictx[hidden]{display:none}
+.aictx span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ailog{flex:1;overflow-y:auto;padding:16px 16px 8px;display:flex;flex-direction:column;gap:12px;overscroll-behavior:contain}
+.aimsg{max-width:92%;font-size:14.5px;line-height:1.6;overflow-wrap:anywhere}
+.aimsg.me{align-self:flex-end;background:var(--gold-soft);border:1px solid var(--gold-line);
+  border-radius:16px 16px 4px 16px;padding:9px 13px;white-space:pre-wrap}
+.aimsg.ai{align-self:flex-start;background:var(--card);border:1px solid var(--line);
+  border-radius:16px 16px 16px 4px;padding:11px 14px}
+.aimsg.err{border-color:rgba(255,120,120,.45);color:var(--fg-2)}
+.aibody p{margin:0 0 8px}.aibody p:last-child{margin:0}
+.aibody ul{margin:4px 0 8px 18px;padding:0}
+.aibody code{font-family:var(--mono);font-size:12.5px;background:var(--muted);padding:1px 5px;border-radius:5px}
+.aibody pre.aicode{background:var(--muted);border:1px solid var(--line);border-radius:10px;padding:10px 12px;
+  overflow-x:auto;margin:6px 0 10px}
+.aibody pre.aicode code{background:none;padding:0;font-size:12.5px;line-height:1.55}
+.aibody a{color:var(--gold)}
+.aicite{display:inline-grid;place-items:center;min-width:17px;height:17px;padding:0 4px;border-radius:6px;
+  background:var(--gold-soft);border:1px solid var(--gold-line);font:700 10.5px var(--mono);
+  text-decoration:none;vertical-align:1px;margin:0 1px}
+.aisrc{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.aisrc a{display:inline-flex;align-items:center;gap:6px;max-width:100%;border:1px solid var(--line);border-radius:999px;
+  padding:4px 10px 4px 5px;font-size:12px;color:var(--fg-2);text-decoration:none;min-height:30px}
+.aisrc a:hover{border-color:var(--gold-line);color:var(--fg)}
+.aisrc b{display:grid;place-items:center;width:19px;height:19px;border-radius:50%;background:var(--gold-soft);
+  color:var(--gold);font:700 10.5px var(--mono)}
+.aisrc span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:190px}
+.aitools{margin-top:6px;font-size:12px}
+.aiempty{color:var(--fg-2);font-size:14.5px;line-height:1.6;padding:6px 2px}
+.aichips{display:flex;flex-direction:column;align-items:flex-start;gap:8px;margin-top:12px}
+.aichips .fchip{margin:0;text-align:left}
+.aiwait{display:flex;align-items:center;gap:10px;color:var(--fg-3);font-size:13.5px;padding:4px 2px}
+.aidots{width:30px;height:8px;background:radial-gradient(circle,var(--gold) 3px,transparent 3.5px) 0 50%/10px 8px repeat-x;
+  animation:aidots 1s steps(3) infinite}
+@keyframes aidots{from{width:10px}to{width:40px}}
+@media (prefers-reduced-motion:reduce){.aidots{animation:none;width:30px}.aidrawer,.aiscrim{transition:none}}
+.aiform{border-top:1px solid var(--line);padding:10px 14px 12px}
+.airow{display:flex;gap:8px;align-items:flex-end}
+.airow textarea{flex:1;min-width:0;resize:none;background:var(--muted);border:1px solid var(--line);color:var(--fg);
+  border-radius:14px;padding:11px 13px;font:inherit;font-size:16px;line-height:1.4;min-height:46px;max-height:160px}
+.airow textarea:focus{outline:2px solid var(--gold-line);outline-offset:1px}
+.aisend{min-width:46px;min-height:46px;padding:0!important;border-radius:14px}
+.aisend:disabled{opacity:.5;cursor:wait}
+.aiopts{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px;font-size:13px;color:var(--fg-2)}
+.aiweb{display:inline-flex;align-items:center;gap:8px;cursor:pointer;min-height:32px}
+.aiweb input{width:18px;height:18px;accent-color:var(--gold)}
+.aileft{color:var(--fg-3);font-size:12px}
+.aidisc{font-size:11.5px;color:var(--fg-3);margin-top:4px}
+@media (max-width:620px){
+  .aidrawer{width:100vw;border-left:0;height:100dvh;top:auto}
+  .aibtn span{display:none}
+  .aibtn{min-width:40px;padding:0 10px!important}
+}
 .lessondoubts{margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;
   font-size:13.5px;color:var(--fg-2)}
 
@@ -2141,7 +2214,66 @@ async function setPathDb(p) {
   return { ok: true };
 }
 
-const api = { LIVE, DEMO_ACCOUNTS, init, session, signUp, verifyCode, resendCode, signIn, signOut,
+/* ---------------------------------------------------------------- AIM AI */
+// Open-source DeepSeek behind the ai-chat Edge Function (keys stay server-side).
+// Demo mode keeps a local chat and answers with a canned explainer.
+const AI_FN = SUPABASE_URL ? SUPABASE_URL + "/functions/v1/ai-chat" : "";
+const AI_DEMO_KEY = "aim.ai.demo";
+const aiDemo = {
+  read() { try { return JSON.parse(localStorage.getItem(AI_DEMO_KEY)) || []; } catch { return []; } },
+  write(a) { try { localStorage.setItem(AI_DEMO_KEY, JSON.stringify(a.slice(-60))); } catch {} },
+};
+async function aiHistory() {
+  if (!LIVE) return aiDemo.read();
+  const { data, error } = await sb.from("ai_messages")
+    .select("id, role, content, sources, lesson_id, created_at").order("id", { ascending: false }).limit(40);
+  if (error) throw error;
+  return (data || []).reverse();
+}
+async function aiQuota() {
+  if (!LIVE) return { asks_left: 20, searches_left: 5 };
+  const { data } = await sb.rpc("ai_quota");
+  return (data && data[0]) || null;
+}
+async function aiClear() {
+  if (!LIVE) { aiDemo.write([]); return; }
+  const { error } = await sb.from("ai_messages").delete().eq("user_id", me.id);
+  if (error) throw error;
+}
+async function aiAsk({ message, web, lesson }) {
+  if (!LIVE) {
+    await new Promise((r) => setTimeout(r, 450));
+    const reply = "This is **demo mode**, so there's no model behind me here. On the live site, " +
+      "AIM AI answers with open-source DeepSeek" + (web ? " and searches the web for fresh sources" : "") + ".\n\n" +
+      "You asked: _" + message.slice(0, 200) + "_" + (lesson ? "\n\n(Lesson: " + lesson.title + ")" : "");
+    const a = aiDemo.read(), now = new Date().toISOString();
+    a.push({ role: "user", content: message, sources: [], created_at: now },
+           { role: "assistant", content: reply, sources: [], created_at: now });
+    aiDemo.write(a);
+    return { reply, sources: [], model: "demo", asks_left: 20, searches_left: 5 };
+  }
+  const { data: { session: ss } } = await sb.auth.getSession();
+  if (!ss) throw new Error("Sign in again to use AIM AI.");
+  let r;
+  try {
+    r = await fetch(AI_FN, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", apikey: SUPABASE_ANON_KEY,
+                 Authorization: "Bearer " + ss.access_token },
+      body: JSON.stringify({ message, web: !!web, lesson }),
+    });
+  } catch { throw new Error("Couldn't reach AIM AI. Check your connection."); }
+  let j = {};
+  try { j = await r.json(); } catch {}
+  if (!r.ok) {
+    const e = new Error(j.error || (r.status === 404 ? "AIM AI isn't deployed yet." : "AIM AI hit an error (" + r.status + ")."));
+    e.quota = j;
+    throw e;
+  }
+  return j;
+}
+
+const api = { LIVE, DEMO_ACCOUNTS, init, session, aiHistory, aiQuota, aiClear, aiAsk, signUp, verifyCode, resendCode, signIn, signOut,
               listUsers, setApproved, lessons, getProgress, setDone,
               touchStreak: touchStreakDb, saveReach, setHandle, HANDLE_RE,
               doubtsFeed, doubtThread, askDoubt, replyDoubt, setResolved, deleteDoubt,
@@ -2568,6 +2700,7 @@ function topBar() {
   bar.append(logo);
   bar.append(el("span", api.LIVE ? "tag ok" : "tag demo", api.LIVE ? "Live" : "Demo"));
   const sp = el("span", "sp"); bar.append(sp);
+  bar.append(aiButton());
   bar.append(doubtsButton());
   bar.append(themeButton());
   bar.append(youButton(me));
@@ -3312,7 +3445,7 @@ function renderTracks(trackId) {
 // The 90-day course lives in content/ai90.json (built from AI90_MASTER.md by
 // tools/build_ai90.py). Days 1-30 join the Python stage, 31-60 Machine
 // Learning, 61-90 Build your own AI.
-const ASSET_V = "20261117v8";
+const ASSET_V = "20261120v9";
 let AI90 = null;
 async function loadAI90() {
   if (AI90) return AI90;
@@ -3487,7 +3620,7 @@ const PY = (() => {
 })();
 
 // read-only handle for tests and the console
-window.__aim = { get medcode() { return MEDCODE; }, setPath, get ai90() { return AI90; }, loadMermaid: () => loadMermaid(), py: PY };
+window.__aim = { get medcode() { return MEDCODE; }, mdLite, openAI, setPath, get ai90() { return AI90; }, loadMermaid: () => loadMermaid(), py: PY };
 
 // kept for older code paths: resolves once Python is up
 function bootPython() { return PY.start(); }
@@ -4491,7 +4624,11 @@ function renderLesson(l, opts = {}) {
   const askAny = el("button", "linkbtn", "Ask a doubt about this lesson");
   askAny.type = "button";
   askAny.onclick = () => openAsk({ title: l.title + ": ", body: codeBlock(ta.value) + "What I don't get: " });
-  ld.append(el("span", null, "Stuck?"), askAny);
+  const askAI = el("button", "linkbtn aiask", "Ask AIM AI");
+  askAI.type = "button";
+  askAI.onclick = () => openAI({ id: l.id, title: l.title, goal: (l.objectives || []).join("; ") || l.blurb || "",
+    code: isCheck ? (quiz ? quiz.readable() : "") : ta.value.slice(0, 2500) });
+  ld.append(el("span", null, "Stuck?"), askAI, el("span", null, "·"), askAny);
   right.append(ld);
   (guest ? Promise.resolve([]) : api.doubtsFeed()).then((feed) => {
     const n = feed.filter((d) => d.lesson_id === l.id).length;
@@ -4923,6 +5060,266 @@ function doubtsButton() {
     }).catch(() => {});
   }
   return b;
+}
+
+/* ================================================================ AIM AI */
+function aiButton() {
+  const b = el("button", "btn ghost sm aibtn");
+  b.type = "button";
+  b.innerHTML = '<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M12 2l1.9 5.6L19.5 9.5l-5.6 1.9L12 17l-1.9-5.6L4.5 9.5l5.6-1.9zM19 14l.9 2.6 2.6.9-2.6.9L19 21l-.9-2.6-2.6-.9 2.6-.9z"/></svg><span>Ask AI</span>';
+  b.setAttribute("aria-label", "Open AIM AI tutor");
+  b.onclick = () => openAI();
+  return b;
+}
+
+// tiny, safe Markdown: escape first, then code fences, inline code, bold, links, lists
+function mdLite(src, sources) {
+  const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+  const blocks = [];
+  let t = String(src).replace(/```[\w+-]*\n?([\s\S]*?)```/g, (_, code) => {
+    blocks.push('<pre class="aicode"><code>' + esc(code.replace(/\n$/, "")) + "</code></pre>");
+    return "\u0000" + (blocks.length - 1) + "\u0000";
+  });
+  t = esc(t)
+    .replace(/`([^`\n]+)`/g, "<code>$1</code>")
+    .replace(/\*\*([^*\n]+)\*\*/g, "<strong>$1</strong>")
+    .replace(/(^|[\s(])_([^_\n]+)_(?=[\s).,!?]|$)/g, "$1<em>$2</em>")
+    .replace(/\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
+    .replace(/\[(\d)\]/g, (m, n) => {
+      const s = sources && sources[n - 1];
+      return s ? '<a class="aicite" href="' + esc(s.url) + '" target="_blank" rel="noopener noreferrer" title="' + esc(s.title) + '">' + n + "</a>" : m;
+    })
+    .replace(/^#{1,4} (.+)$/gm, "<strong>$1</strong>");
+  const out = [];
+  let list = null;
+  for (const line of t.split("\n")) {
+    const li = /^\s*(?:[-*]|\d+[.)])\s+(.*)$/.exec(line);
+    if (li) { if (!list) { list = []; } list.push("<li>" + li[1] + "</li>"); continue; }
+    if (list) { out.push("<ul>" + list.join("") + "</ul>"); list = null; }
+    out.push(line);
+  }
+  if (list) out.push("<ul>" + list.join("") + "</ul>");
+  return out.join("\n").split(/\n{2,}/).map((p) => {
+    p = p.trim();
+    if (!p) return "";
+    if (/^\u0000\d+\u0000$/.test(p) || /^<ul>/.test(p)) return p;
+    return "<p>" + p.replace(/\n/g, "<br>") + "</p>";
+  }).join("").replace(/\u0000(\d+)\u0000/g, (_, i) => blocks[i]);
+}
+
+let AI_OPEN = null;      // the live drawer, if any
+function openAI(ctx) {
+  if (AI_OPEN) { AI_OPEN.setContext(ctx); AI_OPEN.focus(); return; }
+  const back = el("div", "aiscrim");
+  const box = el("aside", "aidrawer");
+  box.setAttribute("role", "dialog");
+  box.setAttribute("aria-modal", "true");
+  box.setAttribute("aria-labelledby", "ai-title");
+
+  const head = el("div", "aihead");
+  const ttl = el("div", "aititle");
+  ttl.innerHTML = '<span class="aiorb" aria-hidden="true"></span>';
+  const tt = el("div");
+  const h = el("h2", null, "AIM AI"); h.id = "ai-title";
+  tt.append(h, el("span", "aisub", "AI tutor · open-source DeepSeek"));
+  ttl.append(tt);
+  const clr = el("button", "btn ghost sm", "Clear");
+  clr.type = "button";
+  clr.title = "Delete this chat";
+  const x = el("button", "btn ghost sm aix", "✕");
+  x.type = "button";
+  x.setAttribute("aria-label", "Close AIM AI");
+  head.append(ttl, clr, x);
+
+  const ctxBar = el("div", "aictx");
+  const log = el("div", "ailog");
+  log.setAttribute("aria-live", "polite");
+
+  const form = el("form", "aiform");
+  const ta = el("textarea");
+  ta.rows = 1;
+  ta.placeholder = "Ask about Python, ML or coding…";
+  ta.setAttribute("aria-label", "Your question");
+  ta.maxLength = 4000;
+  const send = el("button", "btn aisend");
+  send.type = "submit";
+  send.setAttribute("aria-label", "Send");
+  send.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M3 20.5V14l9-2-9-2V3.5L22 12z"/></svg>';
+  const row = el("div", "airow");
+  row.append(ta, send);
+  const opts = el("div", "aiopts");
+  const webL = el("label", "aiweb");
+  const web = el("input"); web.type = "checkbox";
+  try { web.checked = localStorage.getItem("aim.ai.web") === "1"; } catch {}
+  web.onchange = () => { try { localStorage.setItem("aim.ai.web", web.checked ? "1" : "0"); } catch {} };
+  webL.append(web, el("span", null, "Search the web"));
+  const left = el("span", "aileft");
+  opts.append(webL, left);
+  form.append(row, opts, el("p", "aidisc", "AI can make mistakes. Check important answers."));
+  box.append(head, ctxBar, log, form);
+  document.body.append(back, box);
+  requestAnimationFrame(() => { back.classList.add("on"); box.classList.add("on"); });
+  document.documentElement.classList.add("aiopen");
+
+  let ctx0 = null;
+  function setContext(c) {
+    ctx0 = c || null;
+    ctxBar.innerHTML = "";
+    ctxBar.hidden = !ctx0;
+    if (!ctx0) return;
+    ctxBar.append(el("span", null, "About: " + ctx0.title));
+    const drop = el("button", "linkbtn", "remove");
+    drop.type = "button";
+    drop.onclick = () => setContext(null);
+    ctxBar.append(drop);
+    if (ctx0.prompt && !ta.value) { ta.value = ctx0.prompt; grow(); }
+  }
+  function grow() { ta.style.height = "auto"; ta.style.height = Math.min(ta.scrollHeight, 160) + "px"; }
+  ta.oninput = grow;
+  ta.onkeydown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); form.requestSubmit(); }
+  };
+  function paintLeft(q) {
+    if (!q) { left.textContent = ""; return; }
+    left.textContent = q.asks_left + " questions left today";
+  }
+
+  function bubble(m, animate) {
+    const b = el("div", "aimsg " + (m.role === "user" ? "me" : "ai"));
+    if (m.role === "user") { b.append(el("div", "aibody", m.content)); }
+    else {
+      const body = el("div", "aibody");
+      const src = m.sources || [];
+      if (animate && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        // reveal word by word: feels live without holding the answer back
+        const words = m.content.split(/(\s+)/);
+        let i = 0;
+        const step = () => {
+          i = Math.min(words.length, i + 6);
+          body.innerHTML = mdLite(words.slice(0, i).join(""), src);
+          if (i < words.length) { setTimeout(step, 16); }
+          log.scrollTop = log.scrollHeight;
+        };
+        step();
+      } else body.innerHTML = mdLite(m.content, src);
+      b.append(body);
+      if (src.length) {
+        const s = el("div", "aisrc");
+        src.forEach((x, i) => {
+          const a = el("a");
+          a.href = x.url; a.target = "_blank"; a.rel = "noopener noreferrer";
+          a.title = x.title;
+          let host = x.url;
+          try { host = new URL(x.url).hostname.replace(/^www\./, ""); } catch {}
+          a.append(el("b", null, String(i + 1)), el("span", null, host));
+          s.append(a);
+        });
+        b.append(s);
+      }
+      const tools = el("div", "aitools");
+      const cp = el("button", "linkbtn", "Copy");
+      cp.type = "button";
+      cp.onclick = () => navigator.clipboard?.writeText(m.content).then(() => {
+        cp.textContent = "Copied"; setTimeout(() => (cp.textContent = "Copy"), 1400);
+      });
+      tools.append(cp);
+      b.append(tools);
+    }
+    log.append(b);
+    log.scrollTop = log.scrollHeight;
+    return b;
+  }
+  function empty() {
+    const e = el("div", "aiempty");
+    e.append(el("p", null, "Hi! I'm AIM AI. Ask me to explain an idea, find the bug in your code, or walk through a coding guideline."));
+    const chips = el("div", "aichips");
+    ["Explain list comprehensions simply", "What is overfitting?", "How do I code type 2 diabetes with CKD?"]
+      .forEach((q) => {
+        const c = el("button", "fchip", q);
+        c.type = "button";
+        c.onclick = () => { ta.value = q; form.requestSubmit(); };
+        chips.append(c);
+      });
+    e.append(chips);
+    log.append(e);
+  }
+
+  async function load() {
+    log.innerHTML = "";
+    log.append(el("div", "aiwait", "Loading your chat…"));
+    try {
+      const [hist, q] = await Promise.all([api.aiHistory(), api.aiQuota().catch(() => null)]);
+      log.innerHTML = "";
+      if (!hist.length) empty();
+      hist.forEach((m) => bubble(m, false));
+      paintLeft(q);
+    } catch (e) {
+      log.innerHTML = "";
+      empty();
+    }
+  }
+
+  let busy = false;
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+    const message = ta.value.trim();
+    if (!message || busy) return;
+    busy = true;
+    send.disabled = true;
+    log.querySelector(".aiempty")?.remove();
+    bubble({ role: "user", content: message });
+    ta.value = ""; grow();
+    const wait = el("div", "aiwait");
+    wait.append(el("span", "aidots", ""), el("span", null, web.checked ? "Searching the web…" : "Thinking…"));
+    log.append(wait);
+    log.scrollTop = log.scrollHeight;
+    const t2 = setTimeout(() => { if (wait.isConnected) wait.lastChild.textContent = "Thinking it through…"; }, 4500);
+    try {
+      const r = await api.aiAsk({ message, web: web.checked, lesson: ctx0 && {
+        id: ctx0.id, title: ctx0.title, goal: ctx0.goal, code: ctx0.code } });
+      wait.remove();
+      bubble({ role: "assistant", content: r.reply, sources: r.sources }, true);
+      paintLeft(r);
+    } catch (err) {
+      wait.remove();
+      const b = el("div", "aimsg ai err");
+      b.append(el("div", "aibody", err.message));
+      log.append(b);
+      if (err.quota && "asks_left" in err.quota) paintLeft(err.quota);
+      if (!ta.value) { ta.value = message; grow(); }
+    } finally {
+      clearTimeout(t2);
+      busy = false;
+      send.disabled = false;
+      log.scrollTop = log.scrollHeight;
+    }
+  };
+  clr.onclick = async () => {
+    if (!confirmClear()) return;
+    try { await api.aiClear(); log.innerHTML = ""; empty(); } catch (e) { clr.textContent = "Couldn't clear"; }
+  };
+  function confirmClear() {
+    if (clr.dataset.sure) return true;
+    clr.dataset.sure = "1"; clr.textContent = "Tap again";
+    setTimeout(() => { delete clr.dataset.sure; clr.textContent = "Clear"; }, 2500);
+    return false;
+  }
+  const close = () => {
+    back.classList.remove("on"); box.classList.remove("on");
+    document.documentElement.classList.remove("aiopen");
+    removeEventListener("keydown", onKey);
+    AI_OPEN = null;
+    setTimeout(() => { back.remove(); box.remove(); }, 240);
+  };
+  const onKey = (e) => { if (e.key === "Escape") close(); };
+  addEventListener("keydown", onKey);
+  x.onclick = close;
+  back.onclick = close;
+
+  AI_OPEN = { setContext, focus: () => ta.focus(), close };
+  setContext(ctx);
+  load();
+  setTimeout(() => ta.focus(), 60);
 }
 
 function onlinePanel() {
