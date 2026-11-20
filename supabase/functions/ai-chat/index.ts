@@ -37,6 +37,9 @@ const SYSTEM = `You are AIM AI, the tutor inside AIM (AI & Machine Learning Inst
 Learners follow one of two paths: Digital (Python → Machine Learning → Advanced ML → AI) or
 Biological (Medical Coding: ICD-10-CM, CPT, HCPCS, for the CPC exam).
 - Teach, don't just hand over answers: explain the idea, then show a short example.
+- When a learner's code or answers fail, give a hint that points at the problem. Don't write
+  the full solution unless they ask for it after trying.
+- When asked to quiz them, ask one question at a time and wait for their answer.
 - Keep it short and clear. Use Markdown, and fenced code blocks for code.
 - Reply in the learner's language (English, Telugu, or Tenglish).
 - For medical coding, explain the guideline and the reasoning. Never reproduce CPT code
@@ -79,36 +82,61 @@ async function webSearch(q: string): Promise<Source[]> {
   }));
 }
 
-async function chat(url: string, key: string, model: string, messages: Msg[]) {
+async function chat(url: string, key: string, model: string, messages: Msg[], stream = false): Promise<any> {
   const r = await fetch(url, {
     method: "POST",
     headers: key ? { "Content-Type": "application/json", Authorization: "Bearer " + key }
                  : { "Content-Type": "application/json" },
-    body: JSON.stringify({ model, messages, max_tokens: 900, temperature: 0.4 }),
+    body: JSON.stringify({ model, messages, max_tokens: 900, temperature: 0.4, stream }),
     signal: AbortSignal.timeout(55000),
   });
   if (!r.ok) throw new Error(model + " " + r.status + " " + (await r.text()).slice(0, 200));
+  if (stream && /event-stream/.test(r.headers.get("content-type") || "")) return r;   // caller reads it
   const j = await r.json();
   const text = j?.choices?.[0]?.message?.content ?? j?.result?.response ?? "";
   if (!text) throw new Error(model + " returned nothing");
   return text as string;
 }
 
-async function think(messages: Msg[]): Promise<{ text: string; model: string }> {
+// Yields the text pieces of an OpenAI-style SSE stream.
+async function* sseText(res: Response) {
+  const reader = res.body!.pipeThrough(new TextDecoderStream()).getReader();
+  let buf = "";
+  for (;;) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    buf += value;
+    let i;
+    while ((i = buf.indexOf("\n")) >= 0) {
+      const line = buf.slice(0, i).trim();
+      buf = buf.slice(i + 1);
+      if (!line.startsWith("data:")) continue;
+      const d = line.slice(5).trim();
+      if (d === "[DONE]") return;
+      try {
+        const j = JSON.parse(d);
+        const t = j?.choices?.[0]?.delta?.content ?? j?.response ?? "";
+        if (t) yield String(t);
+      } catch { /* keep-alive or partial line */ }
+    }
+  }
+}
+
+async function think(messages: Msg[], stream = false): Promise<{ text: any; model: string }> {
   const errors: string[] = [];
   const acct = env("CF_ACCOUNT_ID"), tok = env("CF_API_TOKEN");
   if (acct && tok) {
     const model = env("AI_MODEL", "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b");
     try {
       return { text: await chat(`https://api.cloudflare.com/client/v4/accounts/${acct}/ai/v1/chat/completions`,
-                                tok, model, messages), model };
+                                tok, model, messages, stream), model };
     } catch (e) { errors.push(String(e)); }
   }
   const or = env("OPENROUTER_API_KEY");
   if (or) {
     const model = env("OPENROUTER_MODEL", "deepseek/deepseek-chat-v3-0324:free");
     try {
-      return { text: await chat("https://openrouter.ai/api/v1/chat/completions", or, model, messages), model };
+      return { text: await chat("https://openrouter.ai/api/v1/chat/completions", or, model, messages, stream), model };
     } catch (e) { errors.push(String(e)); }
   }
   // Last resort, works with no key at all: Pollinations' free Classic API.
@@ -119,7 +147,7 @@ async function think(messages: Msg[]): Promise<{ text: string; model: string }> 
   try { if (!pm) pm = await freeModel(); } catch { pm = "openai"; }
   for (const m of pm === "openai" ? [pm] : [pm, "openai"]) {
     for (let tries = 0; tries < 3; tries++) {
-      try { return { text: await chat(purl, pk, m, messages), model: "pollinations/" + m }; }
+      try { return { text: await chat(purl, pk, m, messages, stream), model: "pollinations/" + m }; }
       catch (e) {
         errors.push(String(e));
         // keyless tier allows about one request per 15 s per server: wait and retry when throttled
@@ -166,8 +194,9 @@ Deno.serve(async (req) => {
   const admin = createClient(env("SUPABASE_URL"), env("SUPABASE_SERVICE_ROLE_KEY"),
                              { auth: { persistSession: false } });
   const { data: who } = await admin.auth.getUser(jwt);
-  const user = who?.user;
-  if (!user) return out(401, { error: "Sign in to use AIM AI." });
+  const maybeUser = who?.user;
+  if (!maybeUser) return out(401, { error: "Sign in to use AIM AI." });
+  const user = maybeUser;
 
   let body: any;
   try { body = await req.json(); } catch { return out(400, { error: "Bad request." }); }
@@ -210,28 +239,60 @@ Deno.serve(async (req) => {
       sources.map((s, i) => `[${i + 1}] ${s.title} — ${s.url}\n${s.snippet}`).join("\n\n");
   }
 
-  let reply: string, model: string;
-  try {
-    const r = await think([{ role: "system", content: sys }, ...history, { role: "user", content: message }]);
-    reply = clean(r.text) || "Sorry, I couldn't put an answer together. Try asking another way.";
-    model = r.model;
-  } catch (e) {
-    // give the ask back so a broken provider doesn't eat the day's questions
-    await admin.rpc("ai_refund", { uid: user.id, was_search: sources.length > 0 }).then(() => {}, () => {});
-    const msg = String(e) === "Error: not-configured"
-      ? "AIM AI isn't switched on yet. The admin needs to add the model key."
-      : "The AI model is busy right now. Try again in a minute.";
-    console.error("ai-chat", String(e));
-    return out(503, { error: msg });
+  const msgs: Msg[] = [{ role: "system", content: sys }, ...history, { role: "user", content: message }];
+  const numbered = sources.map((x, i) => ({ ...x, n: i + 1 }));
+  const refund = () => admin.rpc("ai_refund", { uid: user.id, was_search: sources.length > 0 }).then(() => {}, () => {});
+  const failMsg = (e: unknown) => String(e) === "Error: not-configured"
+    ? "AIM AI isn't switched on yet. The admin needs to add the model key."
+    : "The AI model is busy right now. Try again in a minute.";
+  async function finish(raw: string, model: string) {
+    let reply = clean(raw) || "Sorry, I couldn't put an answer together. Try asking another way.";
+    // keep only the sources the answer actually cites, numbered as cited
+    const cited = numbered.filter((x) => reply.includes("[" + x.n + "]"));
+    reply += searchNote;
+    const { error: saveErr } = await admin.from("ai_messages").insert([
+      { user_id: user.id, role: "user", content: message, sources: [], lesson_id: lessonId, model: null },
+      { user_id: user.id, role: "assistant", content: reply.slice(0, 12000), sources: cited, lesson_id: lessonId, model },
+    ]);
+    if (saveErr) console.error("ai-chat save", JSON.stringify(saveErr));
+    return { reply, sources: cited, model, saved: !saveErr, asks_left: quota.asks_left, searches_left: quota.searches_left };
   }
-  // keep only the sources the answer actually cites, numbered as cited
-  sources = sources.map((x, i) => ({ ...x, n: i + 1 })).filter((x) => reply.includes("[" + x.n + "]"));
-  reply += searchNote;
 
-  const { error: saveErr } = await admin.from("ai_messages").insert([
-    { user_id: user.id, role: "user", content: message, sources: [], lesson_id: lessonId, model: null },
-    { user_id: user.id, role: "assistant", content: reply.slice(0, 12000), sources, lesson_id: lessonId, model },
-  ]);
-  if (saveErr) console.error("ai-chat save", JSON.stringify(saveErr));
-  return out(200, { reply, sources, model, saved: !saveErr, asks_left: quota.asks_left, searches_left: quota.searches_left });
+  let r: { text: any; model: string };
+  try { r = await think(msgs, !!body?.stream); }
+  catch (e) {
+    // give the ask back so a broken provider doesn't eat the day's questions
+    await refund();
+    console.error("ai-chat", String(e));
+    return out(503, { error: failMsg(e) });
+  }
+  if (!(r.text instanceof Response)) return out(200, await finish(r.text, r.model));
+
+  // Streaming: send the visible answer as it is written (hiding any <think> part),
+  // then a final "done" event with the cleaned reply and the cited sources.
+  const upstream = r.text as Response;
+  const enc = new TextEncoder();
+  const stream = new ReadableStream({
+    async start(ctl) {
+      const send = (event: string, data: unknown) =>
+        ctl.enqueue(enc.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`));
+      send("meta", { model: r.model, sources: numbered });
+      let raw = "", shown = "";
+      try {
+        for await (const piece of sseText(upstream)) {
+          raw += piece;
+          const vis = /^\s*<think>/i.test(raw) && !/<\/think>/i.test(raw) ? "" : clean(raw);
+          if (vis.length > shown.length && vis.startsWith(shown)) { send("delta", { t: vis.slice(shown.length) }); shown = vis; }
+        }
+        if (!clean(raw)) throw new Error("empty stream");
+        send("done", await finish(raw, r.model));
+      } catch (e) {
+        console.error("ai-chat stream", String(e));
+        if (!shown) await refund();
+        send("error", { error: shown ? "The answer was cut off. Try again." : failMsg(e) });
+      }
+      ctl.close();
+    },
+  });
+  return new Response(stream, { headers: { ...h, "Content-Type": "text/event-stream", "Cache-Control": "no-cache" } });
 });

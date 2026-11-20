@@ -729,8 +729,12 @@ html.aiopen{overflow:hidden}
 .aix{min-width:44px}
 .aictx{display:flex;gap:10px;align-items:center;padding:8px 18px;font-size:12.5px;color:var(--fg-2);
   background:var(--gold-soft);border-bottom:1px solid var(--line)}
+.aictx{flex-direction:column;align-items:stretch;gap:7px}
 .aictx[hidden]{display:none}
-.aictx span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.aictxtop{display:flex;gap:10px;align-items:center}
+.aictxtop span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.aiacts{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:1px}
+.aiacts .fchip{flex:none;min-height:32px;padding:5px 11px;font-size:12.5px;background:var(--card-solid)}
 .ailog{flex:1;overflow-y:auto;padding:16px 16px 8px;display:flex;flex-direction:column;gap:12px;overscroll-behavior:contain}
 .aimsg{max-width:92%;font-size:14.5px;line-height:1.6;overflow-wrap:anywhere}
 .aimsg.me{align-self:flex-end;background:var(--gold-soft);border:1px solid var(--gold-line);
@@ -2240,7 +2244,7 @@ async function aiClear() {
   const { error } = await sb.from("ai_messages").delete().eq("user_id", me.id);
   if (error) throw error;
 }
-async function aiAsk({ message, web, lesson }) {
+async function aiAsk({ message, web, lesson, onDelta, onMeta }) {
   if (!LIVE) {
     await new Promise((r) => setTimeout(r, 450));
     const reply = "This is **demo mode**, so there's no model behind me here. On the live site, " +
@@ -2260,9 +2264,33 @@ async function aiAsk({ message, web, lesson }) {
       method: "POST",
       headers: { "Content-Type": "application/json", apikey: SUPABASE_ANON_KEY,
                  Authorization: "Bearer " + ss.access_token },
-      body: JSON.stringify({ message, web: !!web, lesson }),
+      body: JSON.stringify({ message, web: !!web, lesson, stream: !!onDelta }),
     });
   } catch { throw new Error("Couldn't reach AIM AI. Check your connection."); }
+  if (r.ok && /event-stream/.test(r.headers.get("content-type") || "")) {
+    // server-sent events: meta → delta… → done | error
+    const reader = r.body.pipeThrough(new TextDecoderStream()).getReader();
+    let buf = "", final = null;
+    for (;;) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      buf += value;
+      let i;
+      while ((i = buf.indexOf("\n\n")) >= 0) {
+        const block = buf.slice(0, i); buf = buf.slice(i + 2);
+        const ev = (/^event: (\w+)/m.exec(block) || [])[1];
+        const dm = /^data: (.*)$/m.exec(block);
+        if (!dm) continue;
+        let d; try { d = JSON.parse(dm[1]); } catch { continue; }
+        if (ev === "meta") onMeta && onMeta(d);
+        else if (ev === "delta") onDelta(d.t);
+        else if (ev === "done") final = d;
+        else if (ev === "error") throw new Error(d.error);
+      }
+    }
+    if (!final) throw new Error("The answer was cut off. Try again.");
+    return final;
+  }
   let j = {};
   try { j = await r.json(); } catch {}
   if (!r.ok) {
@@ -3445,7 +3473,7 @@ function renderTracks(trackId) {
 // The 90-day course lives in content/ai90.json (built from AI90_MASTER.md by
 // tools/build_ai90.py). Days 1-30 join the Python stage, 31-60 Machine
 // Learning, 61-90 Build your own AI.
-const ASSET_V = "20261120v9b";
+const ASSET_V = "20261120v10";
 let AI90 = null;
 async function loadAI90() {
   if (AI90) return AI90;
@@ -4651,10 +4679,12 @@ function renderLesson(l, opts = {}) {
     help.innerHTML = "";
     help.hidden = false;
     help.append(el("h3", null, what.kind === "error" ? "Your code hit an error" : isCheck ? "Some answers aren't right yet" : "Some tests are not passing yet"));
-    help.append(el("p", "note", "Not sure why? Ask the others. Your " + (isCheck ? "answers" : "code") + " and the " +
+    help.append(el("p", "note", "Not sure why? Ask AIM AI for a hint, or ask the others. Your " + (isCheck ? "answers" : "code") + " and the " +
       (what.kind === "error" ? "error" : isCheck ? "questions you missed" : "failing tests") + " go in for you. If nobody answers in 12 hours, it goes to the admin."));
     const row = el("div", "askrow");
-    const go = el("button", "btn sm", "Ask a doubt");
+    const ai = el("button", "btn sm aihint", "Ask AIM AI for a hint");
+    ai.type = "button";
+    const go = el("button", "btn ghost sm", "Ask a doubt");
     go.type = "button";
     const problem = what.kind === "error"
       ? "The error:\n" + what.msg
@@ -4666,10 +4696,15 @@ function renderLesson(l, opts = {}) {
       title: (l.title + ": " + firstLine).slice(0, 140),
       body: codeBlock(ta.value) + problem + "\n\nWhat I don't get: ",
     });
+    ai.onclick = () => openAI({ id: l.id, title: l.title, goal: (l.objectives || []).join("; ") || l.blurb || "",
+      code: (codeBlock(ta.value) + problem).slice(0, 2500),
+      send: (what.kind === "error" ? "My code hit this error: " + firstLine.slice(0, 200)
+        : isCheck ? "I got some of the practice questions wrong." : "Some tests are failing: " + what.fails.slice(0, 3).join("; ").slice(0, 300)) +
+        "\nWhy? Give me a hint, not the full answer." });
     const later = el("button", "btn ghost sm", "I'll keep trying");
     later.type = "button";
     later.onclick = () => { help.hidden = true; };
-    row.append(go, later);
+    row.append(ai, go, later);
     help.append(row);
   }
 
@@ -5121,7 +5156,7 @@ function openAI(ctx) {
   ttl.innerHTML = '<span class="aiorb" aria-hidden="true"></span>';
   const tt = el("div");
   const h = el("h2", null, "AIM AI"); h.id = "ai-title";
-  tt.append(h, el("span", "aisub", "AI tutor · open-source DeepSeek"));
+  tt.append(h, el("span", "aisub", "AI tutor · free open models"));
   ttl.append(tt);
   const clr = el("button", "btn ghost sm", "Clear");
   clr.type = "button";
@@ -5167,13 +5202,27 @@ function openAI(ctx) {
     ctxBar.innerHTML = "";
     ctxBar.hidden = !ctx0;
     if (!ctx0) return;
-    ctxBar.append(el("span", null, "About: " + ctx0.title));
+    const top = el("div", "aictxtop");
+    top.append(el("span", null, "About: " + ctx0.title));
     const drop = el("button", "linkbtn", "remove");
     drop.type = "button";
     drop.onclick = () => setContext(null);
-    ctxBar.append(drop);
+    top.append(drop);
+    const acts = el("div", "aiacts");
+    [["Explain it simply", "Explain this lesson simply, with one small example."],
+     ["Quiz me", "Quiz me on this lesson: ask me one question at a time, then tell me if I'm right."],
+     ["Hint for the practice", "Give me a hint for this lesson's practice. Don't give me the full answer."]]
+      .forEach(([label, q]) => {
+        const b = el("button", "fchip", label);
+        b.type = "button";
+        b.onclick = () => { ta.value = q; form.requestSubmit(); };
+        acts.append(b);
+      });
+    ctxBar.append(top, acts);
     if (ctx0.prompt && !ta.value) { ta.value = ctx0.prompt; grow(); }
+    if (ctx0.send) { ta.value = ctx0.send; grow(); pendingSend = true; }
   }
+  let pendingSend = false;
   function grow() { ta.style.height = "auto"; ta.style.height = Math.min(ta.scrollHeight, 160) + "px"; }
   ta.oninput = grow;
   ta.onkeydown = (e) => {
@@ -5274,14 +5323,26 @@ function openAI(ctx) {
     log.append(wait);
     log.scrollTop = log.scrollHeight;
     const t2 = setTimeout(() => { if (wait.isConnected) wait.lastChild.textContent = "Thinking it through…"; }, 4500);
+    let live = null, text = "", metaSrc = [], queued = false;
+    const paint = () => {
+      queued = false;
+      if (!live) { wait.remove(); live = el("div", "aimsg ai"); live.append(el("div", "aibody")); log.append(live); }
+      live.firstChild.innerHTML = mdLite(text, metaSrc);
+      const nearEnd = log.scrollHeight - log.scrollTop - log.clientHeight < 140;
+      if (nearEnd) log.scrollTop = log.scrollHeight;
+    };
     try {
       const r = await api.aiAsk({ message, web: web.checked, lesson: ctx0 && {
-        id: ctx0.id, title: ctx0.title, goal: ctx0.goal, code: ctx0.code } });
+        id: ctx0.id, title: ctx0.title, goal: ctx0.goal, code: ctx0.code },
+        onMeta: (m) => { metaSrc = m.sources || []; },
+        onDelta: (t) => { text += t; if (!queued) { queued = true; requestAnimationFrame(paint); } } });
       wait.remove();
-      bubble({ role: "assistant", content: r.reply, sources: r.sources }, true);
+      const fin = bubble({ role: "assistant", content: r.reply, sources: r.sources }, !live);
+      if (live) live.replaceWith(fin);
       paintLeft(r);
     } catch (err) {
       wait.remove();
+      if (live) live.remove();
       const b = el("div", "aimsg ai err");
       b.append(el("div", "aibody", err.message));
       log.append(b);
@@ -5316,9 +5377,10 @@ function openAI(ctx) {
   x.onclick = close;
   back.onclick = close;
 
-  AI_OPEN = { setContext, focus: () => ta.focus(), close };
+  AI_OPEN = { setContext: (c) => { setContext(c); if (pendingSend) { pendingSend = false; form.requestSubmit(); } },
+              focus: () => ta.focus(), close };
   setContext(ctx);
-  load();
+  load().then(() => { if (pendingSend) { pendingSend = false; form.requestSubmit(); } });
   setTimeout(() => ta.focus(), 60);
 }
 

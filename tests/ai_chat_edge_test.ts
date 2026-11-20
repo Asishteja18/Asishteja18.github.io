@@ -24,6 +24,11 @@ globalThis.fetch = async (input: any, init?: any) => {
   }
   if (url.includes("openrouter.ai")) return J({ choices: [{ message: { content: "fallback answer" } }] });
   if (url.endsWith("text.pollinations.ai/models")) return J([{ name: "openai-audio", audio: true }, { name: "openai-fast" }, { name: "deepseek-reasoning" }]);
+  if (url.includes("pollinations.ai") && body.includes('"stream":true') && modelMode === "ok") {
+    const parts = ["<think>plan", " it</think>", "Dicts map ", "keys to values [1].", " Done."];
+    const sse = parts.map((p) => "data: " + JSON.stringify({ choices: [{ delta: { content: p } }] }) + "\n\n").join("") + "data: [DONE]\n\n";
+    return new Response(sse, { headers: { "content-type": "text/event-stream" } });
+  }
   if (url.includes("pollinations.ai")) return modelMode === "allfail" ? J({ error: "busy" }, 429) : J({ choices: [{ message: { content: "<think>x</think>keyless answer [1]" } }] });
   if (url.includes("wikipedia.org")) return J({ query: { pages: { "9": { index: 1, title: "List (abstract data type)", fullurl: "https://en.wikipedia.org/wiki/List_(abstract_data_type)", extract: "A list is..." } } } });
   return J({ unexpected: url }, 599);
@@ -75,5 +80,21 @@ modelMode = "ok";
 Deno.env.delete("CF_ACCOUNT_ID"); Deno.env.delete("TAVILY_API_KEY");
 r = await call("good", { message: "what is a list", web: true }); j = await r.json();
 check(r.status === 200 && j.model === "pollinations/deepseek-reasoning" && j.sources[0]?.url.includes("wikipedia.org"), "no keys at all: keyless model + Wikipedia sources");
+// streaming
+Deno.env.set("TAVILY_API_KEY", "tv");
+r = await call("good", { message: "what is a dict", web: true, stream: true });
+check(/event-stream/.test(r.headers.get("content-type") || ""), "stream: answers as server-sent events");
+const txt = await r.text();
+const evs = txt.trim().split("\n\n").map((b) => ({ ev: /event: (\w+)/.exec(b)?.[1], d: JSON.parse(/data: (.*)/.exec(b)![1]) }));
+check(evs[0].ev === "meta" && evs[0].d.sources.length === 1, "stream: meta event first, with sources");
+const shown = evs.filter((e) => e.ev === "delta").map((e) => e.d.t).join("");
+check(shown === "Dicts map keys to values [1]. Done." && !shown.includes("think") && !shown.includes("plan"), "stream: deltas skip the <think> part: " + JSON.stringify(shown));
+const done = evs.at(-1)!;
+check(done.ev === "done" && done.d.reply === "Dicts map keys to values [1]. Done." && done.d.sources[0]?.n === 1, "stream: done event has the clean reply + cited source");
+const ins2 = seen["/rest/v1/ai_messages"].filter((x) => x.body).at(-1);
+check(JSON.parse(ins2.body)[1].content === "Dicts map keys to values [1]. Done.", "stream: the full answer is saved");
+modelMode = "allfail";
+r = await call("good", { message: "x", stream: true }); j = await r.json();
+check(r.status === 503, "stream: provider failure before any text is a normal 503");
 console.log(fails + " failure(s)");
 Deno.exit(fails ? 1 : 0);

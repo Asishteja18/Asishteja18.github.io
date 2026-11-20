@@ -505,3 +505,10 @@ Tests: `tests/test_ai90_site.py` (40 checks) + the old `test_v3.py` and
 - **Tests:**
   - `tests/test_ai.py` (demo UI: desktop and phone, axe checks, mdLite safety).
   - `deno run -A tests/ai_chat_edge_test.ts` (the function against mocked providers: 14 checks).
+
+## v10 — AI tutor upgrades (2026-11-20)
+- **Streaming:** the function answers as server-sent events when the panel asks (`stream: true`): `meta` (model + sources), `delta` text pieces (the `<think>` part is hidden), then `done` with the cleaned reply and cited sources, or `error`. A provider failure before any text is a normal 503 and refunds the ask. The full answer is saved either way.
+- **Explain-my-error:** after a failed run or failing tests, "Ask AIM AI for a hint" opens the drawer with the error or failing tests and asks for a hint, not the full solution.
+- **Lesson shortcuts:** "Explain it simply", "Quiz me" (one question at a time), "Hint for the practice".
+- **Label:** the panel now says "free open models" until a real DeepSeek key is set.
+- **Tests:** `tests/ai_chat_edge_test.ts` 20 checks incl. the stream; `tests/test_ai.py` 0 failures. `tests/test_bio.py` times out waiting for the quiz in this sandbox, on the previous commit too, so it's environmental, not from v10.
