@@ -3445,7 +3445,7 @@ function renderTracks(trackId) {
 // The 90-day course lives in content/ai90.json (built from AI90_MASTER.md by
 // tools/build_ai90.py). Days 1-30 join the Python stage, 31-60 Machine
 // Learning, 61-90 Build your own AI.
-const ASSET_V = "20261120v9";
+const ASSET_V = "20261120v9b";
 let AI90 = null;
 async function loadAI90() {
   if (AI90) return AI90;
@@ -5086,7 +5086,7 @@ function mdLite(src, sources) {
     .replace(/(^|[\s(])_([^_\n]+)_(?=[\s).,!?]|$)/g, "$1<em>$2</em>")
     .replace(/\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
     .replace(/\[(\d)\]/g, (m, n) => {
-      const s = sources && sources[n - 1];
+      const s = sources && (sources.find((x) => x.n == n) || (!sources.some((x) => x.n) && sources[n - 1]));
       return s ? '<a class="aicite" href="' + esc(s.url) + '" target="_blank" rel="noopener noreferrer" title="' + esc(s.title) + '">' + n + "</a>" : m;
     })
     .replace(/^#{1,4} (.+)$/gm, "<strong>$1</strong>");
@@ -5211,7 +5211,7 @@ function openAI(ctx) {
           a.title = x.title;
           let host = x.url;
           try { host = new URL(x.url).hostname.replace(/^www\./, ""); } catch {}
-          a.append(el("b", null, String(i + 1)), el("span", null, host));
+          a.append(el("b", null, String(x.n || i + 1)), el("span", null, host));
           s.append(a);
         });
         b.append(s);

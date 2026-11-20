@@ -31,7 +31,7 @@ const cors = (origin: string | null) => ({
 });
 
 type Msg = { role: "system" | "user" | "assistant"; content: string };
-type Source = { title: string; url: string; snippet: string };
+type Source = { title: string; url: string; snippet: string; n?: number };
 
 const SYSTEM = `You are AIM AI, the tutor inside AIM (AI & Machine Learning Institute, telugucoders.com).
 Learners follow one of two paths: Digital (Python → Machine Learning → Advanced ML → AI) or
@@ -42,10 +42,13 @@ Biological (Medical Coding: ICD-10-CM, CPT, HCPCS, for the CPC exam).
 - For medical coding, explain the guideline and the reasoning. Never reproduce CPT code
   descriptors word for word (they are AMA copyright); paraphrase them.
 - If web results are given, rely on them for anything current and cite them as [1], [2].
-  If you are not sure, say so.`;
+  Ignore results that are off-topic. If you are not sure, say so.`;
 
 // No Tavily key? Fall back to Wikipedia's open API (no key needed).
 async function wikiSearch(q: string): Promise<Source[]> {
+  // search on the topic words, not "in two sentences, what is…"
+  const STOP = /\b(in|one|two|three|short|simple|simply|sentences?|words?|please|explain|tell|me|what|whats|is|are|was|the|a|an|of|to|how|do|does|i|my|can|you|why|which|with|and|for|about|give|example|briefly)\b/gi;
+  q = q.replace(/[^\p{L}\p{N}\s.+#-]/gu, " ").replace(STOP, " ").replace(/\s+/g, " ").trim() || q;
   const u = "https://en.wikipedia.org/w/api.php?action=query&format=json&generator=search&gsrlimit=4" +
     "&prop=extracts|info&inprop=url&exintro=1&explaintext=1&exchars=700&gsrsearch=" + encodeURIComponent(q.slice(0, 250));
   const r = await fetch(u, { headers: { "User-Agent": "AIM-tutor/1.0 (https://telugucoders.com)" },
@@ -213,6 +216,8 @@ Deno.serve(async (req) => {
     console.error("ai-chat", String(e));
     return out(503, { error: msg });
   }
+  // keep only the sources the answer actually cites, numbered as cited
+  sources = sources.map((x, i) => ({ ...x, n: i + 1 })).filter((x) => reply.includes("[" + x.n + "]"));
   reply += searchNote;
 
   await admin.from("ai_messages").insert([

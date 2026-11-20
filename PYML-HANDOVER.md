@@ -500,6 +500,7 @@ Tests: `tests/test_ai90_site.py` (40 checks) + the old `test_v3.py` and
   - Tables `ai_messages` and `ai_usage`. Learners can read and delete their own rows; only the function writes.
   - Daily caps via `ai_take_quota` and `ai_refund`: 20 asks and 5 searches per learner, 200 asks and 50 searches for admins. Model failures refund the ask.
 - **UI:** an "Ask AI" button in the top bar, plus "Ask AIM AI" on every lesson, which sends the lesson's title, goals and the learner's current code. The drawer is full-screen on phones and shows source chips with [n] citations.
+- **Switched on with no keys (20 Nov):** with no secrets set, the function uses Pollinations' free Classic API. It reads `text.pollinations.ai/models` and picks a free model, DeepSeek first, else `openai`. Web search falls back to Wikipedia. Only sources the answer actually cites ([n]) are returned. The keyless tier is rate-limited, so adding Cloudflare or Pollinations keys lifts it. Verified live: a 200 response in about 5 s.
 - **Secrets for Asish to add** under Dashboard → Edge Functions → Secrets: `CF_ACCOUNT_ID`, `CF_API_TOKEN` (Workers AI permission), `TAVILY_API_KEY`, and optionally `OPENROUTER_API_KEY`. Optional overrides: `AI_MODEL` and `OPENROUTER_MODEL`. Until the keys are added the drawer shows "AIM AI isn't switched on yet".
 - **Tests:**
   - `tests/test_ai.py` (demo UI: desktop and phone, axe checks, mdLite safety).

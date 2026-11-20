@@ -24,7 +24,7 @@ globalThis.fetch = async (input: any, init?: any) => {
   }
   if (url.includes("openrouter.ai")) return J({ choices: [{ message: { content: "fallback answer" } }] });
   if (url.endsWith("text.pollinations.ai/models")) return J([{ name: "openai-audio", audio: true }, { name: "openai-fast" }, { name: "deepseek-reasoning" }]);
-  if (url.includes("pollinations.ai")) return modelMode === "allfail" ? J({ error: "busy" }, 429) : J({ choices: [{ message: { content: "<think>x</think>keyless answer" } }] });
+  if (url.includes("pollinations.ai")) return modelMode === "allfail" ? J({ error: "busy" }, 429) : J({ choices: [{ message: { content: "<think>x</think>keyless answer [1]" } }] });
   if (url.includes("wikipedia.org")) return J({ query: { pages: { "9": { index: 1, title: "List (abstract data type)", fullurl: "https://en.wikipedia.org/wiki/List_(abstract_data_type)", extract: "A list is..." } } } });
   return J({ unexpected: url }, 599);
 };
@@ -64,7 +64,7 @@ r = await call("good", { message: "x" }); j = await r.json();
 check(r.status === 200 && j.reply === "fallback answer" && j.model.endsWith(":free"), "falls back to OpenRouter free DeepSeek");
 Deno.env.delete("OPENROUTER_API_KEY");
 r = await call("good", { message: "x" }); j = await r.json();
-check(r.status === 200 && j.reply === "keyless answer" && j.model === "pollinations/deepseek-reasoning", "falls back to keyless Pollinations DeepSeek");
+check(r.status === 200 && j.reply.startsWith("keyless answer") && j.model === "pollinations/deepseek-reasoning", "falls back to keyless Pollinations DeepSeek");
 check(!seen["/openai"].at(-1).headers.Authorization, "keyless call sends no Authorization header");
 modelMode = "allfail";
 r = await call("good", { message: "x" }); j = await r.json();
