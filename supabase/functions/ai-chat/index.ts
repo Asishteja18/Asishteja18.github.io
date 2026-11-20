@@ -123,7 +123,7 @@ async function think(messages: Msg[]): Promise<{ text: string; model: string }> 
       catch (e) {
         errors.push(String(e));
         // keyless tier allows about one request per 15 s per server: wait and retry when throttled
-        if (/ 429 /.test(String(e)) && tries < 2) { await new Promise((r) => setTimeout(r, 8000)); continue; }
+        if (!/ (400|404) /.test(String(e)) && tries < 2) { await new Promise((r) => setTimeout(r, 8000)); continue; }
         if (/ 404 /.test(String(e))) FREE_MODEL = "";
         break;
       }
